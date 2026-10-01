@@ -54,7 +54,7 @@ node tools/vega-sync.js        # copies index.html, style.css, src/bundle.js, sr
 **If the checkout path contains no spaces**, the standard template command works:
 
 ```sh
-cd vega-app && npm run build:debug && cd ..
+cd vega-app && rm -rf build && npm run build:debug && cd ..   # rm -rf build: see the stale-assets note below
 # The VVD package ends up at:
 #   vega-app/build/private/kepler/@amazon-devices/sema/undefined/vega/aarch64/Debug/@amazon-devices/sema_aarch64.vpkg
 ```
@@ -81,6 +81,8 @@ vega-app/scripts/build-staged.sh Debug aarch64      # or: cd vega-app && npm run
 4. Copies the `.vpkg` back to `vega-app/build/vpkg/`.
 
 A rebuild takes about 15 s.
+
+**Always build from a clean `build/`.** The build copies `assets/` into `build/private/vega/<arch>/<type>/assets/` and never prunes it, so files you deleted or moved keep shipping. The staging script deletes its `build/` before every build.
 
 **Two things not to do**
 
@@ -184,8 +186,10 @@ node tools/vega-probe/collect.js --device-log --raw docs/vega/logs/device-probe.
 node tools/vega-sync.js --probe
 vega-app/scripts/build-staged.sh Debug aarch64
 vega run-app vega-app/build/vpkg/sema_aarch64.vpkg com.sema.viewer.main
-# Wait about 90 s for the automatic tests, then press keys with tools/vega-probe/remote.sh
+# The automatic tests take ~5 min (codec trials include two 72 s films); then press keys with tools/vega-probe/remote.sh
 ```
+
+**The two long films are not in git.** `tools/vega-probe/media-test/long-*.webm` (~15 MB each) are git-ignored; regenerate them from `content/sources/` with the VP8 command in `PLATFORM-FINDINGS.md`, "Codec trials". Without them, trials L3/L4/N2 report `DID NOT LOAD`. The older media trials still run from the "Re-run media test" button.
 
 The probe shows results on screen and sends them through the React Native bridge into the device log. The collector reads that log over `vda`. The collector also accepts HTTP POSTs, but the WebView blocks cleartext HTTP (`net::ERR_CLEARTEXT_NOT_PERMITTED`), so HTTP only helps when you test the page in a desktop browser. To serve that HTTP path to the device anyway:
 
@@ -193,6 +197,8 @@ The probe shows results on screen and sends them through the React Native bridge
 * use `10.0.2.2:8765` (QEMU user networking).
 
 ## 9. Run the Sema app
+
+**Video codec for the VVD: use WebM with VP8 video and Opus audio.** On the VVD, H.264 MP4 and VP9 stop after about 3 s, and AV1 shows no picture. See `PLATFORM-FINDINGS.md`, "Codec trials", for the evidence and the ffmpeg command.
 
 ```sh
 npm run bundle && node tools/vega-sync.js

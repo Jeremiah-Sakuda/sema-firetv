@@ -32,7 +32,7 @@ if (unknown.length) { console.error(`Unknown option(s): ${unknown.join(' ')}`); 
 
 // Paths under vega-app/assets/ that this script owns and may delete.
 const OWNED = ['index.html', 'style.css', 'src', 'media', 'probe-script.js', 'probe-media', '.sema-sync.json'];
-const MEDIA_EXT = new Set(['.mp4', '.mp3', '.json', '.vtt', '.png', '.jpg', '.svg']);
+const MEDIA_EXT = new Set(['.mp4', '.webm', '.mp3', '.json', '.vtt', '.png', '.jpg', '.svg']);
 // Every ES module under src/ feeds src/bundle.js (tools/bundle.js); the generated files are excluded.
 const BUNDLE_SOURCES = fs.existsSync(path.join(root, 'src'))
   ? fs.readdirSync(path.join(root, 'src')).filter(f => f.endsWith('.js') && !['bundle.js', 'data.js'].includes(f)).map(f => `src/${f}`)
@@ -78,6 +78,8 @@ function walkMedia(dir) {
     const child = path.posix.join(dir, entry.name);
     const abs = path.join(root, child);
     if (isDir(abs)) walkMedia(child);
+    // The player uses the VP8 WebM on Vega, so an MP4 with a WebM sibling stays out of the package.
+    else if (entry.name.endsWith('.mp4') && isFile(abs.replace(/\.mp4$/, '.webm'))) skipped.push(`${child} (WebM used on Vega)`);
     else if (isFile(abs) && MEDIA_EXT.has(path.extname(entry.name).toLowerCase())) add(child, child);
     else skipped.push(child);
   }

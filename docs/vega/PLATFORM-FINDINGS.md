@@ -27,6 +27,7 @@ Nothing here has been checked on a physical Fire TV yet.
 | `run-muq1wh4y` | Codec variants, the full key matrix, and Home. |
 | `run-muq21e3e` | Relaunch after Home. |
 | `run-muq25vdt` | Page reload during VoiceView enable. |
+| `run-muq2pd57`, `run-muq2tvu3`, `run-muq2ylw6` | Codec trials. |
 
 ## Summary
 
@@ -34,16 +35,18 @@ Nothing here has been checked on a physical Fire TV yet.
 |---|---|---|
 | a | Remote key codes | D-pad, Select, Back, Play/Pause, Rewind and FF all reach the page (table below). **Menu does not reach the page.** Native spatial navigation is active. |
 | b | `fetch` / XHR from `file://` | **Both fail** for every `file:///pkg/assets/...` URL. **Classic `<script src>` works.** `<video src>` / `<audio src>` load `file://` media. |
-| c | `<video>` + separate `<audio>` at once | Both clocks advance together while the video still runs, and starting the audio does not pause the video. **But `<video>` itself stalls about 3.1 s after `play()`, with or without audio.** |
+| c | `<video>` + separate `<audio>` at once | **Works with VP8 video.** A VP8+Opus WebM played to `ended` while two separate `new Audio()` narration clips played over it, with no pause, no `waiting` and 0 dropped frames. **H.264 and VP9 `<video>` stall about 3.1 s after `play()`, with or without audio**, because they use the platform decoder path. |
 | d | `speechSynthesis` | Present. **0 voices.** `speak()` fires `onerror` with `synthesis-failed` within ~3 ms. **`onend` never fires.** |
-| e | Media events | First play: `play` and `playing` arrive within 1–3 ms of `play()`. **About 3.1 s later `waiting` fires (readyState 2) with no recovery.** **Seeks never fire `seeked`.** `ended` never fires. |
+| e | Media events | **H.264/VP9:** `play`/`playing` arrive within 1–3 ms, `waiting` fires about 3.1 s later with no recovery, seeks never fire `seeked`, and `ended` never fires. **VP8:** `ended` fires on time, `seeked` arrives 22–144 ms after setting `currentTime`, and there are no `waiting` events. |
 | f | `navigator.mediaSession` | Present. All 8 action handlers register. Remote media keys arrive as **key events, not** session actions. The system calls the **`pause`** action when the app is backgrounded. |
 | g | ARIA live / focus / VoiceView | `focus()` moves focus and fires DOM focus events. **VoiceView can be enabled on the VVD** (Back+Menu hold), tracks WebView DOM focus, and receives the WebView's accessibility tree. **No speech engine on the VVD** (`com.amazon.tts.service.main` missing), so live-region announcements cannot be heard or verified. |
 
 **What this means for Sema right now**
 
 * `<script src>` works, so loading package data from `src/data.js` / `window.SEMA_DATA` is the right approach. `fetch('media/...json')` cannot work in this WebView.
-* On the VVD, film playback will stop after about 3 s. The app's `waiting` handler (`src/app.js`, `bufferTimer`) will then open the buffering controls. This is a platform limitation of the VVD video path, not a Sema bug. See item (e).
+* **For the VVD demo, encode films as WebM with VP8 video and Opus audio** (see "Codec trials" for the command). H.264 MP4 (the current `media/fixture/film.mp4`) stops after about 3 s, and the app's `waiting` handler (`src/app.js`, `bufferTimer`) then shows "Playback paused while the film loads." This is a VVD platform limitation, not a Sema bug.
+* VP9 fails the same way as H.264, and AV1 plays audio only.
+* `canPlayType` returns `"probably"` for H.264, VP9 and VP8 alike, so feature detection can't choose the codec. Point the package's `video` path at the VP8 file explicitly.
 * Spoken prompts through `speechSynthesis` will never complete on the VVD. `src/voice.js` already handles this correctly: it prefers pre-rendered clips (plain `new Audio()`, which works) and uses a watchdog.
 * The Menu button cannot be the only way to open controls. Select (Enter), Back and Play/Pause all reach the page.
 
@@ -152,12 +155,14 @@ Each failed fetch is also reported to the React Native host's `onError` callback
 * **One shared audio focus session.** The device log shows the `<video>` element and `new Audio()` sharing one Chromium audio focus session: `AcquireAudioFocus`, then `Skipping attempt to Acquire Audio Focus when we already have focus`, and both streams report `focus session id: 18`. No duck, pause or focus-loss event was logged when the second stream started.
 * **Ducking is not measurable.** The VVD gave us no audio we could listen to, and nothing in JS or the logs shows volume ducking.
 
-**Guess:** the stall comes from the VVD's software video path, not from Sema or from concurrency.
+**Update from the codec trials:** the stall belongs to the **platform decoder path**, which handles H.264 and VP9 (`AmazonVideoDecoderIdl`). It is not caused by Sema or by concurrency. VP8 bypasses that path and plays fine, including with narration on top; see "Codec trials".
+
+**Original guess (kept for context):** the stall comes from the VVD's video decode path.
 
 * Nearby device-log errors: `media_transform_wrapper_idl.cc:426 No available media format buffer sizes, using fallback frame buffer size`, `Color Space is not supported. Downgrading to BT709` and `JsonMediaCapabilitiesParser: codec capabilities JSON file is missing for the device!!`.
 * The ~3 s stall with an audio track, against ~0.1 s without one, fits a decoder that hands back almost no frames while the audio clock carries playback for about 3 s.
 
-**This must be re-tested on a real Fire TV before we draw product conclusions.**
+**H.264 and VP9 must be re-tested on a real Fire TV before we draw product conclusions.** For the VVD itself, use VP8.
 
 ## (d) `window.speechSynthesis`
 
@@ -194,6 +199,50 @@ Each failed fetch is also reported to the React Native host's `onError` callback
 * A `play()` promise can hang forever, so put a timeout on any `await video.play()`.
 * `seeked` cannot be relied on.
 * The `waiting` → buffering-controls path will trigger about 3 s into every playback.
+
+## Codec trials (which video codec plays on the VVD)
+
+**Method.** Each variant was played through the same probe harness: a fresh load, then play until `ended` or 6 s without clock progress, then a seek and play to the end. Presented frames were counted with `requestVideoFrameCallback` and `getVideoPlaybackQuality()`. Runs `run-muq2pd57`, `run-muq2tvu3` and `run-muq2ylw6`, `k-*` records in `probe-results.jsonl`.
+
+**Source files.** Variants were made from `media/fixture/film.mp4` (15 s, 1280×720, 24 fps) and from `content/sources/*.mp4` (72 s). They live in `tools/vega-probe/media-test/`; the large `long-*` files are git-ignored.
+
+| Variant (container, video + audio) | First pass | Frames presented | Seek | Verdict |
+|---|---|---|---|---|
+| MP4, H.264 High + AAC (fixture as shipped) | stops at 3.11 s (`waiting`) | 3 | `seeked` never fires; stuck at 11 s | ✗ |
+| MP4, H.264 High, `-bf 0 -tune zerolatency -g 24`, + AAC | stops at 3.17 s | 5 | `seeked` fires, then stuck at 14.2 s | ✗ |
+| WebM, VP9 (`libvpx-vp9 -b:v 1.5M -row-mt 1`) + Opus | stops at 3.18 s | 5 | `seeked` never fires | ✗ |
+| WebM, **VP8** (`libvpx -b:v 1.5M`) + Opus | **plays to `ended`** (15.1 s wall for 15.0 s) | **360/360**, 0 dropped | `seeked` in 22 ms, then `ended` | **✓** |
+| WebM, AV1 (`libsvtav1`) + Opus | the clock runs to `ended` | **0**; `videoWidth`×`videoHeight` = 0×0 | `seeked` | ✗ (audio only, no picture) |
+| Sintel 72 s, WebM VP9 + Opus | stops at 3.20 s | 5 | seek to 60 s never completes | ✗ |
+| Tears of Steel 72 s, WebM VP9 + Opus | stops at 3.18 s | 5 | seek to 60 s never completes | ✗ |
+| **Sintel 72 s, WebM VP8 + Opus** | **plays to `ended`** (72.1 s wall for 72.0 s) | 1704 presented, 0 dropped | seek to 60 s: `seeked` in 133 ms, then `ended` | **✓** |
+| **Tears of Steel 72 s, WebM VP8 + Opus** | **plays to `ended`** (72.1 s wall) | 1728, 2 dropped | seek to 60 s: `seeked` in 144 ms, then `ended` | **✓** |
+| **VP8 fixture + two `new Audio()` narration clips** at 2 s and 8.5 s | **plays to `ended`**, no `waiting` | 359/360, 0 dropped | `seeked`, then `ended` | **✓** The video kept advancing during both clips (3.97 s of video during a 3.85 s clip), stayed at readyState 4, and never paused. Each clip played to `ended`; `playing` arrived about 110–130 ms after `play()`. |
+| **Sintel VP8 + two narration clips** at 5 s and 15 s | ran to the 30 s test cap, no `waiting` | 719, 0 dropped | `seeked`, then `ended` | **✓** |
+
+**Device-log evidence.** Each init line was matched to the trial that ran next (`logs/device-probe-codecs.log`):
+
+* `Initializing AmazonVideoDecoderIdl with config: codec: h264` / `codec: vp9` appears for **every** H.264 and VP9 trial (C0, C1, C4, L1, L2), and every one of them stalled.
+* AV1 never logs it.
+* VP8 logged `codec: vp8` in **1 of 6** VP8 trials (C2 in `run-muq2tvu3`). It was followed by `SharedImageStub: Unable to create shared image` errors, and that trial still played all 360 frames to `ended`.
+* All 6 VP8 trials played through.
+
+**Guess:** Chromium decodes VP8 in software with libvpx inside the WebView. When the platform VP8 path is tried, it appears to fail and fall back to software. Either way, VP8 avoids the broken H.264/VP9 platform path. The VVD's Chromium has no AV1 decoder enabled. We don't know whether a real Fire TV's hardware H.264/VP9 path works. It very likely does, but it's untested.
+
+A screenshot taken mid-playback shows real Sintel frames and `frames 765` at 31.9 s: `06-probe-vp8-long-film-playing.png`.
+
+**Recommendation for the VVD demo.** Use WebM, VP8 video, Opus audio:
+
+```sh
+ffmpeg -i in.mp4 -map 0:v:0 -map 0:a:0 -pix_fmt yuv420p \
+  -c:v libvpx -b:v 1.5M -maxrate 2M -bufsize 3M -deadline good -cpu-used 4 \
+  -c:a libopus -b:a 96k out.webm
+```
+
+* That's about 1.5–1.7 Mbps, or about 15 MB for 72 s at 1280×546.
+* This ffmpeg has no `libvorbis`, so VP8 was paired with Opus. VP8+Opus is a valid WebM combination and it played fine.
+* Keep the narration as separate MP3 files played with `new Audio()`; that worked alongside VP8.
+* **Watch out for VP9 rate control.** `libvpx-vp9 -b:v 1.5M` on `tears-of-steel-opening.mp4` produced 169 MB (18.8 Mbps) twice, even with `-maxrate` set. `-crf 33 -b:v 0 -pix_fmt yuv420p` fixed the size. This is a host-side ffmpeg quirk and doesn't matter now that VP9 is ruled out.
 
 ## (f) `navigator.mediaSession`
 
@@ -252,10 +301,34 @@ The device log then shows `Inputd:triggerEvent:628: VoiceView Combo Triggered`.
 
 **Next step:** test on a Fire TV with VoiceView. Check focus announcements, `aria-live="polite"` / `role="status"`, and whether VoiceView speaks while a `<video>` plays.
 
-## Real Sema app on the VVD
-
-See `BUILD-AND-RUN.md`, "Run the Sema app". Results are recorded in the section "Sema app run (observed)" below.
-
 ## Sema app run (observed)
 
-_Pending; this section is filled in by the Sema app run._
+**Builds tested**
+
+* Web app synced at 18:10 and again at 18:27 EDT. The later sync is the 6-module `src/bundle.js` plus `src/data.js` (`window.SEMA_DATA`) build of 18:17.
+* Clean staged Debug build for aarch64, installed with `vega run-app`, driven with `tools/vega-probe/remote.sh`.
+* Screenshots `docs/vega/screenshots/1*-sema-*.png` and `3*-sema-v2-*.png`. Device log: `docs/vega/logs/device-sema-app.log` (git-ignored).
+
+**Step by step**
+
+| Step | Observed |
+|---|---|
+| Launch | The catalog renders from `window.SEMA_DATA` with "The red envelope" card focused (yellow ring). No `fetch` is needed. (`10-sema-catalog.png`, `30-sema-v2-catalog.png`) |
+| Select (`KEY_ENTER`) | Opens "How much do you want to hear?" with Standard focused. (`11-sema-level-chooser.png`) |
+| D-pad Right / Left | Focus moves Standard → Rich → Standard. Sema's own focus handling works. (`12-sema-dpad-right.png`) |
+| Select on Standard | Player view, paused at 0:00, "Play film" focused. (`13-sema-player-paused-play-focused.png`, `31-sema-v2-player-paused.png`) |
+| Select on Play film | The film starts (`14-sema-playing-2s.png`). At **0:03 the app pauses itself**: "Playback paused while the film loads. Resume is selected." The envelope cue was cut off, so the app offers "What did I miss? (1 missed)". (`15-sema-stall-paused-at-0-03.png`, `32-sema-v2-stall-paused-at-0-03.png`) This is the VVD H.264 stall from section (e); the app handles it gracefully. The picture never advances past the first frame: the red envelope, drawn only for t < 2 s, is still visible at 0:03. |
+| What did I miss? → Select | Shows "Describing what you missed…", plays the recovery MP3 with `new Audio()` (an audio stream start is logged), then "Description complete. Resume is selected." with "Resume from 0:03" focused and the missed count cleared. (`19-sema-describing-what-you-missed.png`, `20-sema-recovery-complete-resume-focused.png`) |
+| Back (`KEY_BACK` → `GoBack`/27) in the player | Returns to the catalog with the film card focused, and the app does not exit. (`33-sema-v2-back-to-catalog.png`) |
+
+**Bugs and risks to hand to the web-app engineer** (observed; `src/` was not changed)
+
+1. **D-pad focus scoring skips rows** (`advanceFocus`; cost = forward distance + 2 × cross distance). In the paused controls:
+   * Right from "Resume without recovering" jumps **up** to "Essential" instead of "What did I miss? (1 missed)" (`16-sema-navbug-right-from-resume-to-essential.png`). A following Select then changed the description level by accident.
+   * Down from "Essential" skips the whole action row to "Spoken guidance" (`17-sema-navbug-down-skips-action-row.png`), and Up from "Spoken guidance" skips back to "Essential" (`18-sema-navbug-up-skips-action-row.png`).
+   * "What did I miss?" was reachable only by Rich → Down (Start over) → Left.
+
+   **Suggested fix:** prefer candidates in the nearest row first (a band on the cross axis), or weight forward distance more heavily than cross distance.
+2. **Film codec.** With the current H.264 `film.mp4`, every VVD playback stops at about 3 s. Ship a VP8+Opus WebM for the demo (see "Codec trials").
+3. **Spoken guidance** goes through `speechSynthesis`, which fails on the VVD (`synthesis-failed`). There are no `media/prompts` clips yet. `voice.js` falls back and moves on, so the UI doesn't hang, but no guidance is heard on the VVD. Pre-rendered prompt clips would be audible.
+4. **The Menu button never reaches the page.** Select, Back and Play/Pause cover the controls.
