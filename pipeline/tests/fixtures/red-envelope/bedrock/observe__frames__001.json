@@ -1,0 +1,22 @@
+{
+  "_fixtureNote": "Hand-authored offline fixture for media/fixture.mp4 (procedural 15 s test film). Shape matches the real service response; token counts are illustrative, not measured.",
+  "output": {
+    "message": {
+      "role": "assistant",
+      "content": [
+        {
+          "text": "{\"characters\": [], \"events\": [{\"id\": \"door-open\", \"description\": \"The blue door swings open, revealing a bright hallway.\", \"startTime\": 9.0, \"availableAt\": 10.0, \"critical\": true, \"sceneId\": \"s02\", \"characters\": [], \"details\": {\"setting\": \"warm, bright hallway beyond the door\", \"spatial\": \"door on the right of frame\", \"appearance\": \"tall blue door\"}}]}"
+        }
+      ]
+    }
+  },
+  "stopReason": "end_turn",
+  "usage": {
+    "inputTokens": 4630,
+    "outputTokens": 140,
+    "totalTokens": 4770
+  },
+  "metrics": {
+    "latencyMs": 3900
+  }
+}

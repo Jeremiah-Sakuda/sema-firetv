@@ -1,0 +1,22 @@
+{
+  "_fixtureNote": "Hand-authored offline fixture for media/fixture.mp4 (procedural 15 s test film). Shape matches the real service response; token counts are illustrative, not measured.",
+  "output": {
+    "message": {
+      "role": "assistant",
+      "content": [
+        {
+          "text": "{\"text\": \"The blue door swings open onto a bright hallway. The drawer stays shut.\"}"
+        }
+      ]
+    }
+  },
+  "stopReason": "end_turn",
+  "usage": {
+    "inputTokens": 230,
+    "outputTokens": 22,
+    "totalTokens": 252
+  },
+  "metrics": {
+    "latencyMs": 500
+  }
+}

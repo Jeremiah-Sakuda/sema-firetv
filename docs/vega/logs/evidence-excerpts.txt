@@ -1,0 +1,65 @@
+# Evidence excerpts from the VVD device log (loggingctl log -f -o short_precise), Vega SDK 0.24.12112.
+# Full raw logs: docs/vega/logs/device-probe-run*.log (git-ignored by the root *.log rule).
+# Note: the VVD clock ran ~23 min behind the host after the host display slept; compare order, not wall time.
+
+## Cleartext HTTP from the page is blocked
+Oct 01 21:17:42.677089 amazon-761010f39a2ef58a com.sema.viewer[8023]: W chromium:[2:52:1001/211742.676988:WARNING:kepler_common/common/kepler_network_policy.cc:47] KeplerNetworkPolicy: No ClearTextTrafficPolicy
+Oct 01 21:21:07.386143 amazon-761010f39a2ef58a com.sema.viewer[8911]: W chromium:[2:50:1001/212107.386052:WARNING:kepler_common/common/kepler_network_policy.cc:47] KeplerNetworkPolicy: No ClearTextTrafficPolicy
+Oct 01 21:08:04.805730 amazon-761010f39a2ef58a com.sema.viewer[5389]: ERROR com.amazon.keplerscript: [KeplerScript-JavaScript] [onError]: (-29: http://127.0.0.1:8765/probe) net::ERR_CLEARTEXT_NOT_PERMITTED
+Oct 01 21:08:04.806163 amazon-761010f39a2ef58a com.sema.viewer[5389]: ERROR com.amazon.keplerscript: [KeplerScript-JavaScript] [onError]: (-29: http://127.0.0.1:8765/probe) net::ERR_CLEARTEXT_NOT_PERMITTED
+
+## fetch()/XHR of file:///pkg/assets/... fails (WebView onError fires for each)
+Oct 01 21:17:42.684171 amazon-761010f39a2ef58a com.sema.viewer[8023]: ERROR com.amazon.keplerscript: [KeplerScript-JavaScript] [onError]: (-2: file:///pkg/assets/media/fixture.json) net::ERR_FAILED
+Oct 01 21:17:42.684283 amazon-761010f39a2ef58a com.sema.viewer[8023]: ERROR com.amazon.keplerscript: [KeplerScript-JavaScript] [onError]: (-2: file:///pkg/assets/media/fixture.json) net::ERR_FAILED
+
+## Page -> RN bridge -> device log (the transport that works)
+Oct 01 21:21:07.599445 amazon-761010f39a2ef58a com.sema.viewer[8911]: INFO com.amazon.keplerscript: [KeplerScript-JavaScript] [WebViewMessage] SEMA_PROBE {"run":"run-muq1grcd","section":"f","t":5090,"wall":"2026-10-01T21:21:07.407Z","data":{"supported":true,"MediaMetadata":"function","actions":{"play":"ok","pause":"ok","stop":"ok","seekbackward":"ok","seekforward":"ok","seekto":"ok","previoustrack":"ok","nexttrack":"ok"},"metadataSet":true,"setPositionState":"function","playbackState":"none"}}
+
+## Video decode path on VVD
+Oct 01 21:10:32.344945 amazon-761010f39a2ef58a com.sema.viewer[6318]: I chromium:[2:39:1001/211032.343332:INFO:kepler_common/media/gpu/amazon/amazon_video_decoder_idl.cc:69] Initializing AmazonVideoDecoderIdl with config: codec: h264, profile: h264 high, level: not available, alpha_mode: is_opaque, coded size: [1280,720], visible rect: [0,0,1280,720], natural size: [1280,720], has extra data: true
+Oct 01 21:17:46.331388 amazon-761010f39a2ef58a com.sema.viewer[8023]: I chromium:[2:39:1001/211746.331307:INFO:kepler_common/media/gpu/amazon/amazon_video_decoder_idl.cc:69] Initializing AmazonVideoDecoderIdl with config: codec: h264, profile: h264 high, level: not available, alpha_mode: is_opaque, coded size: [1280,720], visible rect: [0,0,1280,720], natural size: [1280,720], has extra data: true
+Oct 01 21:10:32.345059 amazon-761010f39a2ef58a com.sema.viewer[6318]: I JsonMediaCapabilitiesParser:codec capabilities JSON file is missing for the device!!
+Oct 01 21:10:32.373738 amazon-761010f39a2ef58a com.sema.viewer[6318]: I JsonMediaCapabilitiesParser:codec capabilities JSON file is missing for the device!!
+Oct 01 21:33:47.024729 amazon-761010f39a2ef58a com.sema.viewer[11559]: E chromium:[2:39:1001/213347.024689:ERROR:kepler_common/media/gpu/amazon/media_transform_wrapper_idl.cc:426] No available media format buffer sizes, using fallback frame buffer size
+Oct 01 21:37:36.501730 amazon-761010f39a2ef58a com.sema.viewer[12897]: E chromium:[2:39:1001/213736.501697:ERROR:kepler_common/media/gpu/amazon/media_transform_wrapper_idl.cc:426] No available media format buffer sizes, using fallback frame buffer size
+Oct 01 21:33:47.022039 amazon-761010f39a2ef58a com.sema.viewer[11559]: E chromium:[2:39:1001/213347.021090:ERROR:kepler_common/media/gpu/amazon/media_transform_wrapper_idl.cc:735] Color Space is not supported. Downgrading to BT709
+Oct 01 21:37:36.499574 amazon-761010f39a2ef58a com.sema.viewer[12897]: E chromium:[2:39:1001/213736.499530:ERROR:kepler_common/media/gpu/amazon/media_transform_wrapper_idl.cc:735] Color Space is not supported. Downgrading to BT709
+Oct 01 21:21:18.088316 amazon-761010f39a2ef58a com.sema.viewer[8911]: W chromium:[2:47:1001/212118.087803:WARNING:services/audio/sync_reader.cc:155] ASR: No room in socket buffer.: Broken pipe (32)
+Oct 01 21:21:39.519718 amazon-761010f39a2ef58a com.sema.viewer[8911]: W chromium:[2:47:1001/212139.519622:WARNING:services/audio/sync_reader.cc:155] ASR: No room in socket buffer.: Broken pipe (32)
+
+## Audio focus: <video> and new Audio() share one focus session (no duck/pause event logged)
+Oct 01 21:10:32.463051 amazon-761010f39a2ef58a com.sema.viewer[6318]: I chromium:[2:2:1001/211032.461966:INFO:kepler_common/media/audio/kepler/audio_focus_manager.cc:110] AcquireAudioFocus
+Oct 01 21:10:46.447689 amazon-761010f39a2ef58a com.sema.viewer[6318]: I chromium:[2:2:1001/211046.447040:INFO:kepler_common/media/audio/kepler/audio_focus_manager.cc:110] AcquireAudioFocus
+Oct 01 21:10:46.447884 amazon-761010f39a2ef58a com.sema.viewer[6318]: I chromium:[2:2:1001/211046.447110:INFO:kepler_common/media/audio/kepler/audio_focus_manager.cc:118] Skipping attempt to Acquire Audio Focus when we already have focus
+Oct 01 21:18:00.410110 amazon-761010f39a2ef58a com.sema.viewer[8023]: I chromium:[2:2:1001/211800.409919:INFO:kepler_common/media/audio/kepler/audio_focus_manager.cc:118] Skipping attempt to Acquire Audio Focus when we already have focus
+Oct 01 21:10:32.465525 amazon-761010f39a2ef58a com.sema.viewer[6318]: I chromium:[2:56:1001/211032.463592:INFO:kepler_common/media/audio/kepler/audio_focus_manager.cc:183] onFocusGranted is_paused: 0 is_muted: 0
+Oct 01 21:17:46.430239 amazon-761010f39a2ef58a com.sema.viewer[8023]: I chromium:[2:7:1001/211746.430068:INFO:kepler_common/media/audio/kepler/audio_focus_manager.cc:183] onFocusGranted is_paused: 0 is_muted: 0
+Oct 01 21:10:32.499755 amazon-761010f39a2ef58a com.sema.viewer[6318]: I AudioStreamPlaybackVNTK:start(): instance: 0x7f0c04e430, focus session id: 17, stream state: 2, focus state 0, server handle: 5, attr: content-type: movie, usage: media, flags: NONE, tag: ""
+Oct 01 21:10:34.641003 amazon-761010f39a2ef58a com.sema.viewer[6318]: I AudioStreamPlaybackVNTK:start(): instance: 0x7f0c05a7a0, focus session id: 17, stream state: 2, focus state 0, server handle: 6, attr: content-type: movie, usage: media, flags: NONE, tag: ""
+
+## VoiceView toggled with Back+Menu hold injected by inputd-cli
+Oct 01 21:38:59.094052 amazon-761010f39a2ef58a inputd[2872]: I Inputd:triggerEvent:628: VoiceView Combo Triggered
+Oct 01 21:41:50.346114 amazon-761010f39a2ef58a inputd[2872]: I Inputd:triggerEvent:628: VoiceView Combo Triggered
+Oct 01 21:38:59.176534 amazon-761010f39a2ef58a com.sema.viewer[12897]: I chromium:[2:144:1001/213859.176290:INFO:kepler_common/content/browser/accessibility/ucc/kepler_ucc_publisher.cc:130] Changing verbosity to : METADATA
+Oct 01 21:41:51.847259 amazon-761010f39a2ef58a com.sema.viewer[14139]: I chromium:[2:7:1001/214151.847084:INFO:kepler_common/content/browser/accessibility/ucc/kepler_ucc_publisher.cc:130] Changing verbosity to : VOICE_ASSISTANT
+Oct 01 21:38:59.410455 amazon-761010f39a2ef58a ucc[1779]: The specified key: voiceview_ready_no_tutorial was not found in the given string resources.
+Oct 01 21:41:50.355292 amazon-761010f39a2ef58a ucc[1779]: The specified key: voiceview_stop was not found in the given string resources.
+
+## VoiceView TTS dependency missing on VVD
+Oct 01 21:38:59.299629 amazon-761010f39a2ef58a pkgmgrd[1059]: E pkgmgr-registrar:[PackageRegistrarQueryHandler.cpp:201] Package for id 'com.amazon.tts.service.main' not found
+Oct 01 21:38:59.300225 amazon-761010f39a2ef58a servicergrd[898]: ERROR com.amazon.appfwk.servicergrd: error issuing launch request: ApmfError { message: "Failed to launch service component 'com.amazon.tts.service.main' -1", types: "" }
+
+## WebView accessibility tree published to UCC with errors
+Oct 01 21:38:59.209636 amazon-761010f39a2ef58a com.sema.viewer[12897]: W chromium:[2:2:1001/213859.201912:WARNING:kepler_common/content/browser/accessibility/kepler_web_contents_accessibility.cc:266] Invalid role: rootWebArea
+Oct 01 21:38:59.209681 amazon-761010f39a2ef58a com.sema.viewer[12897]: W chromium:[2:2:1001/213859.202769:WARNING:kepler_common/content/browser/accessibility/kepler_web_contents_accessibility.cc:266] Invalid role: rootWebArea
+Oct 01 21:38:59.209698 amazon-761010f39a2ef58a com.sema.viewer[12897]: W chromium:[2:2:1001/213859.203383:WARNING:kepler_common/content/browser/accessibility/kepler_web_contents_accessibility.cc:266] Invalid role: staticText
+Oct 01 21:38:59.209734 amazon-761010f39a2ef58a com.sema.viewer[12897]: W chromium:[2:2:1001/213859.203545:WARNING:kepler_common/content/browser/accessibility/kepler_web_contents_accessibility.cc:266] Invalid role: staticText
+Oct 01 21:38:59.209717 amazon-761010f39a2ef58a com.sema.viewer[12897]: W chromium:[2:2:1001/213859.203510:WARNING:kepler_common/content/browser/accessibility/kepler_web_contents_accessibility.cc:266] Invalid role: genericContainer
+Oct 01 21:38:59.209765 amazon-761010f39a2ef58a com.sema.viewer[12897]: W chromium:[2:2:1001/213859.203692:WARNING:kepler_common/content/browser/accessibility/kepler_web_contents_accessibility.cc:266] Invalid role: genericContainer
+Oct 01 21:38:59.209645 amazon-761010f39a2ef58a com.sema.viewer[12897]: E chromium:[2:2:1001/213859.202205:ERROR:kepler_common/content/browser/accessibility/ucc/kepler_ucc_publisher.cc:229] Error updating UCCElement child count
+Oct 01 21:38:59.428775 amazon-761010f39a2ef58a com.sema.viewer[12897]: E chromium:[2:2:1001/213859.428671:ERROR:kepler_common/content/browser/accessibility/ucc/kepler_ucc_publisher.cc:229] Error updating UCCElement child count
+
+## Key injection path
+Oct 01 21:15:42.523866 amazon-761010f39a2ef58a inputd[2872]: I Inputd:inject_key:427: Input event successfully written to udev: TimeStamp=1790889342.521654 : keyType=EV_KEY : keyCode=[PII_OMIT] : state=down
+Oct 01 21:15:42.774172 amazon-761010f39a2ef58a inputd[2872]: I Inputd:inject_key:427: Input event successfully written to udev: TimeStamp=1790889342.772423 : keyType=EV_KEY : keyCode=[PII_OMIT] : state=up
+

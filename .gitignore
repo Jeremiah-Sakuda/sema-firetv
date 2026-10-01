@@ -1,0 +1,16 @@
+node_modules/
+.DS_Store
+.env
+.env.*
+!.env.example
+*.log
+dist/
+build/
+
+# Source film excerpts are reproducible with `npm run content:fetch` (tools/fetch-content.sh)
+content/sources/
+
+# Local tool state
+.claude/
+media/*.aiff
+media/*.wav

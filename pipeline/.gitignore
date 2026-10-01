@@ -1,0 +1,16 @@
+# Local virtualenv (never commit)
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Per-asset working state: intermediate audio attempts, frames, recorded
+# service responses. Copy pipeline-report.md into docs/ when you want to
+# publish numbers.
+work/
+
+# Offline/stub package output (live packages go to the real web root)
+out/
+
+# Local configuration (bucket names, model overrides). Commit config.example.json instead.
+config.json

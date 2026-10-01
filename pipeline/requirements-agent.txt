@@ -1,0 +1,4 @@
+# Optional: Strands Agents fit-loop mode (`render --agent`).
+# Installed and import-tested on Python 3.14.7; the deterministic loop does not need it.
+-r requirements.txt
+strands-agents==1.57.2

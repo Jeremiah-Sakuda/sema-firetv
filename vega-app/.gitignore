@@ -1,0 +1,22 @@
+*.iml
+*.swp
+.idea
+.DS_Store
+.vscode
+.tmp
+
+dist
+build
+node_modules
+CMakeUserPresets.json
+npm-debug.log
+
+# Sema web app copies synced by tools/vega-sync.js (source of truth is the repo root).
+# Keep any template assets the Vega build needs (e.g. assets/raw/ splash images) tracked.
+assets/index.html
+assets/style.css
+assets/src/
+assets/media/
+assets/probe-script.js
+assets/probe-media/
+assets/.sema-sync.json

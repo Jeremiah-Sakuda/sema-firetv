@@ -1,0 +1,22 @@
+{
+  "_fixtureNote": "Hand-authored offline fixture for media/fixture.mp4 (procedural 15 s test film). Shape matches the real service response; token counts are illustrative, not measured.",
+  "output": {
+    "message": {
+      "role": "assistant",
+      "content": [
+        {
+          "text": "{\"characters\": [], \"events\": [{\"id\": \"desk-room\", \"description\": \"A dim navy room holds a wooden desk on the left and a closed blue door on the right.\", \"startTime\": 0.0, \"availableAt\": 0.5, \"critical\": false, \"sceneId\": \"s01\", \"characters\": [], \"details\": {\"setting\": \"dim navy-blue room\", \"spatial\": \"desk left of frame, door right\", \"appearance\": \"plain wooden desk with one drawer\"}}, {\"id\": \"envelope-hidden\", \"description\": \"The red envelope on the desk disappears into the drawer below it.\", \"startTime\": 1.9, \"availableAt\": 2.0, \"critical\": true, \"sceneId\": \"s01\", \"characters\": [], \"details\": {\"spatial\": \"envelope moves from desktop into the drawer\", \"appearance\": \"bright red envelope\"}}, {\"id\": \"door-open\", \"description\": \"The blue door swings open, revealing a bright hallway.\", \"startTime\": 8.9, \"availableAt\": 9.0, \"critical\": true, \"sceneId\": \"s02\", \"characters\": [], \"details\": {\"setting\": \"warm, bright hallway beyond the door\", \"spatial\": \"door on the right of frame\", \"appearance\": \"tall blue door\"}}]}"
+        }
+      ]
+    }
+  },
+  "stopReason": "end_turn",
+  "usage": {
+    "inputTokens": 9150,
+    "outputTokens": 470,
+    "totalTokens": 9620
+  },
+  "metrics": {
+    "latencyMs": 7400
+  }
+}

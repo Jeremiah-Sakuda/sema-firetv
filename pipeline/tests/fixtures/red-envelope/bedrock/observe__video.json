@@ -1,0 +1,22 @@
+{
+  "_fixtureNote": "Hand-authored offline fixture for media/fixture.mp4 (procedural 15 s test film). Shape matches the real service response; token counts are illustrative, not measured.",
+  "output": {
+    "message": {
+      "role": "assistant",
+      "content": [
+        {
+          "text": "```json\n{\n \"characters\": [],\n \"events\": [\n  {\n   \"id\": \"desk-room\",\n   \"description\": \"A dim navy room holds a wooden desk on the left and a closed blue door on the right.\",\n   \"startTime\": 0.0,\n   \"availableAt\": 0.5,\n   \"critical\": false,\n   \"sceneId\": \"s01\",\n   \"characters\": [],\n   \"details\": {\n    \"setting\": \"dim navy-blue room\",\n    \"spatial\": \"desk left of frame, door right\",\n    \"appearance\": \"plain wooden desk with one drawer\"\n   }\n  },\n  {\n   \"id\": \"envelope-hidden\",\n   \"description\": \"The red envelope on the desk disappears into the drawer below it.\",\n   \"startTime\": 1.9,\n   \"availableAt\": 2.0,\n   \"critical\": true,\n   \"sceneId\": \"s01\",\n   \"characters\": [],\n   \"details\": {\n    \"spatial\": \"envelope moves from desktop into the drawer\",\n    \"appearance\": \"bright red envelope\"\n   }\n  },\n  {\n   \"id\": \"door-open\",\n   \"description\": \"The blue door swings open, revealing a bright hallway.\",\n   \"startTime\": 8.9,\n   \"availableAt\": 9.0,\n   \"critical\": true,\n   \"sceneId\": \"s02\",\n   \"characters\": [],\n   \"details\": {\n    \"setting\": \"warm, bright hallway beyond the door\",\n    \"spatial\": \"door on the right of frame\",\n    \"appearance\": \"tall blue door\"\n   }\n  }\n ]\n}\n```"
+        }
+      ]
+    }
+  },
+  "stopReason": "end_turn",
+  "usage": {
+    "inputTokens": 4312,
+    "outputTokens": 486,
+    "totalTokens": 4798
+  },
+  "metrics": {
+    "latencyMs": 6120
+  }
+}

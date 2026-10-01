@@ -1,0 +1,22 @@
+{
+  "_fixtureNote": "Hand-authored offline fixture for media/fixture.mp4 (procedural 15 s test film). Shape matches the real service response; token counts are illustrative, not measured.",
+  "output": {
+    "message": {
+      "role": "assistant",
+      "content": [
+        {
+          "text": "{\"essential\": \"The blue door opens.\", \"standard\": \"The blue door opens onto a bright hallway.\", \"rich\": \"The tall blue door swings wide open onto a warm, bright hallway, while the wooden desk drawer stays firmly shut.\"}"
+        }
+      ]
+    }
+  },
+  "stopReason": "end_turn",
+  "usage": {
+    "inputTokens": 640,
+    "outputTokens": 70,
+    "totalTokens": 710
+  },
+  "metrics": {
+    "latencyMs": 950
+  }
+}
