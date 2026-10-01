@@ -1,13 +1,46 @@
-# Vega friction candidates (observed while porting Sema)
+# Friction log
 
-Every item below happened during this session, with Vega SDK 0.24.12112, the Vega Virtual Device (VVD, aarch64), macOS on Apple silicon, Node 22.22 and npm 10.9 (2026-10-01). Error text is copied verbatim.
+Real problems we hit while building Sema between 2026-09-27 and 2026-10-01. Each entry gives:
+- the task
+- exact steps
+- expected vs. actual result, with verbatim error text
+- severity
+- the workaround we used
+- an actionable suggestion
 
-**Severity scale**
+**Environment:** Vega SDK 0.24.12112; the Vega Virtual Device (VVD, aarch64) on macOS / Apple silicon; `@amazon-devices/webview` 4.0.2 (Chromium 144); Node 22.
 
-* **Blocker:** stops the task with no workaround inside the SDK.
-* **High:** a workaround exists, but it is non-obvious or costs real time.
-* **Medium:** confusing or noisy.
-* **Low:** cosmetic.
+**Evidence:** [vega/PLATFORM-FINDINGS.md](vega/PLATFORM-FINDINGS.md), `vega/logs/evidence-excerpts.txt` and `vega/screenshots/`.
+
+**Severity scale:**
+- **Blocker:** stops the task, with no workaround inside the SDK.
+- **High:** there is a workaround, but it is non-obvious or costly.
+- **Medium:** confusing or noisy.
+- **Low:** cosmetic.
+
+| # | Issue | Severity |
+|---|---|---|
+| 1 | Spaces in the project path break `npm run build:debug` | Blocker (High once you know the workaround) |
+| 2 | `vega build` alone exits 0 with a package that has no JS bundle | High |
+| 3 | The output path contains a literal `undefined` segment | Low |
+| 4 | `~/vega/env` points PATH at a deleted temp directory | Medium |
+| 5 | `vega virtual-device status` reports the wrong SDK version | Low |
+| 6 | `fetch()` and XHR cannot read the app's own `file:///pkg/assets` files | High (for web apps) |
+| 7 | Cleartext HTTP from the WebView is blocked, with no documented opt-in | Medium |
+| 8 | Web `console.*` output is not in the device log, and the log drops or suppresses lines | Medium |
+| 9 | `vega exec vda shell '…'` mangles quoting | Low |
+| 10 | The vda server drops and restarts mid-session | Medium |
+| 11 | On-device screenshot tools don't work from the developer shell | Medium |
+| 12 | Template leftovers | Low |
+| 13 | Remote keys: Menu never reaches the WebView, and `KEY_SELECT`/`KEY_OK` do nothing | Medium |
+| 14 | `inputd-cli series` rejects its documented syntax | Low |
+| 15 | VVD `<video>` playback stalls after ~3 s, seeks never complete, and `play()` can hang | High (for media apps) |
+| 16 | VVD has no working speech: `speechSynthesis` fails and VoiceView's TTS service is missing | High (for accessibility apps) |
+| 17 | The WebView's accessibility tree is published to VoiceView with role errors | Medium |
+| 18 | VoiceView can't be queried or toggled through `a11y-tv-util` | Low |
+| 19 | Small CLI and log papercuts | Low |
+| 20 | Deleted assets keep shipping: the build never prunes `build/private/vega/<arch>/<type>/assets/` | High |
+| 21 | Turning on VoiceView warns that it "can only speak during video playback if Dolby audio is disabled" | High (for audio-description apps) |
 
 ---
 
@@ -259,3 +292,13 @@ Every item below happened during this session, with Vega SDK 0.24.12112, the Veg
 * **Workaround:** delete `vega-app/build/` before each build. `vega-app/scripts/build-staged.sh` now runs `rm -rf "$STAGE/build"` first.
 * **Suggestion:** sync (mirror) the assets into the staging directory instead of copying over it, or clear it at the start of each build.
 
+
+## 21. Turning on VoiceView warns that it "can only speak during video playback if Dolby audio is disabled". High (for audio-description apps)
+
+- **Task:** enable VoiceView to test an audio-description player.
+- **Steps:** hold Back + Menu for 2 s on the VVD (see item 14 for the CLI injection).
+- **Expected:** VoiceView turns on and can announce controls while a film plays.
+- **Actual:** a "Dolby + VoiceView" dialog says: *"VoiceView can only speak during video playback if Dolby audio is disabled."* The viewer must choose whether to disable Dolby (screenshot `docs/vega/screenshots/04-voiceview-dolby-dialog.png`).
+- **Why it matters:** blind viewers are exactly the users who need both VoiceView and good program audio.
+- **Workaround:** Sema pauses the film before any interface speech (spoken guidance, recovery, state announcements). So VoiceView and Sema never need to speak over playing video.
+- **Suggestion:** document which audio paths are affected, and expose an API so apps can tell whether VoiceView can currently speak during playback.

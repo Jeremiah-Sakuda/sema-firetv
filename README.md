@@ -2,7 +2,7 @@
 
 **Sema lets blind and low-vision viewers choose how much of the picture they hear, and ask "What did I miss?" with one remote press.**
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) · Fire TV track · AWS Builder mini-challenge · Build, Ship, Shape: Amazon Developer Hackathon 2026
+[![ci](https://github.com/Jeremiah-Sakuda/sema-firetv/actions/workflows/ci.yml/badge.svg)](https://github.com/Jeremiah-Sakuda/sema-firetv/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) · Fire TV track · AWS Builder mini-challenge · Build, Ship, Shape: Amazon Developer Hackathon 2026
 
 ![Sema running on the Vega Virtual Device: paused controls with description levels Off, Essential, Standard and Rich, and a "What did I miss? (1 missed)" button](docs/images/vvd-player.png)
 
@@ -26,7 +26,7 @@ The player is a web app. The exact same files run inside the Fire TV (Vega) WebV
 
 ```bash
 npm install          # dev dependency only (jsdom, for tests)
-npm test             # 36 player tests: state machine, package validation, remote/focus flows
+npm test             # 37 player tests: state machine, package validation, remote/focus flows
 npm start            # bundles, then serves http://127.0.0.1:4173
 ```
 
@@ -46,7 +46,7 @@ Add `?debug` to the URL for the fault-injection and event-log panel. Add `?study
 The full, tested steps are in **[docs/vega/BUILD-AND-RUN.md](docs/vega/BUILD-AND-RUN.md)**. In short:
 
 ```bash
-npm run bundle && npm run vega:sync          # copy the web app into vega-app/assets/
+npm run webm && npm run bundle && npm run vega:sync   # VP8 renditions, then copy the web app into vega-app/assets/
 cd vega-app && npm install && npm run build:debug   # or scripts/build-staged.sh if your path has spaces
 vega virtual-device start
 vega run-app build/vpkg/sema_aarch64.vpkg com.sema.viewer.main
@@ -62,6 +62,7 @@ vega run-app build/vpkg/sema_aarch64.vpkg com.sema.viewer.main
 The app is built around those facts:
 - Package data ships as a script, so there is no `fetch`.
 - Spoken guidance uses pre-rendered Polly clips, with a watchdog on every utterance.
+- Films ship as VP8 WebM on Vega, because H.264 stalls on the VVD.
 - Nothing depends on the Menu key, which never reaches the WebView.
 
 ## How the remote works
@@ -136,10 +137,10 @@ Measured cost, processing time and human review minutes per finished minute are 
 ## Evidence
 
 - **Tests**
-  - `npm test`: 36 player tests, including jsdom remote-flow tests that assert where focus lands after every transition.
+  - `npm test`: 37 player tests, including jsdom remote-flow tests that assert where focus lands after every transition.
   - `pipeline/`: 59 offline tests.
 - **Platform**: [docs/vega/PLATFORM-FINDINGS.md](docs/vega/PLATFORM-FINDINGS.md), with screenshots and device logs.
-- **Friction log**: [docs/FRICTION-LOG.md](docs/FRICTION-LOG.md). Real, reproducible issues with Vega SDK, VVD, WebView and AWS, each with a workaround and a suggestion.
+- **Friction log**: [docs/FRICTION-LOG.md](docs/FRICTION-LOG.md). 21 real, reproducible issues with the Vega SDK, VVD and WebView, each with verbatim errors, a workaround and a suggestion.
 - **Findings**: [docs/FINDINGS.md](docs/FINDINGS.md). Pipeline measurements, playback timing, viewer sessions, and what didn't work.
 
 ## Films and credits
@@ -153,7 +154,7 @@ The excerpts were re-encoded, and Sema's audio description was added. The Blende
 
 ## Limitations (honest)
 
-- **The VVD video path stalls after about 3 s of H.264 playback** (documented in the findings). Playback on the VVD is shown with [see FINDINGS]. Physical Fire TV verification is noted separately.
+- **On the Vega Virtual Device, H.264 and VP9 stall about 3 s in** (platform decoder path). Sema ships VP8/Opus WebM renditions, which play through, and selects them on Vega OS. We have not yet verified H.264 on physical Fire TV hardware.
 - **VoiceView can be enabled on the VVD and tracks focus, but the VVD has no TTS engine.** VoiceView speech could only be verified on hardware.
 - **AI drafts can miss brief actions or mis-describe them.** Every shipped line is human-approved, and the reviewer's edits are counted in FINDINGS.
 - **This is a two-film pilot, not a catalog.** It doesn't integrate with Prime Video or any other streaming service.

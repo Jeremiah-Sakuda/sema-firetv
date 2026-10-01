@@ -14,12 +14,19 @@ Full detail and evidence are in [vega/PLATFORM-FINDINGS.md](vega/PLATFORM-FINDIN
 | `fetch`/XHR of `file:///pkg/assets` | Always fail. `<script src>` and `<video>/<audio src>` work | Packages ship as `src/data.js` (`window.SEMA_DATA`). The UI tests assert that `fetch` is never called |
 | `speechSynthesis` | Exists, but has 0 voices; `onerror` fires within ~3 ms; `onend` never fires | Prompts are pre-rendered Polly clips. Every utterance has a watchdog, and any key interrupts it (`src/voice.js`) |
 | `<video>` + separate `<audio>` | Both clocks advance together; the extra audio does not pause the video | The narration architecture is viable |
-| H.264 playback | Stalls about 3.1 s after `play()` in every variant tested; `seeked` never fires; `play()` can hang | `play()` has a timeout and stalls go to the buffering state. See the codec results in PLATFORM-FINDINGS |
+| Video codecs | **H.264 and VP9 stall** about 3.1 s after `play()` (platform decoder path); `seeked` never fires; `play()` can hang. **VP8 + Opus WebM plays through:** both 72 s films reach `ended` with 0–2 dropped frames, seeks take 22–144 ms, and narration plays on top without pausing the video | `tools/webm.js` encodes VP8 renditions; the player picks them on Vega OS; `play()` has a timeout |
 | VoiceView | Can be enabled; follows WebView DOM focus. **The VVD has no TTS service,** so its speech can't be verified there | Physical-device check pending |
+
+**Core loop on the VVD (2026-10-01, fixture, VP8, injected remote presses).** Screenshots 40–43 in `vega/screenshots/`.
+1. Onboarding focuses Standard.
+2. Play runs past 0:03 with no stall.
+3. Select mid-narration at 0:12: "Paused. What did I miss is selected", (1 missed).
+4. Select recovers the missed moment: "Description complete. Resume is selected".
+5. Resume plays to the end: "The film has ended. Return to catalog is selected".
 
 ## 2. Player correctness (automated)
 
-- **Results:** `npm test`, run on 2026-10-01, gives **36/36 passing**.
+- **Results:** `npm test`, run on 2026-10-01, gives **37/37 passing**.
 - **What they cover:**
   - The state machine: media-clock scheduling, late-cue fallback to shorter reviewed variants, critical-event delivery, pending and bypassed states, a forward seek that keeps earlier player-lost facts, stale-callback tokens, and versioned resume.
   - The package validator.
@@ -33,7 +40,8 @@ Full detail and evidence are in [vega/PLATFORM-FINDINGS.md](vega/PLATFORM-FINDIN
     - the adaptive suggestion;
     - blocked packages;
     - fixed-Standard study mode;
-    - package-version invalidation.
+    - package-version invalidation;
+    - D-pad spatial navigation on the button layout measured on the VVD.
 
 **Defects found and fixed during the 2026-10-01 audit (each one has a regression test):**
 
@@ -43,6 +51,7 @@ Full detail and evidence are in [vega/PLATFORM-FINDINGS.md](vega/PLATFORM-FINDIN
 | End of film was silent | The media-clock loop paused the video before the native `ended` event fired |
 | A forward seek erased earlier interrupted critical facts | Contradicted the spec's "skip only the skipped period" rule |
 | Duration display hard-coded to `0:15` | Wrong time shown for any other film |
+| D-pad skipped rows (found on the VVD) | Scoring by centre distance jumped from Resume to a level button, where Select changed the level by accident |
 
 ## 3. Narration timing
 

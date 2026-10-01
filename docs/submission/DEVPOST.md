@@ -46,19 +46,19 @@ We wanted AD to behave like the rest of a modern TV experience: personal, forgiv
   - versioned resume.
 - **Platform probe.** Before building UI on assumptions, we ran a probe page on the Vega Virtual Device. It measured key codes, `file://` fetch, concurrent video and audio, `speechSynthesis`, media events, `mediaSession` and VoiceView. The app's design follows those measurements: script-embedded data instead of `fetch`, pre-rendered prompts instead of TTS, and nothing that depends on the Menu key.
 - **Pipeline:** Python and boto3 with dependency-injected AWS clients. It has 59 offline tests, recorded responses for replay, and a minimal IAM policy.
-- **Tests:** 36 player tests, including jsdom remote-flow tests that assert where focus lands after every transition.
+- **Tests:** 37 player tests, including jsdom remote-flow tests that assert where focus lands after every transition.
 
 ### Challenges we ran into
 - **`fetch()` can't read the app's own `file:///pkg/assets` files in the Vega WebView.** We switched to a generated `<script>` data file.
 - **`speechSynthesis` exists on the VVD but has no voices and never fires `onend`.** Waiting on it would have frozen the app. We moved all spoken guidance to Polly clips, with a watchdog.
-- **H.264 playback on the Vega Virtual Device stalls about 3 s in, and `seeked` never fires.** We documented it and guarded every `play()` with a timeout. [YOU/MEASURE: physical device result or VVD workaround]
+- **H.264 and VP9 playback on the Vega Virtual Device stall about 3 s in, and `seeked` never fires.** A codec trial matrix showed that VP8/Opus WebM plays through, with narration on top, so Sema ships VP8 renditions on Vega. Every `play()` also has a timeout.
 - **AD has to fit the gaps.** Text length lies; only the measured rendered audio counts. The fit loop and the validator enforce this.
 - The Vega build fails when the project path contains spaces, and other papercuts. All are in our friction log.
 
 ### Accomplishments we're proud of
 - A complete recover-and-resume loop that a viewer can operate entirely from the remote, without seeing the screen.
 - Critical-fact tracking, so "the player lost the line" never means "the viewer lost the story".
-- 19 reproducible, evidence-backed friction-log entries for Vega and its WebView.
+- 21 reproducible, evidence-backed friction-log entries for Vega and its WebView.
 
 ### What we learned
 [YOU + MEASURE: viewer-session findings. One design change you made because of them, and any negative feedback.]
