@@ -1,0 +1,98 @@
+{
+  "_comment": "Copy to pipeline/config.json (gitignored) and edit. Every key is optional; env vars SEMA_BUCKET, SEMA_REGION, SEMA_OBSERVE_MODEL, SEMA_SCRIPT_MODEL, SEMA_AGENT_MODEL, SEMA_VOICE, SEMA_ENGINE override it. 'prices' are list-price ESTIMATES; verify at aws.amazon.com/pricing.",
+  "region": "us-east-1",
+  "bucket": "your-sema-bucket-name",
+  "s3_prefix": "sema",
+  "language_code": "en-US",
+  "dialogue": {
+    "merge_gap": 0.6,
+    "pad": 0.1
+  },
+  "scenes": {
+    "threshold": 0.3,
+    "min_scene_seconds": 1.0
+  },
+  "silence": {
+    "noise_db": -35,
+    "min_seconds": 0.5
+  },
+  "windows": {
+    "min_seconds": 1.5,
+    "split_at_scenes": true
+  },
+  "cues": {
+    "margin": 0.2,
+    "fit_slack": 0.15,
+    "max_events_per_cue": 3
+  },
+  "observe": {
+    "model_id": "us.amazon.nova-pro-v1:0",
+    "video_source": "auto",
+    "inline_max_mb": 18,
+    "max_tokens": 4096,
+    "temperature": 0.0,
+    "top_p": 0.9,
+    "frames_batch": 10,
+    "frame_width": 640
+  },
+  "script": {
+    "model_id": "us.amazon.nova-pro-v1:0",
+    "max_tokens": 1200,
+    "temperature": 0.3,
+    "top_p": 0.9,
+    "words_per_second": 2.6,
+    "safety": 0.85,
+    "max_budget_seconds": 10.0,
+    "level_ratios": {
+      "essential": 0.45,
+      "standard": 0.7,
+      "rich": 1.0
+    },
+    "recovery_max_words": 40
+  },
+  "render": {
+    "voice_id": "Joanna",
+    "engine": "neural",
+    "sample_rate": "24000",
+    "max_retries": 2
+  },
+  "agent": {
+    "model_id": "us.amazon.nova-pro-v1:0",
+    "max_renders": 3
+  },
+  "transcribe": {
+    "poll_seconds": 5,
+    "timeout_seconds": 1800
+  },
+  "bedrock": {
+    "request_metadata": true,
+    "max_attempts": 4
+  },
+  "prices": {
+    "asOf": "2026-10-01 (unverified estimate; check aws.amazon.com/pricing)",
+    "currency": "USD",
+    "transcribe_per_minute": 0.024,
+    "transcribe_min_seconds": 15,
+    "polly_per_million_chars": {
+      "standard": 4.0,
+      "neural": 16.0,
+      "long-form": 100.0,
+      "generative": 30.0
+    },
+    "bedrock_per_1k_tokens": {
+      "amazon.nova-pro-v1:0": {
+        "input": 0.0008,
+        "output": 0.0032
+      },
+      "amazon.nova-lite-v1:0": {
+        "input": 6e-05,
+        "output": 0.00024
+      },
+      "amazon.nova-micro-v1:0": {
+        "input": 3.5e-05,
+        "output": 0.00014
+      }
+    },
+    "s3_per_gb_month": 0.023
+  }
+}

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Sema — audio description, your way</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <span class="brand"><span class="mark" aria-hidden="true">s</span>sema<span class="tagline">Follow the story.</span></span>
+    <span id="mode-badge" class="badge-muted" hidden>STUDY: FIXED STANDARD</span>
+  </header>
+  <main>
+    <section id="catalog" aria-labelledby="catalog-title">
+      <p class="eyebrow">AUDIO DESCRIPTION, YOUR WAY</p>
+      <h1 id="catalog-title">Hear as much of the picture as you want.</h1>
+      <p class="intro">Choose how much description you hear. Missed something? Ask <em>What did I miss?</em> and Sema describes it without spoilers.</p>
+      <div id="film-list" class="film-list"></div>
+      <p id="catalog-note" class="fine-print"></p>
+    </section>
+
+    <section id="welcome" hidden aria-labelledby="welcome-title">
+      <p class="eyebrow">BEFORE YOU START</p>
+      <h1 id="welcome-title">How much do you want to hear?</h1>
+      <p class="intro">Sema describes what happens on screen in the pauses between dialogue. You can change the level at any time. During the film, press <kbd>Select</kbd> and choose <strong>What did I miss?</strong> to hear a recent moment again.</p>
+      <div class="levels" role="group" aria-label="Description detail">
+        <button data-choose-level="essential" data-say="label_level_essential">Essential<span>Key story moments</span></button>
+        <button data-choose-level="standard" data-say="label_level_standard_suggested">Standard<span>Story and context · Suggested</span></button>
+        <button data-choose-level="rich" data-say="label_level_rich">Rich<span>More visual detail</span></button>
+        <button data-choose-level="off" data-say="label_level_off">Off<span>No description</span></button>
+      </div>
+      <div class="preferences"><button data-toggle="guidance"></button></div>
+      <p class="fine-print">Using VoiceView? Turn spoken guidance off so you hear each control once.</p>
+    </section>
+
+    <section id="player" hidden aria-labelledby="control-title">
+      <video id="film" preload="auto" playsinline tabindex="-1" aria-hidden="true"></video>
+      <div id="caption" hidden aria-hidden="true"></div>
+      <div id="transport-hint" aria-hidden="true">Select: pause and options · Back: catalog</div>
+      <section id="controls" class="panel" aria-labelledby="control-title">
+        <div class="panel-title">
+          <div><p class="eyebrow" id="mode-label">PAUSED</p><h2 id="control-title"></h2></div>
+          <span id="position" aria-hidden="true"></span>
+        </div>
+        <p id="status"></p>
+        <div id="level-group" class="levels" role="group" aria-label="Description detail">
+          <button data-level="off">Off<span>No description</span></button>
+          <button data-level="essential">Essential<span>Key story moments</span></button>
+          <button data-level="standard">Standard<span>Story and context</span></button>
+          <button data-level="rich">Rich<span>More visual detail</span></button>
+        </div>
+        <div class="actions">
+          <button id="resume" class="primary">Play film</button>
+          <button id="recover">What did I miss?</button>
+          <button id="retry" hidden data-say="label_retry">Try again</button>
+          <button id="restart" data-say="label_start_over">Start over</button>
+          <button id="return" data-say="label_return">Return to catalog</button>
+        </div>
+        <div class="preferences">
+          <button data-toggle="text"></button>
+          <button data-toggle="guidance"></button>
+          <button id="help" data-say="label_help">Hear the controls</button>
+        </div>
+      </section>
+    </section>
+
+    <p id="load-status" class="fine-print"></p>
+    <p id="announcer" class="sr-only" role="status" aria-live="off" aria-atomic="true"></p>
+    <details id="diagnostics" hidden>
+      <summary>Developer checks</summary>
+      <button id="fault">Interrupt current narration</button>
+      <button id="seek-ahead">Seek forward 5 seconds</button>
+      <button id="seek-back">Seek back 5 seconds</button>
+      <button id="logs">Show event log</button>
+      <pre id="event-log"></pre>
+    </details>
+  </main>
+  <script src="src/data.js" defer></script>
+  <script src="src/bundle.js" defer></script>
+</body>
+</html>

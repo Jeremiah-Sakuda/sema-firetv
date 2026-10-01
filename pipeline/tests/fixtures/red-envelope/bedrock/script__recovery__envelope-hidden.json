@@ -1,0 +1,22 @@
+{
+  "_fixtureNote": "Hand-authored offline fixture for media/fixture.mp4 (procedural 15 s test film). Shape matches the real service response; token counts are illustrative, not measured.",
+  "output": {
+    "message": {
+      "role": "assistant",
+      "content": [
+        {
+          "text": "{\"recovery\": \"The red envelope that sat on the desk is now hidden inside the closed wooden drawer beneath it.\"}"
+        }
+      ]
+    }
+  },
+  "stopReason": "end_turn",
+  "usage": {
+    "inputTokens": 470,
+    "outputTokens": 36,
+    "totalTokens": 506
+  },
+  "metrics": {
+    "latencyMs": 720
+  }
+}

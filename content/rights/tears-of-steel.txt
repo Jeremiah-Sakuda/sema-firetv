@@ -1,0 +1,6 @@
+Work: Tears of Steel (2012), Blender Foundation / Mango Open Movie Project.
+License: Creative Commons Attribution 3.0 (CC BY 3.0), https://creativecommons.org/licenses/by/3.0/
+Required attribution: (CC) Blender Foundation | mango.blender.org
+Source: https://download.blender.org/demo/movies/ToS/tears_of_steel_720p.mov (official Blender mirror)
+Excerpt used: 00:00:00-00:01:12, re-encoded to H.264/AAC by tools/fetch-content.sh.
+Changes: excerpted and re-encoded; separate audio description narration added by Sema. No endorsement by the Blender Foundation is implied.

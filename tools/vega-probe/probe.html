@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sema Vega platform probe</title>
+<!--
+  Sema platform probe for the Vega WebView. Self-contained: no modules, no
+  external resources. Installed as vega-app/assets/index.html by
+  `node tools/vega-sync.js --probe`. Needs media/fixture.json, media/fixture.mp4
+  and media/*.mp3 next to it (the sync script copies them).
+
+  Results: shown on screen, logged to the console with the prefix SEMA_PROBE,
+  and POSTed (text/plain JSON) to the host collector tools/vega-probe/collect.js
+  on port 8765 via 127.0.0.1 (needs `vda reverse tcp:8765 tcp:8765`) and
+  10.0.2.2 (QEMU user networking).
+-->
+<style>
+  :root { --bg:#0b0f14; --card:#151c25; --ink:#f4f6f8; --dim:#a9b4c0; --ok:#4cd27a; --bad:#ff6b6b; --warn:#ffc857; --info:#6cb8ff; --focus:#ffd400; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; background:var(--bg); color:var(--ink); font:22px/1.3 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  body { padding:18px 28px; height:100vh; overflow:hidden; display:grid; grid-template-rows:auto 1fr auto; gap:12px; }
+  header { display:flex; gap:24px; align-items:baseline; font-size:30px; font-weight:700; }
+  header small { font-size:20px; font-weight:400; color:var(--dim); }
+  main { display:grid; grid-template-columns: 1fr 560px; gap:16px; min-height:0; }
+  #cards { display:grid; grid-template-columns:1fr 1fr; grid-auto-rows:min-content; gap:10px; overflow:hidden; align-content:start; }
+  .card { background:var(--card); border-radius:10px; padding:10px 14px; border-left:8px solid var(--dim); min-height:0; }
+  .card h2 { margin:0; font-size:22px; color:var(--dim); font-weight:600; }
+  .card .verdict { font-size:28px; font-weight:700; margin:2px 0; }
+  .card .detail { font-size:18px; color:var(--dim); white-space:pre-wrap; word-break:break-word; max-height:7.8em; overflow:hidden; }
+  .card.ok { border-left-color:var(--ok); } .card.bad { border-left-color:var(--bad); } .card.warn { border-left-color:var(--warn); } .card.info { border-left-color:var(--info); }
+  aside { display:grid; grid-template-rows:auto auto 1fr; gap:10px; min-height:0; }
+  #media { background:var(--card); border-radius:10px; padding:10px; display:grid; grid-template-columns:240px 1fr; gap:10px; align-items:center; }
+  video { width:240px; height:135px; background:#000; }
+  #clocks { font:20px/1.35 ui-monospace, Menlo, monospace; }
+  #keysbox { background:var(--card); border-radius:10px; padding:10px 14px; min-height:0; overflow:hidden; }
+  #keysbox h2 { margin:0 0 6px; font-size:24px; }
+  #keys { margin:0; padding:0; list-style:none; font:24px/1.32 ui-monospace, Menlo, monospace; }
+  #keys li.down { color:var(--ink); } #keys li.up { color:var(--dim); }
+  #controls { display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; }
+  button { font:inherit; font-size:24px; padding:12px; border-radius:10px; border:3px solid #2b3846; background:#1d2733; color:var(--ink); }
+  button:focus { outline:5px solid var(--focus); outline-offset:2px; border-color:var(--focus); }
+  #transport { font-size:20px; color:var(--dim); }
+  .sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+  #fatal { display:none; position:fixed; left:0; right:0; bottom:0; background:#5a0000; color:#fff; font-size:22px; padding:10px 20px; white-space:pre-wrap; }
+</style>
+<script>
+  // ES5 error trap: runs even if the main script fails to parse on an old engine.
+  var SEMA_EARLY_ERRORS = [];
+  window.onerror = function (msg, src, line, col) {
+    var text = String(msg) + ' @' + String(src).split('/').pop() + ':' + line + ':' + col;
+    SEMA_EARLY_ERRORS.push(text);
+    try { console.error('SEMA_PROBE_ERROR ' + text); } catch (e) {}
+    var f = document.getElementById('fatal');
+    if (f) { f.style.display = 'block'; f.textContent = 'Script error: ' + SEMA_EARLY_ERRORS.join('\n'); }
+  };
+</script>
+</head>
+<body>
+<header>Sema · Vega platform probe <small id="runinfo">starting…</small> <small id="clock"></small></header>
+<main>
+  <section id="cards" aria-label="Probe results"></section>
+  <aside>
+    <div id="media">
+      <video id="v" preload="auto" playsinline aria-label="Probe test video"></video>
+      <div id="clocks">video —<br>audio —<br>phase idle</div>
+    </div>
+    <div id="transport">host transport: probing…</div>
+    <div id="keysbox"><h2>Keys (latest first)</h2><ol id="keys"></ol></div>
+  </aside>
+</main>
+<div id="controls" role="group" aria-label="Probe controls">
+  <button id="b-media">Re-run media test</button>
+  <button id="b-speak">Speak test</button>
+  <button id="b-live">Live region + focus test</button>
+  <button id="b-send">Re-send all results</button>
+</div>
+<div id="live-polite" class="sr" aria-live="polite" aria-atomic="true"></div>
+<div id="live-assertive" class="sr" aria-live="assertive" aria-atomic="true"></div>
+<div id="fatal" role="alert"></div>
+<script>
+(function () {
+  'use strict';
+  var PORT = 8765;
+  var ENDPOINTS = ['http://127.0.0.1:' + PORT + '/probe', 'http://10.0.2.2:' + PORT + '/probe', 'http://localhost:' + PORT + '/probe'];
+  var RUN = 'run-' + Date.now().toString(36);
+  var T0 = performance.now();
+  var $ = function (id) { return document.getElementById(id); };
+  var since = function () { return Math.round(performance.now() - T0); };
+  var sleep = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+  var results = {};
+  var errText = function (e) { return e ? ((e.name || 'Error') + ': ' + (e.message || String(e))) : String(e); };
+
+  // ---------- cards ----------
+  var SECTIONS = [
+    ['env', 'Environment'], ['a', '(a) Remote keys'], ['b', '(b) fetch / XHR over file://'],
+    ['c', '(c) Video + separate audio'], ['d', '(d) speechSynthesis'], ['e', '(e) Media events'],
+    ['f', '(f) navigator.mediaSession'], ['g', '(g) ARIA live / focus']
+  ];
+  SECTIONS.forEach(function (s) {
+    var el = document.createElement('div'); el.className = 'card'; el.id = 'card-' + s[0];
+    el.innerHTML = '<h2></h2><div class="verdict">pending…</div><div class="detail"></div>';
+    el.querySelector('h2').textContent = s[1];
+    $('cards').appendChild(el);
+  });
+  function show(section, cls, verdict, detail) {
+    var el = $('card-' + section); if (!el) return;
+    el.className = 'card ' + cls;
+    el.querySelector('.verdict').textContent = verdict;
+    el.querySelector('.detail').textContent = detail || '';
+  }
+
+  // ---------- host transport ----------
+  // 1) window.ReactNativeWebView.postMessage (exists only when the RN host sets onMessage;
+  //    vega-app/src/App.tsx writes each message to the device log as "[WebViewMessage] ...").
+  // 2) HTTP POST to the host collector (tried once at start; retried every 5 s only when
+  //    there is no bridge, because every failed request also shows up as a WebView onError).
+  var bridge = window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function' ? window.ReactNativeWebView : null;
+  var transport = { tried: {}, alive: null, queue: [], bridge: !!bridge, bridgeSent: 0 };
+  // Observed on VVD: device-log lines longer than ~1 KB are dropped whole, and the app's
+  // info logs are suppressed for the first seconds after launch. So: 600-char chunks,
+  // sent at most one per 40 ms, and the auto-run starts after START_DELAY.
+  var CHUNK = 600, msgSeq = 0, outbox = [];
+  function bridgeSend(body) {
+    if (!bridge) return;
+    if (body.length <= CHUNK) { outbox.push('SEMA_PROBE ' + body); }
+    else {
+      var id = RUN + '.' + (++msgSeq), n = Math.ceil(body.length / CHUNK);
+      for (var i = 0; i < n; i++) outbox.push('SEMA_PROBE_CHUNK ' + id + ' ' + (i + 1) + '/' + n + ' ' + body.slice(i * CHUNK, (i + 1) * CHUNK));
+    }
+    transport.bridgeSent++;
+  }
+  setInterval(function () {
+    if (!outbox.length) return;
+    try { bridge.postMessage(outbox.shift()); } catch (e) { transport.bridgeError = errText(e); }
+  }, 40);
+  function postOnce(url, body, timeoutMs) {
+    var ctl = typeof AbortController === 'function' ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctl) ctl.abort(); }, timeoutMs || 3000);
+    return fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: body, signal: ctl ? ctl.signal : undefined })
+      .then(function (r) { clearTimeout(timer); return { ok: r.ok, status: r.status }; })
+      .catch(function (e) { clearTimeout(timer); return { ok: false, error: errText(e) }; });
+  }
+  function envelope(section, data) {
+    return JSON.stringify({ run: RUN, section: section, t: since(), wall: new Date().toISOString(), data: data });
+  }
+  function renderTransport() {
+    $('transport').textContent = 'to host: RN bridge ' + (bridge ? 'YES (' + transport.bridgeSent + ' sent)' : 'no') + ' · http ' + ENDPOINTS.map(function (u) {
+      var r = transport.tried[u]; return u.replace('http://', '').replace(':' + PORT + '/probe', '') + (r ? (r.ok ? ' OK' : ' fail') : ' …');
+    }).join(' · ');
+  }
+  function discoverTransport() {
+    var checks = ENDPOINTS.map(function (url) {
+      return postOnce(url, envelope('hello', { endpoint: url, href: location.href }), 3000).then(function (r) { transport.tried[url] = r; return r; });
+    });
+    return Promise.all(checks).then(function () {
+      transport.alive = ENDPOINTS.filter(function (u) { return transport.tried[u].ok; })[0] || null;
+      renderTransport();
+      results.transport = { bridge: !!bridge, http: transport.tried };
+      log('transport', results.transport);
+      flushQueue();
+    });
+  }
+  function flushQueue() {
+    if (!transport.alive) return;
+    var q = transport.queue; transport.queue = [];
+    q.forEach(function (body) { postOnce(transport.alive, body, 4000).then(function (r) { if (!r.ok) transport.queue.push(body); }); });
+  }
+  setInterval(function () { renderTransport(); if (!transport.alive && !bridge) discoverTransport(); else flushQueue(); }, 5000);
+  function log(section, data) {
+    var body = envelope(section, data);
+    try { console.log('SEMA_PROBE ' + body); } catch (e) {}
+    bridgeSend(body);
+    if (section === 'transport') return;
+    if (transport.alive) postOnce(transport.alive, body, 4000).then(function (r) { if (!r.ok) transport.queue.push(body); });
+    else if (transport.queue.length < 500) transport.queue.push(body);
+  }
+  function report(section, data) { results[section] = data; log(section, data); }
+
+  // ---------- (a) keys ----------
+  var keyLog = [], keyBatch = [];
+  var BACKISH_KEYS = ['Escape', 'GoBack', 'BrowserBack', 'Backspace'];
+  var BACKISH_CODES = [27, 8, 166, 461, 10009];
+  function describeTarget(el) { return el ? (el.id ? '#' + el.id : el.tagName.toLowerCase()) : 'none'; }
+  function onKey(e) {
+    var backish = BACKISH_KEYS.indexOf(e.key) >= 0 || BACKISH_CODES.indexOf(e.keyCode) >= 0;
+    if (backish) e.preventDefault(); // keep the probe alive so we can observe Back
+    var rec = { type: e.type, key: e.key, code: e.code, keyCode: e.keyCode, which: e.which, location: e.location, repeat: e.repeat,
+      t: Math.round(e.timeStamp || performance.now()), ts: Date.now(), target: describeTarget(e.target), prevented: backish };
+    if (e.type === 'keydown') {
+      var before = document.activeElement;
+      setTimeout(function () {
+        rec.focusBefore = describeTarget(before); rec.focusAfter = describeTarget(document.activeElement);
+        rec.nativeFocusMove = before !== document.activeElement;
+      }, 60);
+    }
+    keyLog.push(rec); keyBatch.push(rec);
+    var li = document.createElement('li'); li.className = e.type === 'keydown' ? 'down' : 'up';
+    li.textContent = (e.type === 'keydown' ? '↓ ' : '↑ ') + JSON.stringify(e.key) + ' ' + (e.code || '""') + ' ' + e.keyCode + (e.repeat ? ' rpt' : '');
+    var list = $('keys'); list.insertBefore(li, list.firstChild);
+    while (list.children.length > 16) list.removeChild(list.lastChild);
+    var downs = keyLog.filter(function (k) { return k.type === 'keydown'; });
+    var uniq = {}; downs.forEach(function (k) { uniq[k.key + '|' + k.keyCode] = 1; });
+    show('a', 'info', downs.length + ' keydown events', 'distinct key|keyCode: ' + Object.keys(uniq).join(', '));
+  }
+  document.addEventListener('keydown', onKey, true);
+  document.addEventListener('keyup', onKey, true);
+  setInterval(function () {
+    if (!keyBatch.length) return;
+    var batch = keyBatch; keyBatch = [];
+    setTimeout(function () { log('a-keys', batch); }, 80); // after focus info is filled in
+  }, 1000);
+  // Other navigation-ish signals that Back/Home might produce instead of key events.
+  ['popstate', 'hashchange', 'pagehide', 'pageshow', 'beforeunload', 'blur', 'focus'].forEach(function (name) {
+    window.addEventListener(name, function () { log('a-window-event', { event: name, t: since(), visibility: document.visibilityState }); });
+  });
+  document.addEventListener('visibilitychange', function () { log('a-window-event', { event: 'visibilitychange', t: since(), visibility: document.visibilityState }); });
+  try { history.pushState({ probe: 1 }, '', location.href); } catch (e) { /* file:// may refuse */ }
+  ['b-media', 'b-speak', 'b-live', 'b-send'].forEach(function (id) {
+    $(id).addEventListener('click', function (e) { log('a-click', { id: id, t: since(), isTrusted: e.isTrusted, detail: e.detail }); });
+  });
+
+  // ---------- environment ----------
+  function featureTest(src) { try { return !!(new Function(src))(); } catch (e) { return false; } }
+  function envSection() {
+    var mm = function (q) { try { return window.matchMedia(q).matches; } catch (e) { return 'err'; } };
+    var probeVideo = document.createElement('video'), probeAudio = document.createElement('audio');
+    var storage = (function () { try { localStorage.setItem('sema-probe', '1'); var ok = localStorage.getItem('sema-probe') === '1'; localStorage.removeItem('sema-probe'); return ok; } catch (e) { return errText(e); } })();
+    var env = {
+      userAgent: navigator.userAgent, href: location.href, origin: location.origin, protocol: location.protocol,
+      inner: [innerWidth, innerHeight], screen: [screen.width, screen.height], dpr: devicePixelRatio,
+      language: navigator.language, onLine: navigator.onLine, visibility: document.visibilityState,
+      localStorage: storage, indexedDB: typeof indexedDB, serviceWorker: 'serviceWorker' in navigator,
+      MediaSource: typeof MediaSource, AudioContext: typeof (window.AudioContext || window.webkitAudioContext),
+      canPlay: {
+        mp4_h264_aac: probeVideo.canPlayType('video/mp4; codecs="avc1.640028, mp4a.40.2"'),
+        mp4_baseline: probeVideo.canPlayType('video/mp4; codecs="avc1.42E01E, mp4a.40.2"'),
+        mp3: probeAudio.canPlayType('audio/mpeg'), webm_vp9: probeVideo.canPlayType('video/webm; codecs="vp9"'), vtt_track: typeof TextTrack
+      },
+      media: { reducedMotion: mm('(prefers-reduced-motion: reduce)'), contrastMore: mm('(prefers-contrast: more)'), forcedColors: mm('(forced-colors: active)'), invertedColors: mm('(inverted-colors: inverted)'), dark: mm('(prefers-color-scheme: dark)') },
+      js: {
+        optionalChaining: featureTest('var o={a:{b:1}};return o?.a?.b===1;'), nullish: featureTest('return (null??2)===2;'),
+        arrayAt: typeof [].at === 'function', asyncAwait: featureTest('return typeof (async function(){}) === "function";'),
+        classFields: featureTest('class A{x=1;static y=2} return new A().x===1;'), structuredClone: typeof structuredClone === 'function',
+        replaceAll: typeof ''.replaceAll === 'function', objectFromEntries: typeof Object.fromEntries === 'function'
+      },
+      earlyErrors: SEMA_EARLY_ERRORS.slice()
+    };
+    report('env', env);
+    var missing = Object.keys(env.js).filter(function (k) { return !env.js[k]; });
+    show('env', missing.length ? 'warn' : 'ok', (env.userAgent.match(/Chrome\/[\d.]+/) || [env.userAgent.slice(0, 40)])[0] + ' · ' + env.inner.join('×'),
+      'href ' + env.href + '\ncanPlay h264/aac "' + env.canPlay.mp4_h264_aac + '" mp3 "' + env.canPlay.mp3 + '"\nlocalStorage ' + env.localStorage + ' · JS gaps: ' + (missing.join(', ') || 'none') + '\nUA ' + env.userAgent);
+  }
+
+  // ---------- (b) fetch / XHR ----------
+  function timed(p) { var s = performance.now(); return p.then(function (v) { v.ms = Math.round(performance.now() - s); return v; }); }
+  function tryFetch(url, kind) {
+    return timed(fetch(url).then(function (r) {
+      var base = { url: url, ok: r.ok, status: r.status, type: r.type, contentType: r.headers.get('content-type') };
+      if (!r.ok) return base;
+      return (kind === 'blob' ? r.blob().then(function (b) { base.bytes = b.size; base.blobType = b.type; return base; })
+        : r.text().then(function (t) { base.bytes = t.length; try { var j = JSON.parse(t); base.json = true; base.cues = j.cues && j.cues.length; } catch (e) { base.json = false; } return base; }));
+    }).catch(function (e) { return { url: url, ok: false, error: errText(e) }; }));
+  }
+  function tryXhr(url, responseType) {
+    return timed(new Promise(function (resolve) {
+      var x = new XMLHttpRequest(), out = { url: url, responseType: responseType || 'text' };
+      try { x.open('GET', url, true); if (responseType) x.responseType = responseType; } catch (e) { out.error = errText(e); resolve(out); return; }
+      x.onload = function () { out.event = 'load'; out.status = x.status; var body = x.response; out.bytes = body ? (typeof body === 'string' ? body.length : JSON.stringify(body).length) : 0; out.parsed = responseType === 'json' ? !!body : undefined; resolve(out); };
+      x.onerror = function () { out.event = 'error'; out.status = x.status; resolve(out); };
+      x.ontimeout = function () { out.event = 'timeout'; resolve(out); };
+      x.timeout = 5000;
+      try { x.send(); } catch (e) { out.error = errText(e); resolve(out); }
+    }));
+  }
+  function tryScript(src) {
+    return timed(new Promise(function (resolve) {
+      var el = document.createElement('script'), out = { src: src };
+      var finish = function (ev) { out.event = ev; out.globalSet = !!window.SEMA_PROBE_SCRIPT; out.cues = window.SEMA_PROBE_SCRIPT && window.SEMA_PROBE_SCRIPT.cues; resolve(out); };
+      el.onload = function () { finish('load'); }; el.onerror = function () { finish('error'); };
+      setTimeout(function () { finish('timeout'); }, 5000);
+      el.src = src; document.head.appendChild(el);
+    }));
+  }
+  function fetchSection() {
+    var abs = new URL('probe-media/fixture.json', location.href).href;
+    return Promise.all([
+      tryFetch('probe-media/fixture.json'), tryFetch(abs), tryFetch('probe-media/fixture-high-720p.mp4', 'blob'), tryFetch('probe-media/does-not-exist.json'),
+      tryXhr('probe-media/fixture.json'), tryXhr('probe-media/fixture.json', 'json'), tryXhr('probe-media/does-not-exist.json'), tryScript('probe-script.js')
+    ]).then(function (r) {
+      var data = { fetchRelative: r[0], fetchAbsolute: r[1], fetchMp4Blob: r[2], fetchMissing: r[3], xhrText: r[4], xhrJson: r[5], xhrMissing: r[6], scriptSrc: r[7] };
+      report('b', data);
+      var fetchOk = r[0].ok && r[0].json, xhrOk = r[4].event === 'load' && r[4].bytes > 0;
+      show('b', fetchOk ? 'ok' : 'bad', 'fetch ' + (fetchOk ? 'WORKS' : 'FAILS') + ' · XHR ' + (xhrOk ? 'WORKS' : 'FAILS'),
+        'fetch rel: ' + (r[0].error || ('status ' + r[0].status + ' ok ' + r[0].ok + ' ' + r[0].bytes + 'B')) +
+        '\nfetch abs: ' + (r[1].error || ('status ' + r[1].status + ' ok ' + r[1].ok)) +
+        '\nfetch mp4 blob: ' + (r[2].error || (r[2].bytes + 'B')) + '\nfetch missing: ' + (r[3].error || ('status ' + r[3].status + ' ok ' + r[3].ok)) +
+        '\nXHR: ' + r[4].event + ' status ' + r[4].status + ' ' + r[4].bytes + 'B · json ' + r[5].event + ' · missing ' + r[6].event + ' ' + r[6].status +
+        '\n<script src> file://: ' + r[7].event + (r[7].globalSet ? ' · global set (' + r[7].cues + ' cues)' : ' · global NOT set'));
+    });
+  }
+
+  // ---------- (f) mediaSession ----------
+  var sessionCalls = [];
+  function mediaSessionSection() {
+    var ms = navigator.mediaSession, data = { supported: !!ms, MediaMetadata: typeof MediaMetadata, actions: {} };
+    if (ms) {
+      try { ms.metadata = new MediaMetadata({ title: 'Sema probe', artist: 'Sema' }); data.metadataSet = true; } catch (e) { data.metadataSet = errText(e); }
+      ['play', 'pause', 'stop', 'seekbackward', 'seekforward', 'seekto', 'previoustrack', 'nexttrack'].forEach(function (a) {
+        try { ms.setActionHandler(a, function (details) { var c = { action: a, t: since(), details: details && details.action }; sessionCalls.push(c); log('f-action', c); }); data.actions[a] = 'ok'; }
+        catch (e) { data.actions[a] = errText(e); }
+      });
+      data.setPositionState = typeof ms.setPositionState;
+      data.playbackState = ms.playbackState;
+    }
+    report('f', data);
+    show('f', data.supported ? 'ok' : 'warn', data.supported ? 'navigator.mediaSession present' : 'navigator.mediaSession ABSENT',
+      data.supported ? 'handlers: ' + Object.keys(data.actions).map(function (k) { return k + (data.actions[k] === 'ok' ? '' : '✗'); }).join(' ') + '\nhandler calls so far: (see log)' : 'MediaMetadata: ' + data.MediaMetadata);
+  }
+
+  // ---------- (g) live region + focus ----------
+  function a11ySection() {
+    var events = [];
+    ['b-media', 'b-speak', 'b-live', 'b-send'].forEach(function (id) {
+      var el = $(id);
+      el.onfocus = function () { events.push({ e: 'focus-event', id: id, t: since() }); };
+    });
+    var focusTo = function (id) { $(id).focus(); events.push({ e: 'focus-call', id: id, t: since(), active: describeTarget(document.activeElement), hasFocus: document.hasFocus() }); console.log('SEMA_PROBE_MARK focus ' + id); };
+    var steps = [
+      function () { $('live-polite').textContent = 'Probe polite update one'; events.push({ e: 'live-polite', t: since() }); console.log('SEMA_PROBE_MARK live-polite-1'); },
+      function () { focusTo('b-speak'); },
+      function () { $('live-assertive').textContent = 'Probe assertive update two'; events.push({ e: 'live-assertive', t: since() }); console.log('SEMA_PROBE_MARK live-assertive-2'); },
+      function () { focusTo('b-live'); },
+      function () { focusTo('b-media'); }
+    ];
+    var chain = Promise.resolve();
+    steps.forEach(function (s) { chain = chain.then(function () { s(); return sleep(700); }); });
+    return chain.then(function () {
+      var data = { events: events, activeElement: describeTarget(document.activeElement), observableInPage: 'none: the page cannot see screen-reader output; check device logs around SEMA_PROBE_MARK lines' };
+      report('g', data);
+      var focusEvents = events.filter(function (e) { return e.e === 'focus-event'; }).length;
+      var moved = events.filter(function (e) { return e.e === 'focus-call' && e.active === '#' + e.id; }).length;
+      show('g', 'info', 'focus() moved activeElement ' + moved + '/3 · focus events ' + focusEvents + '/3',
+        'document.hasFocus(): ' + document.hasFocus() + ' · live regions updated: 2\nScreen reader output is not observable from the page.\nCorrelate SEMA_PROBE_MARK lines in device logs.');
+    });
+  }
+
+  // ---------- (d) speechSynthesis ----------
+  function speechSection() {
+    var ss = window.speechSynthesis, data = { exists: !!ss, Utterance: typeof SpeechSynthesisUtterance };
+    if (!ss || typeof SpeechSynthesisUtterance !== 'function') {
+      report('d', data); show('d', 'bad', 'speechSynthesis ABSENT', 'window.speechSynthesis: ' + typeof ss + ' · SpeechSynthesisUtterance: ' + data.Utterance); return Promise.resolve();
+    }
+    var mapVoices = function (v) { return v.map(function (x) { return { name: x.name, lang: x.lang, default: x.default, local: x.localService }; }); };
+    data.voicesImmediate = mapVoices(ss.getVoices());
+    return new Promise(function (resolve) {
+      var done = false;
+      var finish = function () { if (done) return; done = true; data.voicesAfterWait = mapVoices(ss.getVoices()); resolve(); };
+      ss.onvoiceschanged = function () { data.voiceschanged = since(); finish(); };
+      setTimeout(finish, 3000);
+    }).then(function () {
+      return new Promise(function (resolve) {
+        var u = new SpeechSynthesisUtterance('Sema probe. Speech synthesis test.'), start = performance.now(), ev = [];
+        u.lang = 'en-US';
+        var stamp = function (name, extra) { var r = { e: name, ms: Math.round(performance.now() - start) }; if (extra) r.detail = extra; ev.push(r); };
+        u.onstart = function () { stamp('start'); };
+        u.onend = function () { stamp('end'); setTimeout(resolve, 100); };
+        u.onerror = function (e) { stamp('error', e && e.error); setTimeout(resolve, 100); };
+        u.onboundary = function () { if (!ev.some(function (x) { return x.e === 'boundary'; })) stamp('boundary'); };
+        try { ss.speak(u); } catch (e) { stamp('speak-threw', errText(e)); }
+        setTimeout(function () { data.speakingAt300ms = ss.speaking; data.pendingAt300ms = ss.pending; }, 300);
+        setTimeout(function () { stamp('timeout-10s'); resolve(); }, 10000);
+        data.events = ev;
+      });
+    }).then(function () {
+      report('d', data);
+      var fired = function (n) { return data.events.some(function (e) { return e.e === n; }); };
+      var cls = fired('end') ? 'ok' : (fired('error') ? 'bad' : 'warn');
+      show('d', cls, 'speechSynthesis present · onend ' + (fired('end') ? 'FIRED' : 'did NOT fire') + (fired('error') ? ' · onerror' : ''),
+        'voices: ' + data.voicesAfterWait.length + ' (' + data.voicesAfterWait.slice(0, 4).map(function (v) { return v.name + '/' + v.lang; }).join(', ') + ')\nevents: ' + data.events.map(function (e) { return e.e + '@' + e.ms + (e.detail ? '(' + e.detail + ')' : ''); }).join(' ') + '\nspeaking@300ms ' + data.speakingAt300ms);
+    });
+  }
+
+  // ---------- (c) + (e) media ----------
+  // A play() promise that never settles must not hang the probe (observed after a seek on VVD).
+  function settle(pr, ms) {
+    return new Promise(function (resolve) {
+      var done = false, finish = function (v) { if (!done) { done = true; resolve(v); } };
+      Promise.resolve(pr).then(function () { finish({ resolved: true }); }, function (e) { finish({ rejected: errText(e) }); });
+      setTimeout(function () { finish({ timeout: ms }); }, ms);
+    });
+  }
+  var MEDIA_EVENTS = ['loadstart', 'loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough', 'play', 'playing', 'waiting', 'stalled', 'suspend', 'pause', 'seeking', 'seeked', 'ended', 'error', 'emptied', 'abort', 'durationchange', 'volumechange', 'ratechange'];
+  var mediaRunning = false;
+  // Media test = a series of trials, each on a freshly loaded <video>:
+  //   T1 video alone (control) · T2 video + new Audio() · T3 muted video + new Audio()
+  //   T4 video + <audio> element · T5 seek: play 1 s, pause, seek to 11 s, play, wait for ended
+  //   V1-V3: re-encoded variants (tools/vega-probe/media-test) played alone, to separate encode issues from platform issues
+  function mediaSection() {
+    if (mediaRunning) return Promise.resolve(); mediaRunning = true;
+    var v = $('v'), tStart = performance.now(), trial = 'load', vEvents = [], current = null;
+    var rel = function () { return Math.round(performance.now() - tStart); };
+    var listeners = MEDIA_EVENTS.map(function (name) {
+      var fn = function () { vEvents.push({ trial: trial, e: name, t: rel(), ct: +v.currentTime.toFixed(3), rs: v.readyState, paused: v.paused, err: v.error ? v.error.code + ':' + v.error.message : undefined }); };
+      v.addEventListener(name, fn); return [name, fn];
+    });
+    var samples = [];
+    var sampler = setInterval(function () {
+      var a = current;
+      samples.push({ trial: trial, t: rel(), v: +v.currentTime.toFixed(3), vp: v.paused, rs: v.readyState, a: a ? +a.currentTime.toFixed(3) : null, ap: a ? a.paused : null });
+      $('clocks').innerHTML = 'video ' + v.currentTime.toFixed(2) + (v.paused ? ' (paused)' : ' ▶') + ' rs' + v.readyState + '<br>audio ' + (a ? a.currentTime.toFixed(2) + (a.paused ? ' (paused)' : ' ▶') : '—') + '<br>trial ' + trial;
+    }, 250);
+    function waitEvent(target, names, ms) {
+      return new Promise(function (resolve) {
+        var done = false, fns = [];
+        var finish = function (n) { if (done) return; done = true; fns.forEach(function (f) { target.removeEventListener(f[0], f[1]); }); resolve(n); };
+        names.forEach(function (n) { var f = function () { finish(n); }; fns.push([n, f]); target.addEventListener(n, f); });
+        setTimeout(function () { finish('timeout'); }, ms);
+      });
+    }
+    function freshLoad(muted, src) {
+      v.pause(); v.removeAttribute('src'); v.load();
+      v.muted = !!muted; v.volume = 1; v.src = src || 'probe-media/fixture-high-720p.mp4'; v.load();
+      return waitEvent(v, ['canplay', 'error'], 8000);
+    }
+    function startAudio(kind, src) {
+      var el = kind === 'dom' ? document.createElement('audio') : new Audio(src);
+      if (kind === 'dom') { el.src = src; document.body.appendChild(el); }
+      var rec = { kind: kind, src: src, requestedAt: rel(), videoAt: +v.currentTime.toFixed(3), events: [] };
+      ['play', 'playing', 'waiting', 'stalled', 'pause', 'ended', 'error'].forEach(function (n) {
+        el.addEventListener(n, function () { rec.events.push({ e: n, t: rel(), act: +el.currentTime.toFixed(3), vct: +v.currentTime.toFixed(3), vpaused: v.paused, vrs: v.readyState }); });
+      });
+      current = el;
+      var pr; try { pr = el.play(); } catch (e) { rec.playThrew = errText(e); }
+      return settle(pr, 5000).then(function (r) { rec.playPromise = r; return waitEvent(el, ['ended', 'error'], 9000); })
+        .then(function (how) { rec.finishedBy = how; rec.finishedAt = rel(); rec.videoAtFinish = +v.currentTime.toFixed(3); if (el.parentNode) el.parentNode.removeChild(el); return rec; });
+    }
+    function advance(name, fromT, toT) {
+      var ss = samples.filter(function (x) { return x.trial === name && x.t >= fromT && x.t <= toT; });
+      if (ss.length < 2) return null;
+      var wall = (ss[ss.length - 1].t - ss[0].t) / 1000;
+      return { wallSec: +wall.toFixed(2), videoAdvanceSec: +(ss[ss.length - 1].v - ss[0].v).toFixed(2), audioAdvanceSec: ss[0].a === null ? null : +((ss[ss.length - 1].a || 0) - (ss[0].a || 0)).toFixed(2), videoEverPaused: ss.some(function (x) { return x.vp; }) };
+    }
+    var trials = {};
+    function runTrial(name, opts) {
+      trial = name; var out = { name: name, muted: !!opts.muted, video: opts.video || 'probe-media/fixture-high-720p.mp4' };
+      return freshLoad(opts.muted, opts.video).then(function (how) {
+        out.load = how; out.t0 = rel();
+        var pr; try { pr = v.play(); } catch (e) { out.playThrew = errText(e); }
+        return settle(pr, 5000);
+      }).then(function (r) {
+        out.playPromise = r;
+        if (!opts.audio) return sleep(opts.duration || 5000).then(function () { out.whole = advance(name, out.t0, rel()); });
+        return sleep(1500).then(function () {
+          var aStart = rel(); out.videoBeforeAudio = advance(name, out.t0, aStart);
+          return startAudio(opts.audio, opts.src).then(function (rec) {
+            out.audio = rec; out.duringAudio = advance(name, rec.requestedAt + 300, rec.finishedAt);
+            return sleep(2500).then(function () { out.afterAudio = advance(name, rec.finishedAt, rel()); });
+          });
+        });
+      }).then(function () {
+        out.videoEvents = vEvents.filter(function (x) { return x.trial === name; });
+        var d = out.duringAudio || out.whole;
+        out.verdict = !d ? 'no samples' : (d.videoAdvanceSec > d.wallSec * 0.8 ? 'VIDEO ADVANCED' : 'VIDEO STALLED') + (out.audio ? (d.audioAdvanceSec > d.wallSec * 0.8 ? ' + AUDIO PLAYED' : ' + AUDIO DID NOT ADVANCE') : '');
+        if (out.afterAudio) out.verdict += ' · after audio: ' + (out.afterAudio.videoAdvanceSec > out.afterAudio.wallSec * 0.8 ? 'video advancing' : 'video still stuck');
+        trials[name] = out; current = null; v.pause();
+        report('c-' + name, out);
+        renderMedia();
+      });
+    }
+    function audioAloneTrial() {
+      var name = 'A1-mp3-alone'; trial = name; var out = { name: name };
+      v.pause(); v.removeAttribute('src'); v.load();
+      return startAudio('new', 'probe-media/narration-a.mp3').then(function (rec) {
+        out.audio = rec; var d = advance(name, rec.requestedAt + 300, rec.finishedAt); out.duringAudio = d;
+        out.verdict = rec.finishedBy === 'ended' ? 'MP3 PLAYED TO END (' + (d ? d.audioAdvanceSec : '?') + 's in ' + (d ? d.wallSec : '?') + 's wall)' : 'MP3 DID NOT FINISH (' + rec.finishedBy + ')';
+        out.videoEvents = [];
+        trials[name] = out; current = null; report('c-' + name, out); renderMedia();
+      });
+    }
+    function seekTrial() {
+      var name = 'T5-seek'; trial = name; var out = { name: name };
+      return freshLoad(false).then(function (how) {
+        out.load = how; out.t0 = rel(); var pr; try { pr = v.play(); } catch (e) { out.playThrew = errText(e); } return settle(pr, 5000);
+      }).then(function (r) { out.firstPlayPromise = r; return sleep(1000); })
+        .then(function () { v.pause(); out.pausedAt = +v.currentTime.toFixed(3); out.seekAt = rel(); v.currentTime = 11; return waitEvent(v, ['seeked'], 6000); })
+        .then(function (how) { out.seekOutcome = how; out.seekMs = rel() - out.seekAt; out.afterSeekPlayAt = rel(); var pr; try { pr = v.play(); } catch (e) { out.afterSeekPlayThrew = errText(e); } return settle(pr, 5000); })
+        .then(function (r) { out.afterSeekPlayPromise = r; return waitEvent(v, ['ended', 'error'], 8000); })
+        .then(function (how) {
+          out.finishedBy = how; out.finishedAt = rel(); out.videoAtEnd = +v.currentTime.toFixed(3);
+          out.videoEvents = vEvents.filter(function (x) { return x.trial === name; });
+          trials[name] = out; report('e', out); renderMedia();
+        });
+    }
+    function renderMedia() {
+      var lines = Object.keys(trials).filter(function (k) { return k !== 'T5-seek'; }).filter(function (k) { return trials[k]; }).map(function (k) { return k + ': ' + trials[k].verdict; });
+      var bad = lines.some(function (l) { return /STALLED|DID NOT/.test(l); });
+      show('c', bad ? 'bad' : 'ok', bad ? 'video + audio: PROBLEM (see trials)' : (lines.length ? 'video + audio OK' : 'running…'), lines.join('\n') + '\nDucking is audible only; not measurable from JS.');
+      var t1 = trials['T1-video-alone'], t5 = trials['T5-seek'];
+      var first = t1 ? t1.videoEvents.filter(function (x) { return ['play', 'playing', 'waiting', 'stalled', 'ended'].indexOf(x.e) >= 0; }).map(function (x) { return x.e + '@' + (x.t - t1.t0); }).join(' ') : '…';
+      var seek = t5 ? t5.videoEvents.filter(function (x) { return x.t >= t5.seekAt && ['seeking', 'seeked', 'play', 'playing', 'waiting', 'stalled', 'ended', 'pause'].indexOf(x.e) >= 0; }).map(function (x) { return x.e + '@' + (x.t - t5.seekAt); }).join(' ') : '…';
+      show('e', t5 && t5.finishedBy === 'ended' && t5.seekOutcome === 'seeked' ? 'ok' : (t5 ? 'bad' : 'info'), t5 ? 'seek: ' + t5.seekOutcome + ' · after-seek play(): ' + JSON.stringify(t5.afterSeekPlayPromise) + ' · end: ' + t5.finishedBy : 'running…',
+        'T1 first play (ms after play()): ' + first + '\nT5 after seek (ms after seek): ' + seek + (t5 ? '\nvideo at ' + t5.videoAtEnd + 's when trial ended' : ''));
+    }
+    show('c', 'info', 'running…', ''); show('e', 'info', 'running…', '');
+    return audioAloneTrial()
+      .then(function () { return runTrial('T1-video-alone', { duration: 6000 }); })
+      .then(function () { return runTrial('V4-fixture-absoluteFileUrl-alone', { duration: 6000, video: 'file:///pkg/assets/probe-media/fixture-high-720p.mp4' }); })
+      .then(function () { return runTrial('V1-baseline720p-alone', { duration: 6000, video: 'probe-media/baseline-720p.mp4' }); })
+      .then(function () { return runTrial('V2-main480p48k-alone', { duration: 6000, video: 'probe-media/main-480p-48k.mp4' }); })
+      .then(function () { return runTrial('V3-fixtureNoAudio-alone', { duration: 6000, video: 'probe-media/fixture-noaudio.mp4' }); })
+      .then(function () { return runTrial('T2-video+newAudio', { audio: 'new', src: 'probe-media/narration-a.mp3' }); })
+      .then(function () { return runTrial('T3-mutedVideo+newAudio', { muted: true, audio: 'new', src: 'probe-media/narration-a.mp3' }); })
+      .then(function () { return runTrial('T4-video+audioElement', { audio: 'dom', src: 'probe-media/narration-b.mp3' }); })
+      .then(seekTrial)
+      .then(function () {
+        clearInterval(sampler); listeners.forEach(function (l) { v.removeEventListener(l[0], l[1]); });
+        report('c', { trials: Object.keys(trials).map(function (k) { return { name: k, verdict: trials[k].verdict, duringAudio: trials[k].duringAudio, whole: trials[k].whole, afterAudio: trials[k].afterAudio }; }) });
+        mediaRunning = false;
+      }).catch(function (e) { clearInterval(sampler); mediaRunning = false; report('c-error', errText(e)); show('c', 'bad', 'media test crashed', errText(e)); });
+  }
+
+  // ---------- codec play-through trials ----------
+  // Each variant: fresh load, play until `ended` or 6 s without clock progress, then
+  // seek and play again to the end. Counts presented frames (requestVideoFrameCallback)
+  // to tell "clock runs but no new frames" from real playback.
+  var CODEC_TRIALS = [
+    { name: 'C0-h264-high-fixture', src: 'probe-media/fixture-high-720p.mp4', seekTo: 11, max: 22000 },
+    { name: 'C1-vp9-opus-webm', src: 'probe-media/fixture-vp9-opus.webm', seekTo: 11, max: 22000 },
+    { name: 'C2-vp8-opus-webm', src: 'probe-media/fixture-vp8-opus.webm', seekTo: 11, max: 22000 },
+    { name: 'C3-av1-opus-webm', src: 'probe-media/fixture-av1-opus.webm', seekTo: 11, max: 22000 },
+    { name: 'C4-h264-bf0-zerolatency', src: 'probe-media/fixture-h264-bf0-zerolatency.mp4', seekTo: 11, max: 22000 },
+    { name: 'L1-sintel-dragon-vp9', src: 'probe-media/long-sintel-dragon-vp9.webm', seekTo: 60, max: 85000 },
+    { name: 'L2-tears-of-steel-vp9', src: 'probe-media/long-tears-of-steel-opening-vp9.webm', seekTo: 60, max: 85000 }
+  ];
+  var codecResults = [], codecRunning = false;
+  function codecSection() {
+    if (codecRunning) return Promise.resolve(); codecRunning = true; codecResults = [];
+    var v = $('v');
+    function waitEv(names, ms) {
+      return new Promise(function (resolve) {
+        var done = false, fns = [];
+        var finish = function (n) { if (done) return; done = true; fns.forEach(function (f) { v.removeEventListener(f[0], f[1]); }); resolve(n); };
+        names.forEach(function (n) { var f = function () { finish(n); }; fns.push([n, f]); v.addEventListener(n, f); });
+        setTimeout(function () { finish('timeout'); }, ms);
+      });
+    }
+    function quality() { try { var q = v.getVideoPlaybackQuality(); return { total: q.totalVideoFrames, dropped: q.droppedVideoFrames }; } catch (e) { return null; } }
+    // Play until ended / no progress for 6 s / max; resolves with a summary.
+    function runUntilEnd(maxMs, counters) {
+      return new Promise(function (resolve) {
+        var t0 = performance.now(), lastCt = v.currentTime, lastProgress = t0, maxCt = v.currentTime;
+        var onEnded = function () { finish('ended'); }, onErr = function () { finish('error'); };
+        var timer = setInterval(function () {
+          var now = performance.now();
+          if (v.currentTime > lastCt + 0.01) { lastCt = v.currentTime; lastProgress = now; }
+          maxCt = Math.max(maxCt, v.currentTime);
+          $('clocks').innerHTML = 'video ' + v.currentTime.toFixed(2) + (v.paused ? ' (paused)' : ' ▶') + ' rs' + v.readyState + '<br>frames ' + counters.frames + '<br>' + counters.name;
+          if (now - lastProgress > 6000) finish('no-progress-6s');
+          else if (now - t0 > maxMs) finish('max-time');
+        }, 250);
+        function finish(reason) { clearInterval(timer); v.removeEventListener('ended', onEnded); v.removeEventListener('error', onErr); resolve({ endReason: reason, wallMs: Math.round(performance.now() - t0), maxCt: +maxCt.toFixed(3), ctAtEnd: +v.currentTime.toFixed(3) }); }
+        v.addEventListener('ended', onEnded); v.addEventListener('error', onErr);
+      });
+    }
+    function trial(t) {
+      var out = { name: t.name, src: t.src }, counters = { frames: 0, name: t.name }, waits = [], active = true;
+      var onWaiting = function () { waits.push(+v.currentTime.toFixed(3)); };
+      v.pause(); v.removeAttribute('src'); v.load();
+      v.muted = false; v.volume = 1; v.src = t.src; v.load();
+      v.addEventListener('waiting', onWaiting);
+      var rvfc = typeof v.requestVideoFrameCallback === 'function';
+      out.rvfc = rvfc;
+      if (rvfc) { var cb = function () { counters.frames++; if (active) v.requestVideoFrameCallback(cb); }; v.requestVideoFrameCallback(cb); }
+      return waitEv(['canplay', 'error'], 10000).then(function (how) {
+        out.load = how; out.err = v.error ? v.error.code + ':' + v.error.message : undefined; out.duration = v.duration; out.size = [v.videoWidth, v.videoHeight];
+        if (how !== 'canplay') return null;
+        var pr; try { pr = v.play(); } catch (e) { out.playThrew = errText(e); }
+        return settle(pr, 5000).then(function (r) { out.playPromise = r; return runUntilEnd(t.max, counters); });
+      }).then(function (play) {
+        out.play = play; out.framesFirstPass = counters.frames; out.qualityFirstPass = quality(); out.waitingAt = waits.slice();
+        if (!play) return null;
+        v.pause(); var seekStart = performance.now(); v.currentTime = t.seekTo;
+        return waitEv(['seeked'], 6000).then(function (how) {
+          out.seek = { to: t.seekTo, outcome: how, ms: Math.round(performance.now() - seekStart) };
+          var f0 = counters.frames, pr; try { pr = v.play(); } catch (e) { out.seek.playThrew = errText(e); }
+          return settle(pr, 5000).then(function (r) { out.seek.playPromise = r; return runUntilEnd((out.duration - t.seekTo + 8) * 1000, counters); })
+            .then(function (res) { out.seek.play = res; out.seek.framesAfterSeek = counters.frames - f0; });
+        });
+      }).then(function () {
+        active = false; v.removeEventListener('waiting', onWaiting); v.pause();
+        out.framesTotal = counters.frames; out.qualityEnd = quality(); out.waitingAtAll = waits;
+        var p = out.play, sk = out.seek;
+        out.verdict = !p ? 'DID NOT LOAD (' + out.load + ')' :
+          (p.endReason === 'ended' ? 'PLAYED TO END' : 'STOPPED AT ' + p.maxCt + 's (' + p.endReason + ')') +
+          ' · frames ' + out.framesFirstPass + (sk ? ' · seek ' + sk.outcome + (sk.play ? ', then ' + (sk.play.endReason === 'ended' ? 'ended' : 'stuck at ' + sk.play.maxCt + 's') : '') : '');
+        codecResults.push(out); report('k-' + t.name, out); renderCodecs();
+      });
+    }
+    function renderCodecs() {
+      var ok = codecResults.filter(function (r) { return /PLAYED TO END/.test(r.verdict); }).map(function (r) { return r.name; });
+      show('c', ok.length ? 'ok' : 'bad', ok.length ? 'plays to end: ' + ok.join(', ') : 'no codec played to the end yet', codecResults.map(function (r) { return r.name + ': ' + r.verdict; }).join('\n'));
+      show('e', 'info', 'codec trials ' + codecResults.length + '/' + CODEC_TRIALS.length, codecResults.map(function (r) { return r.name + ': first waiting at ' + (r.waitingAt && r.waitingAt.length ? r.waitingAt.join(',') : 'never') + ' · quality ' + JSON.stringify(r.qualityEnd); }).join('\n'));
+    }
+    show('c', 'info', 'codec trials running…', ''); show('e', 'info', 'codec trials running…', '');
+    var chain = Promise.resolve();
+    CODEC_TRIALS.forEach(function (t) { chain = chain.then(function () { return trial(t); }); });
+    return chain.then(function () { report('k', codecResults.map(function (r) { return { name: r.name, verdict: r.verdict }; })); codecRunning = false; })
+      .catch(function (e) { codecRunning = false; report('k-error', errText(e)); });
+  }
+
+  // ---------- run ----------
+  $('runinfo').textContent = RUN + ' · ' + location.href;
+  setInterval(function () { $('clock').textContent = 't+' + Math.round(since() / 1000) + 's'; }, 500);
+  $('b-media').onclick = function () { mediaSection(); };
+  $('b-speak').onclick = function () { speechSection(); };
+  $('b-live').onclick = function () { a11ySection(); };
+  $('b-send').onclick = function () { resendAll('button'); };
+  show('a', 'info', 'press remote keys', 'Every keydown/keyup is listed on the right and sent to the host.');
+  $('b-media').focus();
+
+  var START_DELAY = 5000;
+  $('runinfo').textContent = RUN + ' · auto tests start in ' + START_DELAY / 1000 + ' s';
+  function resendAll(tag) { Object.keys(results).forEach(function (k) { log(k, { resend: tag, data: results[k] }); }); }
+  sleep(START_DELAY).then(function () { envSection(); return discoverTransport(); })
+    .then(fetchSection)
+    .then(mediaSessionSection)
+    .then(a11ySection)
+    .then(speechSection)
+    .then(codecSection) // codec play-through trials; the older media trials stay on the "Re-run media test" button
+    .then(function () { log('summary', { done: true, t: since(), keysSoFar: keyLog.length }); setTimeout(function () { resendAll('final'); }, 3000); $('runinfo').textContent = RUN + ' · auto tests done at t+' + Math.round(since() / 1000) + 's'; $('b-media').focus(); })
+    .catch(function (e) { report('fatal', errText(e)); $('fatal').style.display = 'block'; $('fatal').textContent = 'Probe error: ' + errText(e); });
+})();
+</script>
+</body>
+</html>

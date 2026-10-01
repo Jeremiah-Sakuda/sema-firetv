@@ -1,0 +1,6 @@
+Work: Sintel (2010), Blender Foundation / Durian Open Movie Project.
+License: Creative Commons Attribution 3.0 (CC BY 3.0), https://creativecommons.org/licenses/by/3.0/
+Required attribution: (c) copyright Blender Foundation | durian.blender.org
+Source: https://download.blender.org/durian/movies/Sintel.2010.1080p.mkv (official Blender mirror)
+Excerpt used: 00:02:30-00:03:42, scaled to 1280 px wide and re-encoded to H.264/AAC by tools/fetch-content.sh.
+Changes: excerpted, scaled and re-encoded; separate audio description narration added by Sema. No endorsement by the Blender Foundation is implied.

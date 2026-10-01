@@ -1,0 +1,3 @@
+# Large transcodes (> ~5 MB) used only for VVD codec trials; regenerate with the
+# ffmpeg commands in docs/vega/PLATFORM-FINDINGS.md ("Codec trials").
+long-*
