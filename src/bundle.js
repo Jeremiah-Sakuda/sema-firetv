@@ -329,6 +329,9 @@ const PARAMS = new URLSearchParams(location.search);
 const DEBUG = PARAMS.has('debug');
 const FIXED = PARAMS.get('study') === 'fixed';
 const CLIPS = DATA.prompts ?? {};
+// Vega OS: the platform H.264/VP9 path stalls on the Virtual Device; VP8 WebM plays
+// through (docs/vega/PLATFORM-FINDINGS.md). ?codec=h264 or ?codec=vp8 overrides.
+const PREFER_WEBM = PARAMS.get('codec') === 'vp8' || (PARAMS.get('codec') !== 'h264' && /Kepler|Vega/i.test(navigator.userAgent));
 const video = $('film');
 
 const store = {
@@ -395,14 +398,25 @@ function moveFocus(direction) {
   const items = [...scope.querySelectorAll('button')].filter(shown);
   const from = document.activeElement;
   if (!items.includes(from)) { focusOn(defaultFocusId()); speakFocused(); return; }
-  const r = from.getBoundingClientRect(), x = r.x + r.width / 2, y = r.y + r.height / 2;
-  const horizontal = direction === 'left' || direction === 'right', sign = direction === 'left' || direction === 'up' ? -1 : 1;
-  const next = items.filter(v => v !== from).map(v => {
-    const b = v.getBoundingClientRect(), dx = b.x + b.width / 2 - x, dy = b.y + b.height / 2 - y;
-    return { v, forward: (horizontal ? dx : dy) * sign, cross: Math.abs(horizontal ? dy : dx) };
-  }).filter(c => c.forward > 1).sort((a, b) => (a.forward + 2 * a.cross) - (b.forward + 2 * b.cross))[0];
-  if (next) next.v.focus();
+  const next = nearestInDirection(from.getBoundingClientRect(), items.filter(v => v !== from).map(v => ({ v, r: v.getBoundingClientRect() })), direction)?.v;
+  if (next) next.focus();
   else if (prefs.guidance) speakFocused();  // at an edge: repeat where the viewer is instead of silence
+}
+/**
+ * Spatial navigation. Wide buttons make centre-distance scoring jump rows
+ * (observed on the Vega Virtual Device), so score by edge gap, and treat any
+ * overlap on the perpendicular axis as "same row/column", which always wins.
+ */
+function nearestInDirection(from, candidates, direction) {
+  const horizontal = direction === 'left' || direction === 'right';
+  const gap = b => ({ right: b.left - from.right, left: from.left - b.right, down: b.top - from.bottom, up: from.top - b.bottom })[direction];
+  const [lo, hi, blo, bhi] = horizontal ? ['top', 'bottom', 'top', 'bottom'] : ['left', 'right', 'left', 'right'];
+  const centre = (b, a, z) => (b[a] + b[z]) / 2;
+  return candidates.map(c => {
+    const separation = Math.max(0, Math.max(from[lo], c.r[blo]) - Math.min(from[hi], c.r[bhi]));  // 0 when they overlap
+    const offset = Math.abs(centre(c.r, blo, bhi) - centre(from, lo, hi));
+    return { ...c, forward: gap(c.r), score: gap(c.r) + 1000 * separation + 0.01 * offset };
+  }).filter(c => c.forward > -1).sort((a, b) => a.score - b.score)[0];
 }
 function speakFocused() {
   const el = document.activeElement;
@@ -630,7 +644,7 @@ function openFilm(id) {
   voice.stop(); stopNarration();
   film = entry.package; player = new Playback(film, { allowFixture: true });
   sceneAsks = { scene: null, count: 0 }; suggested = false; endedHandled = false;
-  video.src = film.video; video.load?.();
+  video.src = (PREFER_WEBM && entry.webm) || film.video; video.load?.();
   const saved = store.get(resumeKey(film.id), null);
   const restored = saved ? player.restore(saved) : false;
   const changed = !!saved && !restored && saved.asset === film.id && saved.version !== film.version;

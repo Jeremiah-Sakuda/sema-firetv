@@ -524,14 +524,19 @@
   // Each variant: fresh load, play until `ended` or 6 s without clock progress, then
   // seek and play again to the end. Counts presented frames (requestVideoFrameCallback)
   // to tell "clock runs but no new frames" from real playback.
+  // Results so far (VVD, SDK 0.24.12112): only VP8 plays through; H.264 and VP9 stall at ~3.1 s
+  // (platform decoder path), AV1 has no video track (0x0). The VP9 long-film trials
+  // (L1/L2, run-muq2pd57) were removed after they stalled at 3.2 s, to keep the package small.
   var CODEC_TRIALS = [
+    { name: 'N1-vp8-fixture+narration', src: 'probe-media/fixture-vp8-opus.webm', seekTo: 11, max: 22000, narration: [[2000, 'probe-media/narration-a.mp3'], [8500, 'probe-media/narration-b.mp3']] },
+    { name: 'N2-sintel-vp8+narration', src: 'probe-media/long-sintel-dragon-vp8.webm', seekTo: 60, max: 30000, narration: [[5000, 'probe-media/narration-a.mp3'], [15000, 'probe-media/narration-b.mp3']] },
+    { name: 'L3-sintel-dragon-vp8', src: 'probe-media/long-sintel-dragon-vp8.webm', seekTo: 60, max: 85000 },
+    { name: 'L4-tears-of-steel-vp8', src: 'probe-media/long-tears-of-steel-opening-vp8.webm', seekTo: 60, max: 85000 },
+    { name: 'C2-vp8-opus-webm', src: 'probe-media/fixture-vp8-opus.webm', seekTo: 11, max: 22000 },
     { name: 'C0-h264-high-fixture', src: 'probe-media/fixture-high-720p.mp4', seekTo: 11, max: 22000 },
     { name: 'C1-vp9-opus-webm', src: 'probe-media/fixture-vp9-opus.webm', seekTo: 11, max: 22000 },
-    { name: 'C2-vp8-opus-webm', src: 'probe-media/fixture-vp8-opus.webm', seekTo: 11, max: 22000 },
     { name: 'C3-av1-opus-webm', src: 'probe-media/fixture-av1-opus.webm', seekTo: 11, max: 22000 },
-    { name: 'C4-h264-bf0-zerolatency', src: 'probe-media/fixture-h264-bf0-zerolatency.mp4', seekTo: 11, max: 22000 },
-    { name: 'L1-sintel-dragon-vp9', src: 'probe-media/long-sintel-dragon-vp9.webm', seekTo: 60, max: 85000 },
-    { name: 'L2-tears-of-steel-vp9', src: 'probe-media/long-tears-of-steel-opening-vp9.webm', seekTo: 60, max: 85000 }
+    { name: 'C4-h264-bf0-zerolatency', src: 'probe-media/fixture-h264-bf0-zerolatency.mp4', seekTo: 11, max: 22000 }
   ];
   var codecResults = [], codecRunning = false;
   function codecSection() {
@@ -576,6 +581,15 @@
         out.load = how; out.err = v.error ? v.error.code + ':' + v.error.message : undefined; out.duration = v.duration; out.size = [v.videoWidth, v.videoHeight];
         if (how !== 'canplay') return null;
         var pr; try { pr = v.play(); } catch (e) { out.playThrew = errText(e); }
+        out.narration = [];
+        (t.narration || []).forEach(function (n) {
+          setTimeout(function () {
+            var a = new Audio(n[1]), rec = { src: n[1], at: n[0], videoAtStart: +v.currentTime.toFixed(3), videoPausedAtStart: v.paused, events: [] };
+            ['playing', 'pause', 'ended', 'error', 'waiting'].forEach(function (ev) { a.addEventListener(ev, function () { rec.events.push({ e: ev, act: +a.currentTime.toFixed(3), vct: +v.currentTime.toFixed(3), vpaused: v.paused, vrs: v.readyState }); }); });
+            out.narration.push(rec);
+            try { settle(a.play(), 5000).then(function (r) { rec.playPromise = r; }); } catch (e) { rec.playThrew = errText(e); }
+          }, n[0]);
+        });
         return settle(pr, 5000).then(function (r) { out.playPromise = r; return runUntilEnd(t.max, counters); });
       }).then(function (play) {
         out.play = play; out.framesFirstPass = counters.frames; out.qualityFirstPass = quality(); out.waitingAt = waits.slice();

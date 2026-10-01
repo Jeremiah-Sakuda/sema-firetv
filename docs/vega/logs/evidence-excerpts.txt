@@ -63,3 +63,9 @@ Oct 01 21:38:59.428775 amazon-761010f39a2ef58a com.sema.viewer[12897]: E chromiu
 Oct 01 21:15:42.523866 amazon-761010f39a2ef58a inputd[2872]: I Inputd:inject_key:427: Input event successfully written to udev: TimeStamp=1790889342.521654 : keyType=EV_KEY : keyCode=[PII_OMIT] : state=down
 Oct 01 21:15:42.774172 amazon-761010f39a2ef58a inputd[2872]: I Inputd:inject_key:427: Input event successfully written to udev: TimeStamp=1790889342.772423 : keyType=EV_KEY : keyCode=[PII_OMIT] : state=up
 
+
+## Codec trials: platform decoder init lines. H.264/VP9 in every trial (all stalled); VP8 in 1 of 6 trials (still played through); AV1 never
+Oct 01 21:55:52.153786 amazon-761010f39a2ef58a com.sema.viewer[18116]: I chromium:[2:39:1001/215552.153666:INFO:kepler_common/media/gpu/amazon/amazon_video_decoder_idl.cc:69] Initializing AmazonVideoDecoderIdl with config: codec: h264, profile: h264 high, level: not available, alpha_mode: is_opaque, coded size: [1280,720], visible rect: [0,0,1280,720], natural size: [1280,720], has extra data: tru
+Oct 01 21:56:18.608379 amazon-761010f39a2ef58a com.sema.viewer[18116]: I chromium:[2:39:1001/215618.608210:INFO:kepler_common/media/gpu/amazon/amazon_video_decoder_idl.cc:69] Initializing AmazonVideoDecoderIdl with config: codec: vp9, profile: vp9 profile0, level: not available, alpha_mode: is_opaque, coded size: [1280,720], visible rect: [0,0,1280,720], natural size: [1280,720], has extra data: f
+Oct 01 22:02:12.167432 amazon-761010f39a2ef58a com.sema.viewer[19184]: I chromium:[2:39:1001/220212.167148:INFO:kepler_common/media/gpu/amazon/amazon_video_decoder_idl.cc:69] Initializing AmazonVideoDecoderIdl with config: codec: vp8, profile: vp8, level: not available, alpha_mode: is_opaque, coded size: [1280,720], visible rect: [0,0,1280,720], natural size: [1280,720], has extra data: false, enc
+

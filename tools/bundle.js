@@ -25,7 +25,8 @@ for (const entry of catalog.films) {
   const errors = validatePackage(pkg, { allowFixture });
   if (errors.length) console.warn(`warning ${entry.id}: package fails validation and will show as unavailable:\n  ${errors.join('\n  ')}`);
   const poster = `media/${entry.id}/poster.jpg`;
-  films.push({ package: pkg, poster: exists(poster) ? poster : null, dev: !!entry.dev, allowFixture });
+  const webm = pkg.video.replace(/\.mp4$/, '.webm');  // VP8 rendition for Vega (tools/webm.js)
+  films.push({ package: pkg, poster: exists(poster) ? poster : null, webm: webm !== pkg.video && exists(webm) ? webm : null, dev: !!entry.dev, allowFixture });
 }
 // Until a reviewed film is packaged, show the engineering fixture rather than an empty catalog.
 if (!films.some(f => !f.dev)) for (const f of films) f.dev = false;

@@ -193,3 +193,26 @@ test('resuming at the end is refused with a spoken reason, not a silent no-op', 
   assert.equal(s.app.player.mode, 'ended');
   assert.match(s.$('status').textContent, /film has ended/);
 });
+
+test('D-pad moves within rows and between adjacent rows (layout measured on the Vega Virtual Device)', () => {
+  const s = boot({ prefs: CHOSEN });
+  s.$(`film-${fixture.id}`).click();
+  // Button rectangles from docs/vega/screenshots (1920x1080 WebView), which exposed row-skipping.
+  const layout = {
+    '[data-level="off"]': [106, 238, 727, 790], '[data-level="essential"]': [250, 397, 727, 790],
+    '[data-level="standard"]': [409, 543, 727, 790], '[data-level="rich"]': [556, 690, 727, 790],
+    '#resume': [106, 356, 807, 852], '#recover': [368, 607, 807, 852], '#restart': [619, 733, 807, 852], '#return': [747, 914, 807, 852],
+    '#controls [data-toggle="text"]': [106, 268, 868, 910], '#controls [data-toggle="guidance"]': [280, 445, 868, 910], '#help': [457, 602, 868, 910],
+  };
+  for (const [selector, [left, right, top, bottom]] of Object.entries(layout)) {
+    s.w.document.querySelector(selector).getBoundingClientRect = () => ({ left, right, top, bottom, x: left, y: top, width: right - left, height: bottom - top });
+  }
+  const from = (selector, keyName) => { s.w.document.querySelector(selector).focus(); s.key(keyName); return s.w.document.activeElement; };
+  assert.equal(from('#resume', 'ArrowRight').id, 'recover', 'Right stays in the action row');
+  assert.equal(from('[data-level="essential"]', 'ArrowDown').id, 'resume', 'Down goes to the next row, not two rows');
+  assert.equal(from('[data-level="rich"]', 'ArrowDown').id, 'restart', 'Down picks the action-row button most directly below');
+  assert.equal(from('#controls [data-toggle="guidance"]', 'ArrowUp').id, 'recover', 'Up does not skip the action row');
+  assert.equal(from('#controls [data-toggle="text"]', 'ArrowUp').id, 'resume');
+  assert.equal(from('#recover', 'ArrowUp').dataset.level, 'standard');
+  assert.equal(from('#return', 'ArrowRight').id, 'return', 'Right at the row end stays put');
+});

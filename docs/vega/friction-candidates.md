@@ -194,8 +194,9 @@ Every item below happened during this session, with Vega SDK 0.24.12112, the Veg
     * `media_transform_wrapper_idl.cc:426] No available media format buffer sizes, using fallback frame buffer size`
     * `media_transform_wrapper_idl.cc:735] Color Space is not supported. Downgrading to BT709`
     * `JsonMediaCapabilitiesParser:codec capabilities JSON file is missing for the device!!`
-* **Workaround:** none on the VVD. Put timeouts on `play()` and `seeked`, and verify on a real Fire TV.
-* **Suggestion:** document VVD media limitations, or fix the VVD's video decode path.
+* **More detail:** VP9 WebM behaves exactly like H.264 (stall at 3.18 s; seeks never complete). Both go through `Initializing AmazonVideoDecoderIdl with config: codec: h264|vp9`. AV1 WebM loads with `videoWidth/Height` 0×0 and plays audio only. `canPlayType` still answers `"probably"` for H.264, VP9 and WebM.
+* **Workaround:** **VP8 + Opus in WebM works**: real-time playback to `ended`, every frame presented, seeks in 22–144 ms, verified on 15 s and 72 s films and with separate `new Audio()` narration on top (`PLATFORM-FINDINGS.md`, "Codec trials"). Also put timeouts on `play()` and `seeked`.
+* **Suggestion:** fix the VVD's platform decoder path, or document "use VP8 on the VVD" and make `canPlayType` truthful.
 
 ## 16. VVD has no working speech: `speechSynthesis` fails and VoiceView's TTS service is missing. High (for accessibility apps)
 
@@ -248,3 +249,13 @@ Every item below happened during this session, with Vega SDK 0.24.12112, the Veg
 * `vda shell journalctl` prints `WARNING: journalctl is not supported in developer mode shell. Please use loggingctl instead.` The hint is good. However, `loggingctl log -S "-5min"` fails with `error: unexpected argument '-5' found`; relative times need a different form.
 * After the Mac's display slept, the VVD clock was exactly 23 minutes behind the host (host `22:09:44`, device `21:46:44`). Device-log timestamps no longer lined up with host-side events.
 * In Debug builds, each WebView subresource failure is reported through the host `onError`. The template logs it with `console.error`, which also produces `W Volta:Reporting exception:` stack traces: noisy for an expected condition.
+
+## 20. Deleted assets keep shipping: the build never prunes `build/private/vega/<arch>/<type>/assets/`. High
+
+* **Task:** rebuild after removing or moving files under `vega-app/assets/`. Our web app moved its media from `media/*.mp3` to `media/fixture/*.mp3`.
+* **Steps:** remove files from `assets/`, then build again in the same project directory (`react-native build-vega` / `npm run build:debug`), then `vega exec vpt show-contents <vpkg>`.
+* **Expected:** the package mirrors the current `assets/` directory.
+* **Actual:** the package still contained every file deleted since earlier builds: `assets/media/fixture.json`, `assets/media/door-rich.mp3` and the rest, next to the new `assets/media/fixture/...` files. A probe page's assets would have shipped inside the real app. Those files were still in `build/private/vega/aarch64/Debug/assets/media/`.
+* **Workaround:** delete `vega-app/build/` before each build. `vega-app/scripts/build-staged.sh` now runs `rm -rf "$STAGE/build"` first.
+* **Suggestion:** sync (mirror) the assets into the staging directory instead of copying over it, or clear it at the start of each build.
+
