@@ -142,5 +142,5 @@ See the "AWS services used" table in the README, and `pipeline/README.md` (archi
 Paste the entries from `docs/FRICTION-LOG.md`. The official format is: task, steps, expected vs. actual, severity, workaround, suggestion.
 
 ## Links
-- **Repository:** https://github.com/Jeremiah-Sakuda/sema [confirm after push]
+- **Repository:** https://github.com/Jeremiah-Sakuda/sema-firetv
 - **Video:** [YOU: YouTube/Vimeo URL, public]
