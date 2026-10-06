@@ -14,3 +14,9 @@ content/sources/
 .claude/
 media/*.aiff
 media/*.wav
+
+# Python tool caches
+__pycache__/
+
+# Static player for remote sessions (npm run site); publish deliberately
+site/

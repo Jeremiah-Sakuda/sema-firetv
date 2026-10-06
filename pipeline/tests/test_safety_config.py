@@ -9,7 +9,7 @@ from unittest import mock
 from sema_pipeline import cli
 from sema_pipeline.aws import LiveCallsForbidden, StubBedrock, StubMissing, StubS3, live_services
 from sema_pipeline.config import base_model_id, load_config
-from sema_pipeline.report import estimate_cost
+from sema_pipeline.report import aggregate_usage, estimate_cost
 
 
 class SafetyTests(unittest.TestCase):
@@ -45,10 +45,12 @@ class SafetyTests(unittest.TestCase):
 
 class ConfigTests(unittest.TestCase):
     def test_env_overrides(self):
-        cfg = load_config(env={"SEMA_BUCKET": "b", "AWS_REGION": "us-west-2", "SEMA_OBSERVE_MODEL": "us.amazon.nova-lite-v1:0"})
-        self.assertEqual((cfg["bucket"], cfg["region"], cfg["observe"]["model_id"]), ("b", "us-west-2", "us.amazon.nova-lite-v1:0"))
-        self.assertEqual(load_config(env={"SEMA_REGION": "eu-west-1", "AWS_REGION": "us-west-2"})["region"], "eu-west-1")
-        self.assertEqual(load_config(env={})["observe"]["model_id"], "us.amazon.nova-pro-v1:0")
+        # Ignore the developer's private live-account config when testing defaults.
+        with mock.patch("sema_pipeline.config.Path.is_file", return_value=False):
+            cfg = load_config(env={"SEMA_BUCKET": "b", "AWS_REGION": "us-west-2", "SEMA_OBSERVE_MODEL": "us.amazon.nova-lite-v1:0"})
+            self.assertEqual((cfg["bucket"], cfg["region"], cfg["observe"]["model_id"]), ("b", "us-west-2", "us.amazon.nova-lite-v1:0"))
+            self.assertEqual(load_config(env={"SEMA_REGION": "eu-west-1", "AWS_REGION": "us-west-2"})["region"], "eu-west-1")
+            self.assertEqual(load_config(env={})["observe"]["model_id"], "us.amazon.nova-pro-v1:0")
 
     def test_example_config_matches_defaults(self):
         from sema_pipeline.config import DEFAULTS, PIPELINE_DIR
@@ -65,17 +67,23 @@ class ConfigTests(unittest.TestCase):
 class CostTests(unittest.TestCase):
     def test_estimate(self):
         prices = load_config(env={})["prices"]
-        rows = [{"service": "transcribe", "seconds": 10.0, "job": "j"},                       # 15 s minimum
+        rows = [{"service": "transcribe", "seconds": 10.1, "job": "j"},                       # rounded up to 11 seconds
                 {"service": "bedrock", "model": "us.amazon.nova-pro-v1:0", "inputTokens": 10_000, "outputTokens": 1_000},
                 {"service": "bedrock", "model": "mystery-model", "inputTokens": 5, "outputTokens": 5},
                 {"service": "polly", "engine": "neural", "characters": 1_000_000}]
         est = estimate_cost(rows, prices)
         by = {l["service"]: l["usd"] for l in est["lines"]}
-        self.assertAlmostEqual(by["transcribe"], 15 / 60 * 0.024)
+        self.assertAlmostEqual(by["transcribe"], 11 / 60 * 0.006)
         self.assertAlmostEqual(by["bedrock"], 10 * 0.0008 + 1 * 0.0032)
         self.assertAlmostEqual(by["polly"], 16.0)
         self.assertEqual(len(est["unpriced"]), 1)   # unknown models are flagged, never silently $0
         self.assertIn("ESTIMATE", est["label"])
+
+    def test_transcribe_rounding_is_per_job_without_a_minimum(self):
+        rows = [{"service": "transcribe", "seconds": .1}, {"service": "transcribe", "seconds": 10.1}]
+        usage = aggregate_usage(rows)
+        self.assertEqual(usage["transcribe"]["billedSeconds"], 12)
+        self.assertEqual(aggregate_usage(rows, 15)["transcribe"]["billedSeconds"], 30)
 
 
 if __name__ == "__main__":

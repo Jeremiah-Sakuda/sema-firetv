@@ -43,7 +43,11 @@ test('forward seek intentionally bypasses, backward seek allows another pass', (
   p.seek(0);assert.equal(p.delivery.get('key'),'not-due');p.resume();assert.ok(p.tick(2.3));
 });
 test('Off bypasses pending information without claiming delivery', () => { const p=player();p.tick(2.3);p.setLevel('off');assert.equal(p.delivery.get('key'),'bypassed');p.resume();p.tick(10);assert.equal(p.delivery.get('door'),'bypassed'); });
-test('recovery before first beat and at a fresh scene is unavailable', () => { const p=player();assert.equal(p.recover(),null);p.seek(8.1);assert.equal(p.recover(),null);assert.equal(p.mode,'controls'); });
+test('recovery before the first visual moment is unavailable', () => { const p=player();assert.equal(p.recover(),null);assert.equal(p.mode,'controls'); });
+test('recovery after a camera cut offers the latest earlier moment, never a later one', () => {
+  const p=player(); p.seek(8.1); const r=p.recover(); assert.deepEqual(r.events,['key']);
+  assert.ok(p.log.at(-1).otherShot); assert.ok(p.asset.events.find(e=>e.id==='key').availableAt<=8.1);
+});
 test('repeated recovery cancels previous generation without overlap', () => { const p=player();p.tick(2.3);const first=p.recover();const second=p.recover();assert.notEqual(first.token,second.token);assert.equal(p.complete(first.token),false);assert.equal(p.complete(second.token),true); });
 test('catalog save/restore keeps pending facts; new package refuses old snapshot', () => {
   const p=player();p.tick(2.3);p.catalog();const s=p.snapshot();const next=player();assert.equal(next.restore(s),true);assert.equal(next.pending().length,1);assert.equal(next.mode,'controls');
@@ -69,3 +73,25 @@ test('a late cue that fits no variant becomes recoverable', () => {
   const p=new Playback(a); p.enter(); p.resume(); assert.equal(p.tick(4.5),null); assert.equal(p.mode,'controls'); assert.equal(p.pending()[0].id,'key');
 });
 test('sceneAt maps positions, including the final instant', () => { const p=player(); assert.equal(p.sceneAt(0).id,'a'); assert.equal(p.sceneAt(8).id,'b'); assert.equal(p.sceneAt(15).id,'b'); });
+
+// Packages with optional (non-critical) detail, as the real drafts have.
+function withOptional() {
+  const a=fixture(); const speech={ text:'Mist drifts.', audio:'media/mist.mp3', duration:1 };
+  a.cues[1].end=11.5;
+  a.events.push({id:'mist',scene:'b',availableAt:11,critical:false,recovery:speech});
+  a.cues.push({id:'c3',events:['mist'],start:11.6,end:15,margin:.2,variants:{essential:speech,standard:speech,rich:speech}});
+  const p=new Playback(a); p.enter(); p.resume(); return p;
+}
+// Deliver the envelope and door cues normally, as continuous viewing would.
+const throughDoor = p => { p.complete(p.tick(2.3).token); p.complete(p.tick(9.5).token); return p; };
+test('a late optional cue is skipped without pausing the film', () => { const p=throughDoor(withOptional()); assert.equal(p.tick(14.5),null); assert.equal(p.mode,'playing'); assert.equal(p.pending().length,0); assert.ok(p.log.some(e=>e.type==='late-cue'&&e.critical===false)); });
+test('optional narration that starts too late is dropped silently; playback continues', () => {
+  const p=throughDoor(withOptional()); const c=p.tick(11.9);
+  assert.equal(p.canStart(c.token,13.9),false); assert.equal(p.mode,'playing'); assert.equal(p.active,null); assert.equal(p.pending().length,0);
+  assert.equal(p.complete(c.token),false,'a stale completion cannot claim delivery');
+});
+test('optional narration overrunning its window is dropped silently', () => { const p=throughDoor(withOptional()); p.tick(11.9); p.tick(14.81); assert.equal(p.mode,'playing'); assert.equal(p.active,null); });
+test('a fact left pending by choice does not re-interrupt at a later optional cue', () => {
+  const p=withOptional(); p.complete(p.tick(2.3).token); p.tick(9.5); p.controls(); assert.equal(p.pending()[0].id,'door');
+  p.resume(); assert.equal(p.tick(14.5),null); assert.equal(p.mode,'playing','no pause for the earlier fact'); assert.equal(p.pending()[0].id,'door');
+});

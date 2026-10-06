@@ -155,13 +155,15 @@ def derive_windows(dialogue: list[dict], duration: float, scenes: list[dict] | N
 # ---------------------------------------------------------------- cue plan
 
 def plan_cues(windows: list[dict], events: list[dict], *, min_window: float = 1.5,
-              max_events: int = 3) -> tuple[list[dict], list[dict]]:
+              max_events: int = 3, max_optional_age_seconds: float = 6.0) -> tuple[list[dict], list[dict]]:
     """Assign events to narration cues inside windows.
 
     Invariants (the player's validator enforces the first two):
       * every event in a cue has availableAt <= cue.start (no future facts);
       * cues are ordered and non-overlapping, each inside one window;
       * critical events are preferred; an event is described at most once.
+      * stale optional actions stay in recovery rather than being read over a later scene.
+      * optional arrivals cannot shorten a critical cue to less than three seconds.
 
     A cue may start after its window starts: if an event only becomes visible
     mid-window, the cue starts at that moment. If a critical event arrives less
@@ -171,8 +173,9 @@ def plan_cues(windows: list[dict], events: list[dict], *, min_window: float = 1.
     pending = {e["id"]: e for e in events}
     cues: list[dict] = []
 
-    def available(t: float) -> list[dict]:
-        return sorted((e for e in pending.values() if e["availableAt"] <= t),
+    def available(t: float, window: dict) -> list[dict]:
+        return sorted((e for e in pending.values() if e["availableAt"] <= t and
+                       (e["critical"] or t - e["availableAt"] <= max_optional_age_seconds)),
                       key=lambda e: (e["availableAt"], e["id"]))
 
     def arrivals(after: float, until: float, critical_only: bool = False) -> list[float]:
@@ -193,7 +196,7 @@ def plan_cues(windows: list[dict], events: list[dict], *, min_window: float = 1.
             if not pending or w_end - cursor < min_window - EPS:
                 break
             latest = w_end - min_window
-            here = available(cursor)
+            here = available(cursor, window)
             critical_next = arrivals(cursor, latest, critical_only=True)
             if not any(e["critical"] for e in here):
                 if critical_next:
@@ -212,7 +215,8 @@ def plan_cues(windows: list[dict], events: list[dict], *, min_window: float = 1.
                 cursor = r3(ceil2(critical_next[0]))
                 continue
             chosen = sorted(here, key=lambda e: (not e["critical"], e["availableAt"]))[:max_events]
-            splits = [t for t in arrivals(cursor, latest) if t - cursor >= min_window - EPS]
+            split_min = max(min_window, 3.0) if any(e["critical"] for e in chosen) else min_window
+            splits = [t for t in arrivals(cursor, latest) if t - cursor >= split_min - EPS]
             end = ceil2(splits[0]) if splits else w_end
             emit(window, cursor, end, chosen)
             cursor = r3(end)

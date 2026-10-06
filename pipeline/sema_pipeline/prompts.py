@@ -46,6 +46,9 @@ def run_prompts(cfg: dict, services: Services, *, web_root: Path, prompts_file: 
     meta = {"generatedAt": now_iso(), "mode": services.mode, "voice": narrator.voice, "count": len(result),
             "characters": sum(r["characters"] for r in rows), "output": str(out_dir / "prompts.json"),
             "estimatedCost": estimate_cost(rows, cfg["prices"])}
+    # Ship provenance beside the flat player mapping so a release can distinguish
+    # actual Polly speech from the offline sine-tone renderer.
+    (out_dir / "provenance.json").write_text(json.dumps(meta, indent=2) + "\n")
     if report_dir:
         report_dir.mkdir(parents=True, exist_ok=True)
         (report_dir / "prompts-report.json").write_text(json.dumps(meta, indent=2) + "\n")

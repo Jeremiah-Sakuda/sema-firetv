@@ -25,20 +25,25 @@ SYSTEM = (
     "so blind and low-vision viewers can follow the story. Reply with JSON only. No prose, no markdown."
 )
 
-SCHEMA_HINT = """Return ONLY this JSON object:
-{"characters": [{"ref": "woman-red-coat", "description": "appearance only", "firstSeenAt": 0.0}],
- "events": [{"id": "envelope-hidden", "description": "One factual present-tense sentence.",
-             "startTime": 1.5, "availableAt": 2.0, "critical": true, "sceneId": "s01",
-             "characters": ["woman-red-coat"],
-             "details": {"spatial": "...", "appearance": "...", "expression": "...", "setting": "..."}}]}
+SCHEMA_HINT = """Analyze the supplied visual media, then return a JSON object with two arrays: characters and events.
+Each character object must have: ref (a stable kebab-case identifier based on visible appearance),
+description (visible appearance), firstSeenAt (number of seconds).
+Each event object must have: id (unique kebab-case identifier for the actual action),
+description (a factual present-tense sentence describing the visible action or setting),
+startTime (number), availableAt (number), critical (boolean), sceneId (shot identifier),
+characters (array of character refs), details (object with optional spatial, appearance, expression, setting strings).
 Rules:
-- Times are seconds from the start of the film.
-- startTime: when the action begins. availableAt: earliest moment the result is clearly visible (>= startTime).
-- critical: true only if a viewer who misses it would lose the plot.
-- Describe only what is visible. No guesses about intent. No names unless a name appears on screen.
-- Use one stable kebab-case ref per character and reuse it everywhere.
-- Include brief actions (under one second) when they matter to the plot.
-- Order events by availableAt."""
+- Describe the supplied images/video, not these field instructions. Never invent sample people or actions.
+- Times are seconds from the start of the film. For timestamped images, use the supplied image times.
+- startTime is when the action is first observed; availableAt is the earliest supplied time its result is clearly visible.
+- availableAt must be >= startTime. Do not guess what happens between images or after the last supplied image.
+- critical is true only for a story-changing action or reveal that a viewer must know to understand later events.
+  Establishing scenery, ordinary conversation gestures, and appearance details are usually not critical.
+- Describe only what is visible. No guesses about intent, relationships, diagnoses, or offscreen events.
+- No names unless a name appears on screen. Reuse one stable ref per character throughout the film.
+- Include brief actions when visible and relevant. Do not repeat an unchanged pose or setting on every image.
+- Empty events is allowed for a batch with no new meaningful visual information.
+- Order events by availableAt. Use actual observations, never placeholder text."""
 
 
 def _scene_text(scenes: list[dict]) -> str:
@@ -76,7 +81,7 @@ def _as_bool(value) -> bool:
     return str(value).strip().lower() in {"true", "yes", "1", "critical", "y"}
 
 
-def normalize_observations(obj, duration: float, scenes: list[dict]) -> tuple[list[dict], list[dict], list[str]]:
+def normalize_observations(obj, duration: float, scenes: list[dict], *, allow_empty: bool = False) -> tuple[list[dict], list[dict], list[str]]:
     """Validate/repair model output. Returns (events, characters, problems)."""
     problems: list[str] = []
     if isinstance(obj, list):
@@ -96,6 +101,8 @@ def normalize_observations(obj, duration: float, scenes: list[dict]) -> tuple[li
         if not desc:
             problems.append(f"event #{i}: empty description; dropped")
             continue
+        if desc.casefold().rstrip(".") in {"one factual present-tense sentence", "appearance only", "..."}:
+            raise ValueError("schema placeholder echoed instead of a visible observation")
         start, avail = parse_time(raw.get("startTime")), parse_time(raw.get("availableAt"))
         if start is None and avail is None:
             problems.append(f"event #{i} '{desc[:40]}': no usable time; dropped")
@@ -123,6 +130,7 @@ def normalize_observations(obj, duration: float, scenes: list[dict]) -> tuple[li
             "critical": _as_bool(raw.get("critical", False)),
             "scene": scene_at(scenes, avail2)["id"], "modelSceneId": raw.get("sceneId"),
             "characters": chars, "details": {k: str(v) for k, v in details.items() if v},
+            **({"requiredTerms": raw["requiredTerms"]} if raw.get("requiredTerms") else {}),
         })
     events.sort(key=lambda e: (e["availableAt"], e["id"]))
     characters, refs = [], set()
@@ -144,7 +152,7 @@ def normalize_observations(obj, duration: float, scenes: list[dict]) -> tuple[li
                 refs.add(ref)
                 characters.append({"ref": ref, "description": "", "firstSeenAt": e["availableAt"]})
                 problems.append(f"character '{ref}' used by {e['id']} was not declared; added")
-    if not events:
+    if not events and not (allow_empty and not raw_events):
         raise ValueError("no usable events")
     return events, characters, problems
 
@@ -190,6 +198,9 @@ def observe_frames(ws, cfg, services, manifest, analysis, model_id, fps: float):
     frames = media.extract_frames(src, fps, ws.dir / "frames", int(cfg["observe"]["frame_width"]))
     if not frames:
         raise PipelineError("ffmpeg extracted no frames")
+    ws.write("frame-times.json", {"basis": "Selected source-frame PTS", "requestedFPS": fps,
+                                  "frames": [{"time": t, "file": str(path.relative_to(ws.dir))}
+                                             for t, path in frames]})
     batch_size = int(cfg["observe"]["frames_batch"])
     all_events: list[dict] = []
     characters: dict[str, dict] = {}
@@ -200,17 +211,22 @@ def observe_frames(ws, cfg, services, manifest, analysis, model_id, fps: float):
         known = "; ".join(f"{c['ref']}: {c['description']}" for c in characters.values()) or "none yet"
         logged = "; ".join(f"{e['id']} @ {e['availableAt']}s" for e in all_events[-12:]) or "none yet"
         content: list[dict] = [{"text": (
-            f"Frames {b + 1} of a {analysis['duration']:.2f} s film, sampled at {fps} frames per second. "
+            f"Batch {b + 1} of a {analysis['duration']:.2f} s film, sampled at {fps} frames per second. "
             f"Detected shots: {_scene_text(analysis['scenes'])}. Each image is preceded by its exact timestamp.\n"
             f"Characters already identified (reuse these refs): {known}.\n"
-            f"Events already logged from earlier frames (do not repeat): {logged}.\n" + SCHEMA_HINT)}]
+            f"Events already logged from earlier frames (do not repeat): {logged}.\n"
+            f"All event times must be within {batch[0][0]:.2f}-{batch[-1][0]:.2f}s, the supplied batch.\n" + SCHEMA_HINT)}]
         for t, path in batch:
             content.append({"text": f"Frame at t={t:.2f}s"})
             content.append({"image": {"format": "jpeg", "source": {"bytes": Path(path).read_bytes()}}})
         holder = {}
 
-        def validate(value, _holder=holder):
-            _holder["parsed"] = normalize_observations(value, analysis["duration"], analysis["scenes"])
+        def validate(value, _holder=holder, _batch=batch):
+            parsed = normalize_observations(value, analysis["duration"], analysis["scenes"], allow_empty=True)
+            for event in parsed[0]:
+                if event["startTime"] < _batch[0][0] - 0.05 or event["availableAt"] > _batch[-1][0] + 0.05:
+                    raise ValueError("event time outside the supplied image batch; use only supplied timestamps")
+            _holder["parsed"] = parsed
             return value
 
         _raw, info = ask_json(services, cfg, ws, stage="observe", tag=f"observe:frames:{b:03d}", model_id=model_id,

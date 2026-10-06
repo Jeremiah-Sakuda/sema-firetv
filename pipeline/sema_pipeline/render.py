@@ -17,7 +17,7 @@ from typing import Callable
 from . import media
 from .aws import Services
 from .llm import ask_json
-from .script import SYSTEM as AD_SYSTEM, set_issues
+from .script import SYSTEM as AD_SYSTEM, set_issues, validate_required_terms
 from .timeline import LEVELS, available_speech_seconds, count_words, fits, r3, shorten_target_words
 from .workspace import PipelineError, Workspace, now_iso
 
@@ -90,6 +90,7 @@ def bedrock_shortener(services: Services, cfg: dict, ws: Workspace, cue: dict, l
             f"This {level} audio-description line takes {measured:.2f} s to speak, but only {available:.2f} s fit "
             f"between dialogue.\nLine: \"{text}\"\n"
             f"Plot-critical facts that must survive: {'; '.join(must_keep) or 'none'}\n"
+            f"Required spoken concepts (one choice per group): {cue.get('requiredTerms', [])}.\n"
             f"Rewrite it in at most {target} words. Keep present tense and the same people references. "
             'Do not add facts.\nReply as {"text": "..."}')
 
@@ -97,6 +98,7 @@ def bedrock_shortener(services: Services, cfg: dict, ws: Workspace, cue: dict, l
             out = value.get("text") if isinstance(value, dict) else None
             if not isinstance(out, str) or not out.strip():
                 raise ValueError("missing 'text'")
+            validate_required_terms(out, cue.get("requiredTerms", []))
             return out
 
         value, _info = ask_json(services, cfg, ws, stage="render", tag=f"fit:shorten:{cue['id']}:{level}:{attempt}",
@@ -130,6 +132,7 @@ def run_render(ws: Workspace, cfg: dict, services: Services, *, agent: bool = Fa
         cue_results[cue["id"]] = {}
         for level in LEVELS:
             def render(text, attempt, _cue=cue, _level=level):
+                validate_required_terms(text, _cue.get("requiredTerms", []))
                 out = narrator.synthesize(text, ws.dir / "audio" / f"{_cue['id']}-{_level}-a{attempt}.mp3")
                 return {"audio": out["audio"], "duration": out["duration"]}
 

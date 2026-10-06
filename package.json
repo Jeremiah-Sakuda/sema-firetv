@@ -14,8 +14,11 @@
     "start": "node tools/serve.js",
     "validate": "node tools/validate.js --all",
     "content:fetch": "sh tools/fetch-content.sh",
-    "fixture": "python3 tools/generate-fixture.py",
-    "vega:sync": "node tools/vega-sync.js"
+    "fixture": "AWS_PROFILE=sema pipeline/.venv/bin/python tools/generate-fixture.py && node tools/webm.js",
+    "vega:sync": "node tools/vega-sync.js",
+    "release:check": "node tools/release-check.js",
+    "coverage:recovery": "node tools/recovery-coverage.js --report docs/verification/RECOVERY-COVERAGE.md",
+    "site": "node tools/build-site.js"
   },
   "devDependencies": {
     "jsdom": "^26.1.0"

@@ -9,6 +9,8 @@ a future fact it was never given.
 """
 from __future__ import annotations
 
+import re
+
 from .aws import Services
 from .llm import ask_json
 from .timeline import LEVELS, count_words, level_budgets, plan_cues
@@ -17,7 +19,8 @@ from .workspace import Workspace, now_iso
 SYSTEM = (
     "You write audio description (AD) for blind and low-vision viewers. Style: present tense, third person, "
     "plain concrete words, describe what is seen rather than what it means, no camera jargon, never mention "
-    "sound or dialogue. Refer to people only by the references given; never invent names. Use ONLY the facts "
+    "sound or dialogue. Use natural spoken descriptions for people; character refs and event IDs are database "
+    "identifiers, never words to read aloud. Never invent names. Use ONLY the facts "
     "provided; never add events, objects or outcomes that are not listed. Reply with JSON only."
 )
 
@@ -50,6 +53,7 @@ def cue_prompt(cue: dict, cue_events: list[dict], context: list[dict], character
         f"Facts to describe now (all already visible on screen):\n" + "\n".join(_fact_line(e) for e in cue_events) +
         f"\nAlready described earlier (context only; do not repeat):\n{earlier}\n"
         f"People known so far:\n{_characters(characters, cue['start'])}\n\n"
+        f"Required spoken concepts in EVERY version: {[e.get('requiredTerms', []) for e in cue_events if e['critical']]}.\n"
         "Write three versions of ONE narration line. A listener hears only one version, so each must stand alone.\n"
         f"- essential: only the [critical] facts, at most {b['essential']} words. If nothing is critical, the "
         "shortest useful phrase.\n"
@@ -70,7 +74,19 @@ def recovery_prompt(event: dict, known: list[dict], characters: list[dict], max_
     )
 
 
-def _validate_variants(value):
+def validate_required_terms(text: str, groups: list) -> None:
+    """Editorial content floor, distinct from timing fit; does not replace human review.
+
+    Each group supplies acceptable words/phrases for one essential concept.
+    Only explicitly grounded/editorial requirements are enforced.
+    """
+    for choices in groups:
+        choices = [choices] if isinstance(choices, str) else choices
+        if not any(re.search(r"(?<!\w)" + re.escape(term) + r"(?!\w)", text, re.I) for term in choices):
+            raise ValueError(f"critical concept missing: one of {choices}; never remove this to shorten speech")
+
+
+def _validate_variants(value, required_terms=()):
     if not isinstance(value, dict):
         raise ValueError("expected an object with essential, standard and rich")
     out = {}
@@ -79,6 +95,7 @@ def _validate_variants(value):
         if not isinstance(text, str) or not text.strip():
             raise ValueError(f"missing or empty '{level}'")
         out[level] = " ".join(text.split())
+        validate_required_terms(out[level], required_terms)
     return out
 
 
@@ -125,11 +142,12 @@ def run_script(ws: Workspace, cfg: dict, services: Services, *, model_id: str | 
                                        safety=scfg["safety"], ratios=scfg["level_ratios"],
                                        cap_seconds=scfg.get("max_budget_seconds"))
         cue_events = [by_id[i] for i in cue["events"]]
+        cue["requiredTerms"] = [group for e in cue_events if e["critical"] for group in e.get("requiredTerms", [])]
         context = [by_id[i] for i in described if by_id[i]["availableAt"] <= cue["start"]][-4:]
         variants, info = ask_json(services, cfg, ws, stage="script", tag=f"script:cue:{cue['id']}",
                                   model_id=model_id,
                                   messages=[{"role": "user", "content": [{"text": cue_prompt(cue, cue_events, context, characters)}]}],
-                                  system=SYSTEM, inference=_inference(cfg), validate=_validate_variants)
+                                  system=SYSTEM, inference=_inference(cfg), validate=lambda value: _validate_variants(value, cue["requiredTerms"]))
         requests += info["requests"]
         cue["variants"] = {lvl: {"text": variants[lvl], "words": count_words(variants[lvl])} for lvl in LEVELS}
         cue["overBudget"] = [lvl for lvl in LEVELS if cue["variants"][lvl]["words"] > cue["budgets"][lvl]]

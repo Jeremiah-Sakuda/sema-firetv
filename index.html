@@ -24,11 +24,11 @@
       <p class="eyebrow">BEFORE YOU START</p>
       <h1 id="welcome-title">How much do you want to hear?</h1>
       <p class="intro">Sema describes what happens on screen in the pauses between dialogue. You can change the level at any time. During the film, press <kbd>Select</kbd> and choose <strong>What did I miss?</strong> to hear a recent moment again.</p>
-      <div class="levels" role="group" aria-label="Description detail">
-        <button data-choose-level="essential" data-say="label_level_essential">Essential<span>Key story moments</span></button>
-        <button data-choose-level="standard" data-say="label_level_standard_suggested">Standard<span>Story and context · Suggested</span></button>
-        <button data-choose-level="rich" data-say="label_level_rich">Rich<span>More visual detail</span></button>
-        <button data-choose-level="off" data-say="label_level_off">Off<span>No description</span></button>
+      <div class="levels" role="radiogroup" aria-label="Description detail">
+        <button role="radio" aria-checked="false" data-choose-level="essential" data-say="label_level_essential">Essential<span>Key story moments</span></button>
+        <button role="radio" aria-checked="false" data-choose-level="standard" data-say="label_level_standard_suggested">Standard<span>Story and context · Suggested</span></button>
+        <button role="radio" aria-checked="false" data-choose-level="rich" data-say="label_level_rich">Rich<span>More visual detail</span></button>
+        <button role="radio" aria-checked="false" data-choose-level="off" data-say="label_level_off">Off<span>No description</span></button>
       </div>
       <div class="preferences"><button data-toggle="guidance"></button></div>
       <p class="fine-print">Using VoiceView? Turn spoken guidance off so you hear each control once.</p>
@@ -44,11 +44,11 @@
           <span id="position" aria-hidden="true"></span>
         </div>
         <p id="status"></p>
-        <div id="level-group" class="levels" role="group" aria-label="Description detail">
-          <button data-level="off">Off<span>No description</span></button>
-          <button data-level="essential">Essential<span>Key story moments</span></button>
-          <button data-level="standard">Standard<span>Story and context</span></button>
-          <button data-level="rich">Rich<span>More visual detail</span></button>
+        <div id="level-group" class="levels" role="radiogroup" aria-label="Description detail">
+          <button role="radio" aria-checked="false" data-level="essential">Essential<span>Key story moments</span></button>
+          <button role="radio" aria-checked="false" data-level="standard">Standard<span>Story and context</span></button>
+          <button role="radio" aria-checked="false" data-level="rich">Rich<span>More visual detail</span></button>
+          <button role="radio" aria-checked="false" data-level="off">Off<span>No description</span></button>
         </div>
         <div class="actions">
           <button id="resume" class="primary">Play film</button>

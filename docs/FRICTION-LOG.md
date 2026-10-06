@@ -41,6 +41,8 @@ Real problems we hit while building Sema between 2026-09-27 and 2026-10-01. Each
 | 19 | Small CLI and log papercuts | Low |
 | 20 | Deleted assets keep shipping: the build never prunes `build/private/vega/<arch>/<type>/assets/` | High |
 | 21 | Turning on VoiceView warns that it "can only speak during video playback if Dolby audio is disabled" | High (for audio-description apps) |
+| 22 | `useKeplerBackHandler` takes Back away from the WebView; the generic `BackHandler.exitApp()` does nothing | High (for WebView apps) |
+| 23 | VVD media playback slows to a crawl after repeated reinstalls; restarting the VVD restores it | Medium |
 
 ---
 
@@ -302,3 +304,30 @@ Real problems we hit while building Sema between 2026-09-27 and 2026-10-01. Each
 - **Why it matters:** blind viewers are exactly the users who need both VoiceView and good program audio.
 - **Workaround:** Sema pauses the film before any interface speech (spoken guidance, recovery, state announcements). So VoiceView and Sema never need to speak over playing video.
 - **Suggestion:** document which audio paths are affected, and expose an API so apps can tell whether VoiceView can currently speak during playback.
+
+## 22. `useKeplerBackHandler` takes Back away from the WebView; the generic `BackHandler.exitApp()` does nothing. High (for WebView apps)
+
+- **Task:** in the `vegaWebview` template, let the page own Back (pause, leave the film, return to the catalog), then exit the app when Back is pressed on the page's root screen. This is standard Fire TV behaviour.
+- **Steps and actual results** (Vega SDK 0.24.12112, VVD, 2026-10-05):
+  1. **Generic API.** The page posts `{"sema":"exit"}`, and `App.tsx` calls `BackHandler.exitApp()` from `react-native`. **Actual:** the app keeps running (`vega device running-apps` still lists `com.sema.viewer.main`). The Kepler implementation calls `NativeDeviceEventManager.invokeDefaultBackPressHandler()`, which has no effect here.
+  2. **Root-tag-aware hook.** Call `useKeplerBackHandler()` and use its `exitApp()`. **Actual:** registering the hook installs a native Back listener. With no subscription, the **first Back anywhere exits the app**. The page never sees it, and the system calls the `mediaSession` `pause` action as the app backgrounds.
+  3. **Claiming Back.** Add `addEventListener('hardwareBackPress', () => true)`. **Actual:** the app no longer exits, but **Back no longer reaches the WebView at all**: no `keydown`, so the film kept playing.
+- **Expected:** a documented way for a WebView app to receive Back in the page *and* to exit the app when the page declines it.
+- **Workaround (shipped):**
+  - Claim Back in a `hardwareBackPress` subscription, and forward it with `webRef.current.injectJavaScript('window.__semaBack && window.__semaBack(); true;')`.
+  - The page handles Back. On its root screen it posts `{"sema":"exit"}`, and the host calls `useKeplerBackHandler().exitApp()`.
+  - Verified on the VVD: Back during playback pauses; Back on the catalog exits.
+- **Suggestion:** document Back ownership between the React Native host and `@amazon-devices/webview`. Add a WebView option that delivers Back to the page and calls a host callback when the page doesn't handle it.
+
+## 23. VVD media playback slows to a crawl after repeated reinstalls; restarting the VVD restores it. Medium
+
+- **Task:** reinstall and relaunch a debug build several times during one VVD session (Vega SDK 0.24.12112, 2026-10-05).
+- **Steps:** `vega run-app vega-app/build/vpkg/sema_aarch64.vpkg com.sema.viewer.main` about 4 times over about 40 minutes, playing the same 15 s VP8/Opus fixture each time.
+- **Expected:** real-time playback every time. The first run after a fresh boot reached 0:04 after about 4 s.
+- **Actual:**
+  - In later runs the clock advanced about 0.07 s per second of wall time (0.299 s → 1.067 s over about 13 s). There were no `waiting` events.
+  - The screen showed only the poster or a frozen frame (`docs/vega/screenshots/54-vvd-degraded-poster-only.png`).
+  - After `vega virtual-device stop` and `start`, the identical build played in real time again (0:05, then 0:09).
+- **Workaround:** restart the VVD before any timing-sensitive test or demo recording.
+- **Suggestion:** investigate media-pipeline resource leaks across app reinstalls on the VVD, and document the restart.
+

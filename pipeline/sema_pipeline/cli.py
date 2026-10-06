@@ -75,7 +75,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     def add(name, help_text):
         p = sub.add_parser(name, parents=[common], help=help_text)
-        if name != "prompts":
+        if name not in {"prompts", "preflight"}:
             p.add_argument("--asset", required=True, help="Asset id ([a-zA-Z0-9_-]); becomes media/<asset>/")
         return p
 
@@ -88,6 +88,9 @@ def build_parser() -> argparse.ArgumentParser:
         p.add_argument("--bucket", help="S3 bucket (default: SEMA_BUCKET / config)")
         p.add_argument("--create-bucket", action="store_true", help="Live: create the bucket if missing")
 
+    p = add("preflight", "Check tools/config/credentials; --live authenticates with STS only")
+    p.add_argument("--profile", help="AWS profile to check (e.g. sema)")
+    p.add_argument("--bucket", help="Bucket intended for the pilot")
     ingest_args(add("ingest", "Upload source to S3, checksum, record rights"))
     p = add("analyze", "Transcribe dialogue + ffmpeg scenes/silence -> narration windows")
     p.add_argument("--scene-threshold", type=float, help="ffmpeg scene score threshold (default 0.3)")
@@ -102,6 +105,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--reviewer", required=True, help="Reviewer name recorded in the approval")
     p.add_argument("--approve-all", action="store_true", help="Non-interactive approval, recorded as such")
     p.add_argument("--restart", action="store_true", help="Discard saved review progress")
+    p.add_argument("--preview-review-minutes", type=float, help="Cumulative active review minutes outside the terminal; not an increment")
     p = add("package", "Write media/<asset>/package.json and validate with node tools/validate.js")
     p.add_argument("--web-root", help="Player web root (default: project root for live runs, pipeline/out otherwise)")
     p.add_argument("--version", dest="pkg_version", help="Package version string")
@@ -128,6 +132,13 @@ def main(argv: list[str] | None = None) -> int:
     try:
         cfg = load_config(args.config)
         work_root = Path(args.work_root) if args.work_root else PIPELINE_DIR / "work"
+        if args.command == "preflight":
+            from .preflight import check_readiness
+            if args.bucket:
+                cfg["bucket"] = args.bucket
+            result = check_readiness(cfg, profile=args.profile, live=args.live)
+            _print_json(result)
+            return 0 if result["ready"] else 1
         if args.command == "prompts":
             from .prompts import run_prompts
             services = make_services(args, cfg, None, work_root / "_stub")
@@ -164,7 +175,7 @@ def main(argv: list[str] | None = None) -> int:
                 services = make_services(args, cfg, ws, ws.stub_root)
             with ws.stage("review", services.mode if services else "local") as entry:
                 log = run_review(ws, cfg, services, reviewer=args.reviewer, approve_all=args.approve_all,
-                                 io=ReviewIO(), restart=args.restart)
+                                 io=ReviewIO(), restart=args.restart, preview_minutes=args.preview_review_minutes)
                 entry["completed"] = log["completed"]
             if log["completed"]:
                 print(f"REVIEW COMPLETE ({log['method']}): {len(log['edits'])} edits, {len(log['drops'])} drops, "

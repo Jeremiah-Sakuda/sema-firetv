@@ -9,6 +9,7 @@ jest.mock('@amazon-devices/webview', () => ({
 jest.mock('@amazon-devices/react-native-kepler', () => ({
   usePreventHideSplashScreen: jest.fn(),
   useHideSplashScreenCallback: jest.fn(() => jest.fn()),
+  useKeplerBackHandler: jest.fn(() => ({exitApp: jest.fn(), addEventListener: jest.fn(() => ({remove: jest.fn()}))})),
   StyleSheet: {create: (styles: unknown) => styles},
   View: 'View',
 }));

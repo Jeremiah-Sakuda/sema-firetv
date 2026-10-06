@@ -120,7 +120,17 @@ def extract_frames(src: Path, fps: float, outdir: Path, width: int = 640) -> lis
     outdir.mkdir(parents=True, exist_ok=True)
     for old in outdir.glob("frame_*.jpg"):
         old.unlink()
-    _run([FFMPEG, "-hide_banner", "-loglevel", "error", "-y", "-i", str(src), "-vf",
-          f"fps={fps},scale={width}:-2", "-q:v", "4", str(outdir / "frame_%05d.jpg")])
+    if fps <= 0:
+        raise MediaError("Frame sampling rate must be positive")
+    # Select source frames and record their PTS rather than labelling resampled
+    # images with i/fps. The fps filter can select a later source image, making
+    # the old nominal timestamp premature for a newly visible fact.
+    result = _run([FFMPEG, "-hide_banner", "-loglevel", "info", "-y", "-i", str(src), "-vf",
+                   f"select='isnan(prev_selected_t)+gte(t-prev_selected_t,{1/fps:.9f}-0.000001)',"
+                   f"showinfo,scale={width}:-2", "-fps_mode", "vfr", "-q:v", "4",
+                   str(outdir / "frame_%05d.jpg")], capture_stderr=True)
     frames = sorted(outdir.glob("frame_*.jpg"))
-    return [(round(i / fps, 3), p) for i, p in enumerate(frames)]
+    timestamps = [float(value) for value in re.findall(r"\bn:\s*\d+.*?\bpts_time:([0-9.eE+-]+)", result.stderr)]
+    if len(timestamps) != len(frames):
+        raise MediaError("Could not match extracted frames to their source timestamps")
+    return [(round(t, 6), path) for t, path in zip(timestamps, frames)]

@@ -4,7 +4,7 @@ This pipeline turns an authorized short film into a **human-reviewed, validated 
 
 It is a multi-service AWS pipeline: Amazon S3 → Amazon Transcribe → Amazon Bedrock (Amazon Nova) → Amazon Polly. A measured fit loop sits on top, and you can optionally run that loop as a Strands Agents agent. A mandatory human review gate comes before anything is published.
 
-> **Status (2026-10-01): built and tested offline only.** No real AWS call has been made yet; spending has not been approved. All 59 tests pass with network access denied (a macOS `sandbox-exec` profile blocks it). The tests use stub clients that replay recorded-shape JSON responses. The fixture token counts are illustrative, not measured. Real numbers will come from the first `--live` run (see [Live run](#live-end-to-end-run-on-a-new-asset)).
+> **Status (2026-10-04): live two-film pilot completed.** Actual S3, Transcribe, Nova and Polly usage is recorded, including rejected attempts. Facts and spoken lines required AI editorial corrections; human approval remains pending. The live reports and verified rate products are in `docs/verification/`. Offline tests prohibit live clients; replay-fixture counts remain illustrative rather than measured live usage.
 
 ## Architecture
 
@@ -95,7 +95,8 @@ Every Bedrock request carries `requestMetadata` tags (`sema_tag`, `sema_asset`, 
   - `--approve-all` is recorded as such in the package's `approval.method` and `approval.note`, and the report warns that its review time is not a human measurement.
 - **Consistency.**
   - Stages refuse to build on stale inputs. For example, re-running `observe` without re-running `script` blocks `render`, `review` and `package`.
-  - A re-render after review restarts the review.
+  - A re-render after review restarts the review. Review fingerprints bind source, inputs, reviewed text/timing and actual audio bytes; altered artifacts also restart review even if timestamps are unchanged. Packaging verifies those fingerprints, and release checks validate approved scripts/audio and source-bound VP8 renditions.
+  - --preview-review-minutes N records cumulative active review time outside the terminal without double counting resumed sessions; terminal and preview effort are recorded separately.
 - **Offline by default.** Every command uses stubs unless you pass `--live`. `--live` asks for confirmation unless you also pass `--yes`. With `SEMA_FORBID_LIVE=1` (the tests set it), live clients can't be built at all.
 
 ## Setup
@@ -161,8 +162,10 @@ Replace `BUCKET` and `ACCOUNT_ID`, and adjust the region if needed.
       "Resource": [
         "arn:aws:bedrock:us-east-1:ACCOUNT_ID:inference-profile/us.amazon.nova-pro-v1:0",
         "arn:aws:bedrock:us-east-1:ACCOUNT_ID:inference-profile/us.amazon.nova-lite-v1:0",
+        "arn:aws:bedrock:us-east-1:ACCOUNT_ID:inference-profile/us.amazon.nova-2-lite-v1:0",
         "arn:aws:bedrock:*::foundation-model/amazon.nova-pro-v1:0",
-        "arn:aws:bedrock:*::foundation-model/amazon.nova-lite-v1:0"
+        "arn:aws:bedrock:*::foundation-model/amazon.nova-lite-v1:0",
+        "arn:aws:bedrock:*::foundation-model/amazon.nova-2-lite-v1:0"
       ] },
     { "Sid": "Polly", "Effect": "Allow",
       "Action": ["polly:SynthesizeSpeech"],
@@ -194,10 +197,13 @@ $PY -m sema_pipeline ingest  --live --asset my-short --create-bucket \
 # 2. Transcribe job + local ffmpeg scenes/silence -> narration windows
 $PY -m sema_pipeline analyze --live --asset my-short
 
-# 3. Nova Pro video understanding (add --frames 2 if brief actions are missed)
-$PY -m sema_pipeline observe --live --asset my-short
+# 3. Nova Pro visual observation. --frames 2 (timestamped frames, 2 per second) is
+#    what the Oct 4 pilot used: video-block input echoed the schema example or
+#    invented actions on both films. Omit --frames to try video input.
+$PY -m sema_pipeline observe --live --asset my-short --frames 2
 
 # 4. Essential/Standard/Rich + recoveries. Check BLOCKING lines in the output.
+#    The pilot's writer/shortener was Nova 2 Lite: export SEMA_SCRIPT_MODEL=us.amazon.nova-2-lite-v1:0
 $PY -m sema_pipeline script  --live --asset my-short
 
 # 5. Polly + measured fit loop (or: render --live --agent)
@@ -269,7 +275,7 @@ SEMA_BUCKET=demo .venv/bin/python -m sema_pipeline run --asset demo --replay tes
 ## Cost estimates: caveats
 
 `report` and the package's `pipeline.estimatedCostUSD` multiply **measured usage** by the `prices` table in config:
-- Transcribe seconds, billed with a 15 s minimum
+- Batch Transcribe seconds, rounded up separately per job to whole seconds; no minimum
 - Bedrock input/output tokens per model, from each response's `usage`
 - Polly characters per engine
 - S3 GB-month
@@ -280,7 +286,7 @@ Caveats:
 - Models that aren't in the table are listed as *unpriced*, never counted as $0.
 - Cross-region inference profiles are priced as their base model.
 - Video input tokens for Nova depend on the model's frame sampling and resolution. Expect the first real run to differ from the illustrative fixture counts.
-- Rough order of magnitude for a 1-minute film (unverified, measure it): about $0.02 for Transcribe, a few cents for Nova Pro observe and script, and about $0.05 for Polly neural. That is well under $1, plus about $0.01 for the 23 UI prompts. `--frames 2` multiplies observe tokens by sending ~120 images per minute.
+- The pilot rates were checked with the AWS Price List API on October 4, 2026: batch Transcribe $0.006/minute, Nova Pro $0.0008 input and $0.0032 output per 1,000 tokens, neural Polly $16/million characters, S3 Standard $0.023/GB-month. Nova 2 Lite regional input/output rates ($0.00033/$0.00275 per 1,000 tokens) were also verified for the comparison and writer. Other alternative model/voice prices remain unverified. Costs include all logged reruns, including rejected drafts; stage timings describe the latest attempt per stage. Human review effort stays pending until review completes. `--frames 2` sends ~120 images/minute. See `docs/verification/AWS-PRICES-2026-10-04.json` for retrieved product identifiers.
 
 ## Known limitations and risks
 
@@ -316,3 +322,20 @@ Caveats:
 | `config.example.json` | Every config key with defaults and the price table |
 | `tests/` | Offline tests; `tests/fixtures/red-envelope/` recorded-shape responses |
 | `work/<asset>/` (gitignored) | `manifest`, `analysis`, `observations`, `script`, `issues`, `render`, `review`/`reviewed`, `usage.jsonl`, `run.json`, `pipeline-report.{json,md}`, `recorded/` |
+
+## Pilot readiness and release
+
+From the repository root:
+
+```sh
+PYTHONPATH=pipeline pipeline/.venv/bin/python -m sema_pipeline preflight --profile sema --bucket YOUR_BUCKET
+# Local check, no AWS invocation. Add --live for STS authentication only.
+pipeline/.venv/bin/python tools/run-live-pilot.py --profile sema --bucket YOUR_BUCKET
+# Prints the exact commands. Add --live to generate real Polly guidance and both film drafts.
+```
+
+The pilot runner stops before human approval and does not use `--approve-all`. Use the interactive `review` command while watching the source and listening to every variant. Check visible facts, dialogue and important sound, spoilers, critical omissions, level meaning and pronunciation. An AI code review cannot sign this approval as a human.
+
+After each review, run `package` and `report` for that asset. From the repo root run `npm run webm`, `npm run posters`, `npm run bundle`, `npm run release:check`, and `npm run vega:sync`, then rebuild Vega. The release check reads the actual media with ffprobe, checks source hashes, requires interactive human approval and live provenance, and requires every guidance clip. Keep the raw live responses in `work/<asset>/recorded/`; publish a redacted report for judges rather than account details.
+
+`media/prompts/provenance.json` records whether the clips are actual Polly output or offline tones. The player still reads the flat `prompts.json` mapping. Offline tones must stay outside the shipped release.

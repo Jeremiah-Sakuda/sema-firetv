@@ -199,6 +199,63 @@ class OfflineEndToEndTests(unittest.TestCase):
         finally:
             os.utime(script, ns=(original.st_atime_ns, original.st_mtime_ns))
 
+    def test_changed_audio_bytes_block_package_and_restart_review(self):
+        run_review(self.ws, load_config(env={}), None, reviewer="Offline Test", approve_all=True)
+        doc = self.ws.read("reviewed.json")
+        audio = self.ws.dir / doc["cues"][0]["variants"]["standard"]["audio"]
+        original = audio.read_bytes()
+        try:
+            audio.write_bytes(original + b"changed bytes")
+            code, out = run_cli("package", *self.common, "--web-root", str(self.web))
+            self.assertEqual(code, 1, out)
+            self.assertIn("Approved artifacts changed", out)
+            self.assertFalse((self.web / "media" / ASSET / "package.json").exists())
+            log = run_review(self.ws, load_config(env={}), None, reviewer="Offline Test",
+                             io=ReviewIO(["q"], out=io.StringIO()))
+            self.assertFalse(log["completed"])
+            self.assertEqual(log["decisions"], {})
+        finally:
+            audio.write_bytes(original)
+
+    def test_changed_review_text_without_new_timestamp_blocks_package(self):
+        run_review(self.ws, load_config(env={}), None, reviewer="Offline Test", approve_all=True)
+        doc = self.ws.read("reviewed.json")
+        doc["cues"][0]["variants"]["standard"]["text"] = "A different fact."
+        self.ws.write("reviewed.json", doc)
+        code, out = run_cli("package", *self.common, "--web-root", str(self.web))
+        self.assertEqual(code, 1, out)
+        self.assertIn("Approved artifacts changed", out)
+
+    def test_preview_review_time_is_counted_once_and_separate_from_terminal(self):
+        cfg = load_config(env={})
+        log = run_review(self.ws, cfg, None, reviewer="Offline Test", approve_all=True, preview_minutes=7.5)
+        self.assertEqual(log["previewReviewMinutes"], 7.5)
+        self.assertAlmostEqual(log["reviewMinutes"], log["terminalReviewMinutes"] + 7.5, places=2)
+        log = run_review(self.ws, cfg, None, reviewer="Offline Test", approve_all=True, preview_minutes=7.5)
+        self.assertEqual(log["previewReviewMinutes"], 7.5)
+        self.assertLess(log["reviewMinutes"], 8)
+
+    def test_interactive_approval_refuses_missing_concept_without_saving_a_decision(self):
+        from sema_pipeline.review import build_reviewed
+        cfg = load_config(env={})
+        doc = build_reviewed(self.ws, cfg)
+        event = next(e for e in doc["events"] if e["id"] == "envelope-hidden")
+        event["requiredTerms"] = [["envelope"], ["drawer"]]
+        doc["cues"][0]["variants"]["essential"]["text"] = "She moves."
+        self.ws.write("reviewed.json", doc)
+        log = run_review(self.ws, cfg, None, reviewer="Offline Test",
+                         io=ReviewIO(["a", "q"], out=io.StringIO()))
+        self.assertFalse(log["completed"])
+        self.assertNotIn("cue:c01", log["decisions"])
+
+    def test_review_edits_cannot_erase_required_critical_concepts(self):
+        from sema_pipeline.review import build_reviewed, blockers
+        doc = build_reviewed(self.ws, load_config(env={}))
+        event = next(e for e in doc["events"] if e["id"] == "envelope-hidden")
+        event["requiredTerms"] = [["envelope"], ["drawer"]]
+        doc["cues"][0]["variants"]["essential"]["text"] = "She moves."
+        self.assertTrue(any("c01/essential" in issue for issue in blockers(doc, doc["slack"])))
+
 
 if __name__ == "__main__":
     unittest.main()

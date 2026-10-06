@@ -1,6 +1,8 @@
 """Stage 8 - report: timings, service usage, ESTIMATED cost, review effort, fit results."""
 from __future__ import annotations
 
+import math
+
 from .config import base_model_id
 from .timeline import LEVELS
 from .workspace import Workspace, now_iso
@@ -8,7 +10,7 @@ from .workspace import Workspace, now_iso
 STAGES = ("ingest", "analyze", "observe", "script", "render", "review", "package")
 
 
-def aggregate_usage(rows: list[dict], transcribe_min_seconds: float = 15.0) -> dict:
+def aggregate_usage(rows: list[dict], transcribe_min_seconds: float = 0.0) -> dict:
     out = {"transcribe": {"jobs": 0, "seconds": 0.0, "billedSeconds": 0.0},
            "bedrock": {}, "polly": {}, "s3": {"bytes": 0, "requests": 0}, "modes": sorted({r.get("mode", "?") for r in rows})}
     for r in rows:
@@ -16,7 +18,7 @@ def aggregate_usage(rows: list[dict], transcribe_min_seconds: float = 15.0) -> d
         if service == "transcribe":
             out["transcribe"]["jobs"] += 1
             out["transcribe"]["seconds"] += float(r.get("seconds", 0))
-            out["transcribe"]["billedSeconds"] += max(transcribe_min_seconds, float(r.get("seconds", 0)))
+            out["transcribe"]["billedSeconds"] += max(transcribe_min_seconds, math.ceil(float(r.get("seconds", 0))))
         elif service == "bedrock":
             m = out["bedrock"].setdefault(r["model"], {"requests": 0, "inputTokens": 0, "outputTokens": 0})
             m["requests"] += 1
@@ -36,13 +38,13 @@ def aggregate_usage(rows: list[dict], transcribe_min_seconds: float = 15.0) -> d
 def estimate_cost(rows: list[dict], prices: dict) -> dict:
     """List-price estimate. Ignores free tier, credits, taxes, S3 request fees and data transfer."""
     lines, unpriced = [], []
-    min_s = float(prices.get("transcribe_min_seconds", 15))
+    min_s = float(prices.get("transcribe_min_seconds", 0))
     for r in rows:
         if r.get("service") == "transcribe":
-            billed = max(min_s, float(r.get("seconds", 0)))
+            billed = max(min_s, math.ceil(float(r.get("seconds", 0))))
             lines.append({"service": "transcribe", "item": r.get("job", "job"), "quantity": f"{billed:.1f} s",
                           "usd": billed / 60 * float(prices["transcribe_per_minute"])})
-    usage = aggregate_usage(rows)
+    usage = aggregate_usage(rows, min_s)
     for model, u in usage["bedrock"].items():
         if not (u["inputTokens"] or u["outputTokens"]):
             continue
@@ -103,28 +105,33 @@ def build_report(ws: Workspace, cfg: dict) -> dict:
                 fit_rows.append({"cue": cue["id"], "level": level, "window": cue["seconds"], "available": r["available"],
                                  "duration": r["duration"], "headroom": r["headroom"], "status": r["status"],
                                  "regenerations": r["regenerations"], "firstTry": r["firstTry"]})
-    review_minutes = float(review.get("reviewMinutes") or 0)
+    review_minutes = float(review.get("reviewMinutes") or 0) if review.get("completed") else None
     report = {
         "asset": ws.asset, "title": manifest.get("title"), "generatedAt": now_iso(), "runMode": run_mode(ws),
         "filmSeconds": duration,
         "timings": {name: {"seconds": s.get("seconds"), "status": s.get("status"), "mode": s.get("mode")}
                     for name, s in stages.items()},
-        "totalPipelineSeconds": round(sum(s.get("seconds") or 0 for n, s in stages.items() if n != "review"), 3),
-        "usage": aggregate_usage(rows),
+        "totalPipelineSeconds": round(sum(s.get("seconds") or 0 for n, s in stages.items() if n in STAGES and n != "review"), 3),
+        "timingBasis": "Latest attempt per stage; cumulative paid usage includes rejected attempts and reruns.",
+        "usage": aggregate_usage(rows, float(cfg["prices"].get("transcribe_min_seconds", 0))),
         "estimatedCost": estimate_cost(rows, cfg["prices"]),
         "models": {"observe": (obs.get("model") or {}).get("modelId"), "script": (script.get("model") or {}).get("modelId"),
                    "agent": (render.get("agent") or {}).get("modelId"), "region": (obs.get("model") or {}).get("region")},
         "voice": render.get("voice"),
+        "editorialTextPreparation": {k: v for k, v in script.get("editorialTextPreparation", {}).items() if k != "changes"},
         "observations": {"events": len(obs.get("events", [])),
                          "critical": sum(1 for e in obs.get("events", []) if e["critical"]),
                          "characters": len(obs.get("characters", [])), "repairs": len(obs.get("problems", [])),
-                         "source": (obs.get("model") or {}).get("videoSource")},
+                         "source": (obs.get("model") or {}).get("videoSource"),
+                         "editorialPrecheck": obs.get("editorialPrecheck")},
         "cues": len(script.get("cues", [])), "windows": len(analysis.get("windows", [])),
         "fit": {"summary": render.get("summary"), "fitMode": render.get("fitMode"), "rows": fit_rows,
                 "agent": render.get("agent")},
         "review": {"reviewer": review.get("reviewer"), "method": review.get("method"),
                    "completed": review.get("completed", False), "reviewMinutes": review_minutes,
-                   "reviewMinutesPerFinishedMinute": round(review_minutes / minutes, 2) if minutes else None,
+                   "terminalReviewMinutes": review.get("terminalReviewMinutes") if review.get("completed") else None,
+                   "previewReviewMinutes": review.get("previewReviewMinutes", 0) if review.get("completed") else None,
+                   "reviewMinutesPerFinishedMinute": round(review_minutes / minutes, 2) if minutes and review_minutes is not None else None,
                    "edits": len(review.get("edits", [])), "drops": len(review.get("drops", [])),
                    "downgrades": len(review.get("downgrades", [])), "attachments": len(review.get("attachments", [])),
                    "blockers": review.get("blockers", [])},
@@ -151,9 +158,9 @@ def _md(report: dict) -> str:
         t = report["timings"].get(name)
         if t:
             L.append(f"| {name} | {t['seconds'] if t['seconds'] is not None else '-'} | {t['mode']} | {t['status']} |")
-    L += ["", f"Automated pipeline time (excluding human review): **{report['totalPipelineSeconds']} s**", ""]
+    L += ["", f"Latest stage attempts, automated time (excluding human review): **{report['totalPipelineSeconds']} s**", ""]
     u = report["usage"]
-    L += ["## Service usage", "", f"- Amazon S3: {u['s3']['requests']} upload(s), {u['s3']['bytes']:,} bytes",
+    L += ["## Service usage (cumulative, including reruns)", "", f"- Amazon S3: {u['s3']['requests']} upload(s), {u['s3']['bytes']:,} bytes",
           f"- Amazon Transcribe: {u['transcribe']['jobs']} job(s), {u['transcribe']['seconds']} s of media"]
     for model, m in u["bedrock"].items():
         L.append(f"- Amazon Bedrock `{model}`: {m['requests']} request(s), {m['inputTokens']:,} input / "
@@ -171,10 +178,13 @@ def _md(report: dict) -> str:
     r = report["review"]
     L += ["", "## Human review", "",
           f"- Reviewer: {r['reviewer']} (method: {r['method']}; completed: {r['completed']})",
-          f"- Review time: {r['reviewMinutes']} min; **{r['reviewMinutesPerFinishedMinute']} review minutes per "
-          "finished video minute**",
+          (f"- Review time: {r['reviewMinutes']} min; **{r['reviewMinutesPerFinishedMinute']} review minutes per finished video minute**"
+           if r["completed"] else "- Review time: pending; no completed human review measurement."),
           f"- Edits: {r['edits']}; dropped cues: {r['drops']}; critical events downgraded: {r['downgrades']}; "
           f"attached: {r['attachments']}"]
+    if r["completed"]:
+        L += [f"- Effort components: {r['terminalReviewMinutes']} terminal minutes + "
+              f"{r['previewReviewMinutes']} active outside-terminal minutes (reviewer supplied)."]
     if r["method"] == "approve-all":
         L += ["- NOTE: approved with --approve-all. The review time above is NOT a human review measurement "
               "and must not be quoted as one."]
@@ -211,7 +221,8 @@ def _md(report: dict) -> str:
         L += ["", "## Package", "", f"- `{p.get('path')}`: {p.get('validator')}"]
     L += ["", "## Caveats", "",
           "- Costs are estimates from a parameterized price table (`prices` in config); verify current pricing.",
-          "- Model video sampling can miss brief actions; human review is mandatory before publication.", ""]
+          "- Model video sampling can miss brief actions; human review is mandatory before publication.",
+          "- Pilot facts and speech received AI editorial preparation; this is separate from human approval. See content/editorial/ for the change ledger.", ""]
     return "\n".join(L)
 
 

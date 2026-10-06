@@ -1,0 +1,533 @@
+{
+  "asset": "tears-of-steel",
+  "status": "proposed; human audiovisual review pending",
+  "characters": [
+    {
+      "ref": "dark-haired-man",
+      "description": "A dark-haired man in a black jacket and a patterned light shirt.",
+      "firstSeenAt": 25.0
+    },
+    {
+      "ref": "blue-jacket-woman",
+      "description": "A woman with tied-back light brown hair, a blue and black jacket and black trousers with pink stripes.",
+      "firstSeenAt": 25.0
+    },
+    {
+      "ref": "man-with-glasses",
+      "description": "A man with glasses and curly hair wearing a dark jacket.",
+      "firstSeenAt": 52.0
+    },
+    {
+      "ref": "long-haired-man",
+      "description": "A long-haired man wearing a light shirt.",
+      "firstSeenAt": 55.0
+    },
+    {
+      "ref": "man-with-eye-device",
+      "description": "A man with a circular mechanical device over one eye.",
+      "firstSeenAt": 62.0
+    }
+  ],
+  "events": [
+    {
+      "id": "blender-credit",
+      "description": "White text reads: Blender Foundation Presents.",
+      "startTime": 1.5,
+      "availableAt": 1.5,
+      "critical": false,
+      "scene": "s01",
+      "modelSceneId": null,
+      "characters": [],
+      "details": {}
+    },
+    {
+      "id": "rocket-engines",
+      "description": "Rocket engines blaze above a red metal structure.",
+      "startTime": 9.5,
+      "availableAt": 9.5,
+      "critical": false,
+      "scene": "s02",
+      "modelSceneId": null,
+      "characters": [],
+      "details": {}
+    },
+    {
+      "id": "rocket-over-city",
+      "description": "A rocket rises above a city skyline.",
+      "startTime": 20.0,
+      "availableAt": 20.0,
+      "critical": false,
+      "scene": "s04",
+      "modelSceneId": null,
+      "characters": [],
+      "details": {}
+    },
+    {
+      "id": "pair-on-bridge",
+      "description": "A man and a woman stand beside a canal on a metal bridge.",
+      "startTime": 25.0,
+      "availableAt": 25.0,
+      "critical": false,
+      "scene": "s05",
+      "modelSceneId": null,
+      "characters": [
+        "dark-haired-man",
+        "blue-jacket-woman"
+      ],
+      "details": {}
+    },
+    {
+      "id": "mechanical-hand",
+      "description": "The woman raises her mechanical right hand toward the man.",
+      "startTime": 33.0,
+      "availableAt": 33.0,
+      "critical": false,
+      "scene": "s05",
+      "modelSceneId": null,
+      "characters": [
+        "blue-jacket-woman",
+        "dark-haired-man"
+      ],
+      "details": {}
+    },
+    {
+      "id": "forty-years-later",
+      "description": "White text over a dark industrial interior reads: 40 years later.",
+      "startTime": 44.0,
+      "availableAt": 44.0,
+      "critical": true,
+      "scene": "s07",
+      "modelSceneId": null,
+      "characters": [],
+      "details": {},
+      "requiredTerms": [
+        [
+          "forty",
+          "40"
+        ],
+        [
+          "years"
+        ],
+        [
+          "later"
+        ]
+      ]
+    },
+    {
+      "id": "wireframe-figures",
+      "description": "Orange and blue wireframe figures stand among machinery and floating colored lines.",
+      "startTime": 47.0,
+      "availableAt": 47.0,
+      "critical": false,
+      "scene": "s08",
+      "modelSceneId": null,
+      "characters": [],
+      "details": {}
+    },
+    {
+      "id": "control-panel",
+      "description": "A hand turns a knob on a control panel beneath colored digital displays.",
+      "startTime": 50.0,
+      "availableAt": 50.0,
+      "critical": false,
+      "scene": "s09",
+      "modelSceneId": null,
+      "characters": [],
+      "details": {}
+    },
+    {
+      "id": "workers-at-machine",
+      "description": "Several people stand around machinery behind translucent colored displays.",
+      "startTime": 55.0,
+      "availableAt": 55.0,
+      "critical": false,
+      "scene": "s11",
+      "modelSceneId": null,
+      "characters": [
+        "man-with-glasses",
+        "long-haired-man"
+      ],
+      "details": {}
+    },
+    {
+      "id": "brain-on-platform",
+      "description": "A brain sits exposed on a round illuminated platform, surrounded by fine wires and needles.",
+      "startTime": 58.0,
+      "availableAt": 58.0,
+      "critical": true,
+      "scene": "s12",
+      "modelSceneId": null,
+      "characters": [],
+      "details": {},
+      "requiredTerms": [
+        [
+          "brain"
+        ],
+        [
+          "exposed",
+          "bare",
+          "uncovered"
+        ]
+      ]
+    },
+    {
+      "id": "eye-device",
+      "description": "A man peers over the brain with a circular mechanical device over one eye.",
+      "startTime": 62.0,
+      "availableAt": 62.0,
+      "critical": false,
+      "scene": "s12",
+      "modelSceneId": null,
+      "characters": [
+        "man-with-eye-device"
+      ],
+      "details": {}
+    },
+    {
+      "id": "film-title",
+      "description": "White text reads: Tears of Steel.",
+      "startTime": 66.0,
+      "availableAt": 66.0,
+      "critical": false,
+      "scene": "s13",
+      "modelSceneId": null,
+      "characters": [],
+      "details": {}
+    },
+    {
+      "id": "dark-city",
+      "description": "Smoke hangs over a dark city as a large platform hovers beside a tower.",
+      "startTime": 70.0,
+      "availableAt": 70.0,
+      "critical": false,
+      "scene": "s14",
+      "modelSceneId": null,
+      "characters": [],
+      "details": {}
+    }
+  ],
+  "editorialPrecheck": {
+    "preparedAt": "2026-10-04T15:27:58Z",
+    "preparedBy": "Codex (AI)",
+    "kind": "AI editorial precheck, not human approval",
+    "originalObservationsSha256": "c18f84d4c4a8038fc9926ac10678296018ebd65b86440969468ae0ac4b7e1203",
+    "rawDraft": "attempts/2026-10-04-frame-draft-precheck/observations.json",
+    "proposals": [
+      {
+        "id": "blender-credit",
+        "time": 1.5,
+        "frame": "pipeline/work/tears-of-steel/frames/frame_00004.jpg",
+        "reason": "Credit text is not a story-changing reveal.",
+        "frameSourceTime": 1.5
+      },
+      {
+        "id": "rocket-engines",
+        "time": 9.5,
+        "frame": "pipeline/work/tears-of-steel/frames/frame_00020.jpg",
+        "reason": "Combine repetitive unchanged engine observations.",
+        "frameSourceTime": 9.5
+      },
+      {
+        "id": "rocket-over-city",
+        "time": 20,
+        "frame": "pipeline/work/tears-of-steel/frames/frame_00041.jpg",
+        "reason": "Establishing imagery, not repeated critical events.",
+        "frameSourceTime": 20.0
+      },
+      {
+        "id": "pair-on-bridge",
+        "time": 25,
+        "frame": "pipeline/work/tears-of-steel/frames/frame_00051.jpg",
+        "reason": "Visible bridge setting.",
+        "frameSourceTime": 25.0
+      },
+      {
+        "id": "mechanical-hand",
+        "time": 33,
+        "frame": "pipeline/work/tears-of-steel/frames/frame_00067.jpg",
+        "reason": "The hand is visibly mechanical, not a separate glove. Dialogue also names her robot hand; proposed optional classification requires human review.",
+        "frameSourceTime": 33.0
+      },
+      {
+        "id": "forty-years-later",
+        "time": 44,
+        "frame": "pipeline/work/tears-of-steel/frames/frame_00089.jpg",
+        "reason": "Time-jump text is visible at 44 seconds.",
+        "frameSourceTime": 44.0
+      },
+      {
+        "id": "wireframe-figures",
+        "time": 47,
+        "frame": "pipeline/work/tears-of-steel/frames/frame_00095.jpg",
+        "reason": "Wireframe figures, not invented interactions.",
+        "frameSourceTime": 47.0
+      },
+      {
+        "id": "control-panel",
+        "time": 50,
+        "frame": "pipeline/work/tears-of-steel/frames/frame_00101.jpg",
+        "reason": "Only the visible hand and control are described.",
+        "frameSourceTime": 50.0
+      },
+      {
+        "id": "workers-at-machine",
+        "time": 55,
+        "frame": "pipeline/work/tears-of-steel/frames/frame_00111.jpg",
+        "reason": "Do not invent a white-coated woman or misidentify the operator.",
+        "frameSourceTime": 55.0
+      },
+      {
+        "id": "brain-on-platform",
+        "time": 58,
+        "frame": "pipeline/work/tears-of-steel/frames/frame_00117.jpg",
+        "reason": "Do not classify the object as a model without evidence.",
+        "frameSourceTime": 58.0
+      },
+      {
+        "id": "eye-device",
+        "time": 62,
+        "frame": "pipeline/work/tears-of-steel/frames/frame_00125.jpg",
+        "reason": "Visible eye apparatus, not the man with glasses.",
+        "frameSourceTime": 62.0
+      },
+      {
+        "id": "film-title",
+        "time": 66,
+        "frame": "pipeline/work/tears-of-steel/frames/frame_00133.jpg",
+        "reason": "Title card is visible.",
+        "frameSourceTime": 66.0
+      },
+      {
+        "id": "dark-city",
+        "time": 70,
+        "frame": "pipeline/work/tears-of-steel/frames/frame_00141.jpg",
+        "reason": "Visible closing city view; optional.",
+        "frameSourceTime": 70.0
+      }
+    ],
+    "humanReviewRequired": true,
+    "frameTimestampBasis": "Source-frame PTS; each referenced evidence frame is at or before the proposed available time. Original model samples retained separately."
+  },
+  "textPreparation": {
+    "preparedBy": "Codex (AI)",
+    "preparedAt": "2026-10-04T15:44:00Z",
+    "kind": "Draft editing, not human approval",
+    "humanReviewRequired": true,
+    "changes": [
+      {
+        "cue": "c01",
+        "action": "omit optional production-credit cue",
+        "reason": "The speech budget cannot communicate the credit meaningfully; credit remains in recovery and film/app attribution."
+      },
+      {
+        "cue": "c02",
+        "level": "essential",
+        "before": "Rocket engines blaze.",
+        "after": "Engines blaze."
+      },
+      {
+        "cue": "c02",
+        "level": "standard",
+        "before": "Rocket engines blaze above red metal.",
+        "after": "Rocket engines blaze."
+      },
+      {
+        "cue": "c02",
+        "level": "rich",
+        "before": "Rocket engines blaze above a red metal structure.",
+        "after": "Engines blaze above red steel."
+      },
+      {
+        "cue": "c03",
+        "level": "essential",
+        "before": "Rocket rises.",
+        "after": "A rocket rises."
+      },
+      {
+        "cue": "c03",
+        "level": "standard",
+        "before": "Rocket rises above city.",
+        "after": "Rocket above the city."
+      },
+      {
+        "cue": "c03",
+        "level": "rich",
+        "before": "Rocket rises above city skyline.",
+        "after": "A rocket climbs above the skyline."
+      },
+      {
+        "cue": "c04",
+        "level": "essential",
+        "before": "White text reads forty years later.",
+        "after": "Forty years later."
+      },
+      {
+        "cue": "c04",
+        "level": "standard",
+        "before": "White text over dark interior reads forty years later.",
+        "after": "Text: forty years later."
+      },
+      {
+        "cue": "c04",
+        "level": "rich",
+        "before": "White text over a dark industrial interior reads forty years later.",
+        "after": "Above dark machinery: forty years later."
+      },
+      {
+        "cue": "c05",
+        "level": "essential",
+        "before": "A hand turns a knob.",
+        "after": "A knob turns."
+      },
+      {
+        "cue": "c05",
+        "level": "standard",
+        "before": "A hand turns a knob on a panel.",
+        "after": "A hand turns a knob."
+      },
+      {
+        "cue": "c05",
+        "level": "rich",
+        "before": "A hand turns a knob on a control panel beneath displays.",
+        "after": "Colored displays frame a turning knob."
+      },
+      {
+        "cue": "c06",
+        "level": "essential",
+        "before": "A brain is exposed.",
+        "after": "An exposed brain."
+      },
+      {
+        "cue": "c06",
+        "level": "standard",
+        "before": "A brain sits exposed on a platform.",
+        "after": "An exposed brain on a platform."
+      },
+      {
+        "cue": "c06",
+        "level": "rich",
+        "before": "A brain sits exposed on a round platform.",
+        "after": "An exposed brain, wired and lit."
+      },
+      {
+        "cue": "c07",
+        "level": "essential",
+        "before": "A man peers over the brain.",
+        "after": "A man peers."
+      },
+      {
+        "cue": "c07",
+        "level": "standard",
+        "before": "A man peers over the brain.",
+        "after": "His mechanical eye."
+      },
+      {
+        "cue": "c07",
+        "level": "rich",
+        "before": "A man peers over the brain with a device.",
+        "after": "An eye device."
+      },
+      {
+        "cue": "c08",
+        "level": "essential",
+        "before": "Brain on platform.",
+        "after": "Tears of Steel."
+      },
+      {
+        "cue": "c08",
+        "level": "standard",
+        "before": "Brain sits on a platform.",
+        "after": "Title: Tears of Steel."
+      },
+      {
+        "cue": "c08",
+        "level": "rich",
+        "before": "Brain rests on a lit platform, surrounded by wires.",
+        "after": "White title: Tears of Steel."
+      },
+      {
+        "cue": "c09",
+        "level": "essential",
+        "before": "Smoke hangs over city.",
+        "after": "Smoky city."
+      },
+      {
+        "cue": "c09",
+        "level": "standard",
+        "before": "Smoke hangs over dark city.",
+        "after": "Smoke above city."
+      },
+      {
+        "cue": "c09",
+        "level": "rich",
+        "before": "Smoke hangs over dark city near a tower.",
+        "after": "Smoke above city."
+      },
+      {
+        "recovery": "blender-credit",
+        "before": "White text appears on a dark background reading 'Blender Foundation Presents.' The scene is simple with no people or additional objects visible.",
+        "after": "White text reads: Blender Foundation Presents."
+      },
+      {
+        "recovery": "rocket-engines",
+        "before": "Rocket engines blaze brightly above a red metal structure. Flames and smoke rise from the engines, illuminating the scene. The structure appears sturdy and industrial.",
+        "after": "Rocket engines blaze above a red metal structure."
+      },
+      {
+        "recovery": "rocket-over-city",
+        "before": "A rocket ascends into the sky above a city skyline. Buildings line the horizon below. The scene captures the rocket's upward motion against an urban backdrop.",
+        "after": "A rocket rises above a city skyline."
+      },
+      {
+        "recovery": "pair-on-bridge",
+        "before": "A dark-haired man and a woman in a blue jacket stand together on a metal bridge beside a canal. The woman has tied-back light brown hair. They appear to be observing the area.",
+        "after": "A man and a woman stand beside a canal on a metal bridge."
+      },
+      {
+        "recovery": "mechanical-hand",
+        "before": "The woman raises her mechanical right hand toward the man. They remain on the metal bridge beside the canal, standing close to each other.",
+        "after": "The woman raises her mechanical right hand toward the man."
+      },
+      {
+        "recovery": "forty-years-later",
+        "before": "White text reading '40 years later' appears over a dark industrial interior. The scene shows a spacious, dimly lit area with metallic structures and machinery. No people are visible in this frame.",
+        "after": "White text over a dark industrial interior reads: 40 years later."
+      },
+      {
+        "recovery": "wireframe-figures",
+        "before": "Orange and blue wireframe figures appear among machinery and floating colored lines. The setting is an industrial interior with various mechanical parts visible around them.",
+        "after": "Orange and blue wireframe figures stand among machinery and floating colored lines."
+      },
+      {
+        "recovery": "control-panel",
+        "before": "A hand turns a knob on a control panel beneath colored digital displays. The setting is an industrial interior with machinery and floating colored lines nearby.",
+        "after": "A hand turns a knob on a control panel beneath colored digital displays."
+      },
+      {
+        "recovery": "workers-at-machine",
+        "before": "Several people, including a man with glasses and a long-haired man, stand around machinery. Translucent colored displays are behind them. The setting appears to be an industrial interior.",
+        "after": "Several people stand around machinery behind translucent colored displays."
+      },
+      {
+        "recovery": "brain-on-platform",
+        "before": "A brain rests on a round platform surrounded by wires and needles. The platform glows, and the setting is an industrial interior with machinery. Several people stand nearby observing.",
+        "after": "A brain sits exposed on a round illuminated platform, surrounded by fine wires and needles."
+      },
+      {
+        "recovery": "eye-device",
+        "before": "A man with a circular mechanical device over one eye peers over an exposed brain on a round illuminated platform. The brain is surrounded by fine wires and needles. The setting is a dark industrial interior.",
+        "after": "A man peers over the brain with a circular mechanical device over one eye."
+      },
+      {
+        "recovery": "film-title",
+        "before": "White text reading Tears of Steel appears on screen. The scene shows a man with a mechanical eye device looking over an exposed brain on a platform surrounded by wires.",
+        "after": "The scene cuts to a black title card. White text reads: Tears of Steel."
+      },
+      {
+        "recovery": "dark-city",
+        "before": "Smoke hangs over a dark city. A large platform hovers beside a tall tower. The scene shows an industrial, gritty urban environment.",
+        "after": "Smoke hangs over a dark city as a large platform hovers beside a tower."
+      }
+    ]
+  }
+}

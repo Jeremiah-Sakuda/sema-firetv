@@ -1,32 +1,36 @@
-# Sema: audio description, your way (Fire TV / Vega OS)
+# Sema: never lose the story (Fire TV / Vega OS)
 
-**Sema lets blind and low-vision viewers choose how much of the picture they hear, and ask "What did I miss?" with one remote press.**
+**On Fire TV, a missed audio description is not a lost story.** If a description is interrupted (you paused, the film buffered, a line couldn't fit), Sema keeps that story fact. One remote button, **"What did I miss?"**, brings it back without spoilers.
 
 [![ci](https://github.com/Jeremiah-Sakuda/sema-firetv/actions/workflows/ci.yml/badge.svg)](https://github.com/Jeremiah-Sakuda/sema-firetv/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) · Fire TV track · AWS Builder mini-challenge · Build, Ship, Shape: Amazon Developer Hackathon 2026
 
-![Sema running on the Vega Virtual Device: paused controls with description levels Off, Essential, Standard and Rich, and a "What did I miss? (1 missed)" button](docs/images/vvd-player.png)
+![Sema on the Vega Virtual Device: paused controls with description levels Essential, Standard, Rich and Off, and a focused "What did I miss?" button](docs/images/vvd-player.png)
 
-*Sema on the Vega Virtual Device (Vega SDK 0.24). The focused level is outlined in yellow. A description that was interrupted is waiting to be recovered.*
+*Sema on the Vega Virtual Device (Vega SDK 0.24). Focus is outlined in yellow, and every spoken announcement ends with the control that has focus.*
 
 ---
 
 ## Why
 
-Audio description (AD) fills the quiet moments of a film with what is happening on screen. Today it is one fixed track: the same amount of narration for everyone, every time. If you miss a line, you rewind and hope. Many films never get AD at all, because writing and recording it by hand is slow and expensive.
+Audio description (AD) narrates what happens on screen in the gaps between dialogue. When a line is missed (a pause, a buffer, a gap too short to speak in), that moment is usually just gone; the viewer rewinds and hopes. Sema is a Fire TV app built around one promise: **you can always get the story back from the remote.**
 
-**Sema changes three things:**
+- **Recovery that is reliable.** Every critical story fact is tracked as *not yet due*, *heard*, *waiting* or *skipped by you*. An interrupted fact waits until you hear it, even across scene changes, and the film pauses only when a critical fact is lost. Optional detail that can't fit is dropped quietly.
+- **Remote-first.** Every screen keeps a focused control, and every announcement ends with the control Select will activate. Nothing depends on the Menu key, which never reaches the WebView.
+- **Three detail levels (supporting).** Essential, Standard or Rich, where the dialogue gap allows.
+- **Reviewed content.** An AWS pipeline (S3, Transcribe, Bedrock Nova, Polly) drafts every level and recovery line, measures each rendered line against its gap, and **production publication requires a person's approval**.
 
-1. **You choose the level of detail.** Essential gives key story moments, Standard adds context, and Rich adds the picture. Every level keeps every plot-critical fact; levels add detail, never contradictions.
-2. **"What did I miss?"** pauses the film and describes the most recent visual moment again, often in more detail than your level gave you. It never describes anything that hasn't happened yet. Sema also tracks every critical story fact. If narration is interrupted (you paused, the film buffered, a cue couldn't fit), that fact stays recoverable until you hear it. It won't silently disappear.
-3. **An AWS pipeline drafts the AD and a person approves it.** Amazon Transcribe finds the gaps between dialogue lines, Amazon Nova (on Bedrock) watches the film, and Amazon Polly voices three levels. Every line is **measured** to fit its gap, and production publication requires a human reviewer to approve every word.
+**Related work.** Customizable AD has been explored before. [CustomAD](https://www.guoanhong.com/papers/ASSETS24-CustomAD.pdf) (ASSETS 2024) studied customizing audio description, and [ViDscribe](https://arxiv.org/abs/2603.14662) (2026) combines customized descriptions with conversational video questions. Sema does not claim customization as new. Its contribution is narrower: dependable, spoiler-safe recovery of interrupted AD on a television, operated entirely from the remote, with pre-rendered audio, a production human-approval gate and no generation at viewing time.
+
+**Who it's for first.** Independent and festival short films, which need AD for accessibility requirements and can grant rights. Sema would be the player plus a reviewed authoring service. It is not an integration with existing streaming services.
+
 
 ## Try it in two minutes (web build, no AWS account needed)
 
 The player is a web app. The exact same files run inside the Fire TV (Vega) WebView.
 
 ```bash
-npm install          # dev dependency only (jsdom, for tests)
-npm test             # 37 player tests: state machine, package validation, remote/focus flows
+npm ci               # locked dev dependencies (jsdom, for tests)
+npm test             # player, release validation and remote/focus tests
 npm start            # bundles, then serves http://127.0.0.1:4173
 ```
 
@@ -47,7 +51,7 @@ The full, tested steps are in **[docs/vega/BUILD-AND-RUN.md](docs/vega/BUILD-AND
 
 ```bash
 npm run webm && npm run bundle && npm run vega:sync   # VP8 renditions, then copy the web app into vega-app/assets/
-cd vega-app && npm install && npm run build:debug   # or scripts/build-staged.sh if your path has spaces
+cd vega-app && npm install && npm run build:staged    # writes build/vpkg/sema_aarch64.vpkg (works with spaces in the path)
 vega virtual-device start
 vega run-app build/vpkg/sema_aarch64.vpkg com.sema.viewer.main
 ```
@@ -61,13 +65,13 @@ vega run-app build/vpkg/sema_aarch64.vpkg com.sema.viewer.main
 
 The app is built around those facts:
 - Package data ships as a script, so there is no `fetch`.
-- Spoken guidance uses pre-rendered Polly clips, with a watchdog on every utterance.
+- Spoken guidance supports pre-rendered Polly clips, with a watchdog on every utterance. All 61 clips were generated with Polly and bundled; actual audible verification remains pending.
 - Films ship as VP8 WebM on Vega, because H.264 stalls on the VVD.
 - Nothing depends on the Menu key, which never reaches the WebView.
 
 ## How the remote works
 
-Every screen always has a focused control, and every state change says where focus went ("Paused. What did I miss is selected."). That way a viewer who can't see the screen always knows what Select will do.
+The player keeps a focused control while paused. Every state change says what happened, then names the control that actually has focus ("Paused. What did I miss?"). Prompts never hard-code focus or directions, so speech cannot contradict the layout; a test walks a whole viewing and checks this after every announcement.
 
 | You are… | You press | Sema does |
 |---|---|---|
@@ -76,13 +80,18 @@ Every screen always has a focused control, and every state change says where foc
 | Watching | **Play/Pause** | Pauses, focuses **Resume** |
 | On **What did I miss?** | **Select** | Describes the most recent moment, or a pending interrupted one first; then focuses **Resume** |
 | Paused | **Select** on a level | Switches level; the change applies from the next description |
+| Paused | **Select** on Start over | Asks for a second Select first; moving away cancels |
+| Describing a missed moment | Any arrow | Stops the description (the fact stays waiting) and names the new control |
 | Anywhere | **Rewind / Fast-forward** | Seeks 5 s. Narration rebuilds at the new position; skipped facts are recorded as *skipped*, not as *heard* |
+| On the catalog | **Back** | Leaves the app |
 
-**Spoken guidance** reads focused controls and state changes using the same Polly voice as the narration. Any key press interrupts it. **VoiceView users** turn it off and hear everything through VoiceView instead; state changes then go to an ARIA live region.
+**Spoken guidance** uses the generated Polly clip set to read focused controls and state changes using the same voice as the narration. Any key press interrupts it. **VoiceView users** turn it off and use VoiceView for controls and status; audible hardware behavior is pending verification; state changes then go to an ARIA live region.
 
-Guidance never talks over the film: it speaks only while the film is paused.
+Guidance speaks while the film is paused. Explicit Help and preference confirmations stop recovery first, announce the stopped state and Resume focus, and preserve an interrupted critical fact for recovery. Mocked-media regressions verify this sequencing; actual audible output still needs testing.
 
-**Adaptive suggestion:** if you ask "What did I miss?" twice in one scene, Sema offers Rich, while you're already paused. It makes the offer at most once per viewing.
+**Adaptive suggestion:** if you ask "What did I miss?" about recent moments twice within 30 seconds of film, Sema offers Rich, while you're already paused. It makes the offer at most once per viewing.
+
+**Film sound** is lowered under narration and restored afterwards, as in broadcast AD.
 
 ## Architecture
 
@@ -120,15 +129,15 @@ flowchart LR
 - **`app.js`** contains the remote contract, focus guarantees, onboarding, resume and start-over, the adaptive suggestion, and error and retry states.
 - **`voice.js`** handles spoken guidance: Polly clips first, speech synthesis as fallback, and a watchdog so nothing ever waits on a completion event.
 
-**The authoring pipeline** (`pipeline/`, Python + boto3) is documented in **[pipeline/README.md](pipeline/README.md)**. That covers each AWS service's role, the IAM policy, live commands, the deterministic fit loop, and the optional **Strands Agents** fit-loop agent. Its 59 offline tests run with network access blocked.
+**The authoring pipeline** (`pipeline/`, Python + boto3) is documented in **[pipeline/README.md](pipeline/README.md)**. That covers each AWS service's role, the IAM policy, live commands, the deterministic fit loop, and the optional **Strands Agents** fit-loop agent. Its offline tests refuse to build live AWS clients (`SEMA_FORBID_LIVE=1`, also set in CI).
 
-## AWS services used (AWS Builder mini-challenge)
+## AWS integrations used in the live pilot
 
 | Service | What it does in Sema |
 |---|---|
 | **Amazon S3** | Stores the authorized source film. Input for Transcribe and Nova; output location for Transcribe |
 | **Amazon Transcribe** | Word-level timestamps, which become the dialogue intervals narration must never overlap |
-| **Amazon Bedrock: Amazon Nova** | Watches the film (video input) and logs timestamped visual events and characters. Writes the three detail levels and spoiler-safe recovery cues. Rewrites lines that don't fit their gap |
+| **Amazon Bedrock: Amazon Nova** | Examines timestamped frame batches in the successful pilot; video input was also tried and rejected. Drafts observations and narration; the pilot required explicit AI editorial corrections before the pending human review. Rewrites lines that do not fit their gap |
 | **Amazon Polly** (neural) | Voices every description level, recovery cue and UI prompt in one consistent voice |
 | **Strands Agents SDK** (optional `--agent`) | Runs the fit loop as an agent with three tools: `render_with_polly`, `measure_duration` and `check_window`. The result comes from our own measurements, never from the agent's claim |
 
@@ -136,26 +145,37 @@ flowchart LR
 ## Evidence
 
 - **Tests**
-  - `npm test`: 37 player tests, including jsdom remote-flow tests that assert where focus lands after every transition.
-  - `pipeline/`: 59 offline tests.
+  - `npm test`: player and release tests, including jsdom remote-flow tests that assert where focus lands after every transition.
+  - `pipeline/`: offline tests.
 - **Platform**: [docs/vega/PLATFORM-FINDINGS.md](docs/vega/PLATFORM-FINDINGS.md), with screenshots and device logs.
 - **Friction log**: [docs/FRICTION-LOG.md](docs/FRICTION-LOG.md). 21 real, reproducible issues with the Vega SDK, VVD and WebView, each with verbatim errors, a workaround and a suggestion.
 
 ## Films and credits
 
-The demo catalog uses excerpts of the Blender Foundation's open movies under **CC BY 3.0**. See [media/ATTRIBUTION.md](media/ATTRIBUTION.md) and `content/rights/`.
+The planned two-film catalog uses excerpts of the Blender Foundation's open movies under **CC BY 3.0**. See [media/ATTRIBUTION.md](media/ATTRIBUTION.md) and `content/rights/`.
 
 - *Sintel* (2010): © copyright Blender Foundation | durian.blender.org
 - *Tears of Steel* (2012): (CC) Blender Foundation | mango.blender.org
 
-The excerpts were re-encoded, and Sema's audio description was added. The Blender Foundation does not endorse this project. `npm run content:fetch` reproduces both excerpts from the official mirror.
+The source excerpts were re-encoded. Their Sema narration drafts have completed live AWS authoring and still require human review before packaging. The Blender Foundation does not endorse this project. `npm run content:fetch` reproduces both excerpts from the official mirror.
 
 ## Limitations (honest)
 
 - **On the Vega Virtual Device, H.264 and VP9 stall about 3 s in** (platform decoder path). Sema ships VP8/Opus WebM renditions, which play through, and selects them on Vega OS. We have not yet verified H.264 on physical Fire TV hardware.
 - **VoiceView can be enabled on the VVD and tracks focus, but the VVD has no TTS engine.** VoiceView speech could only be verified on hardware.
-- **AI drafts can miss brief actions or mis-describe them.** Production publication requires recorded human approval of every line.
-- **This is a two-film pilot, not a catalog.** It doesn't integrate with Prime Video or any other streaming service.
+- **AI drafts can miss brief actions or mis-describe them.** Publication requires human approval. No real-film approval is recorded yet. AI edits and human review decisions are tracked separately; timing checks and critical-event references cannot prove factual completeness.
+- **This is a two-film pilot in preparation.** It doesn't integrate with Prime Video or any other streaming service.
+
+## Release and study gates
+
+```sh
+PYTHONPATH=pipeline pipeline/.venv/bin/python -m sema_pipeline preflight --profile sema --bucket YOUR_BUCKET
+pipeline/.venv/bin/python tools/run-live-pilot.py --profile sema --bucket YOUR_BUCKET  # preview only
+# After AWS sign-in: same command with --live (and --create-bucket if needed).
+# It generates guidance and both drafts, then stops before human review.
+npm run release:check  # fails until both reviewed films, media and guidance are present
+```
+
 
 ## Repository map
 

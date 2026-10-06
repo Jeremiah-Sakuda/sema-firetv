@@ -4,13 +4,13 @@
  * never blocks the interface: a watchdog ends every utterance even when the
  * platform never reports completion, and any new request interrupts the last.
  */
-export function createVoice({ clips = {}, onChange = () => {} } = {}) {
+export function createVoice({ clips = {}, onChange = () => {}, onEvent = () => {} } = {}) {
   const synth = typeof speechSynthesis === 'undefined' ? null : speechSynthesis;
   let audio = null, timer = null, token = 0, speaking = false;
   const set = value => { if (speaking !== value) { speaking = value; onChange(value); } };
   function release() {
     clearTimeout(timer); timer = null;
-    if (audio) { audio.onended = null; audio.onerror = null; audio.pause(); audio.removeAttribute('src'); audio = null; }
+    if (audio) { audio.onended = null; audio.onerror = null; audio.onplaying = null; audio.pause(); audio.removeAttribute('src'); audio = null; }
   }
   function stop() {
     token++; release();
@@ -35,8 +35,12 @@ export function createVoice({ clips = {}, onChange = () => {} } = {}) {
       const clip = clips[item.id];
       if (!clip) { fallback(); return; }
       const a = new Audio(clip.audio); audio = a;
-      a.onended = advance; a.onerror = fallback;
-      timer = setTimeout(advance, (clip.duration + 1.5) * 1000);
+      const report = type => { try { onEvent({ type, id: item.id, duration: clip.duration }); } catch { /* diagnostics cannot block input */ } };
+      a.onplaying = () => report('clip-playing');
+      a.onended = () => { report('clip-ended'); advance(); };
+      a.onerror = () => { report('clip-error'); fallback(); };
+      timer = setTimeout(() => { report('clip-watchdog'); advance(); }, (clip.duration + 1.5) * 1000);
+      report('clip-requested');
       try { a.play()?.catch?.(fallback); } catch { fallback(); }
     };
     const speak = text => {

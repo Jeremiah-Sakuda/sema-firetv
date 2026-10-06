@@ -19,9 +19,13 @@ const PARAMS = new URLSearchParams(location.search);
 const DEBUG = PARAMS.has('debug');
 const FIXED = PARAMS.get('study') === 'fixed';
 const CLIPS = DATA.prompts ?? {};
-// Vega OS: the platform H.264/VP9 path stalls on the Virtual Device; VP8 WebM plays
-// through (docs/vega/PLATFORM-FINDINGS.md). ?codec=h264 or ?codec=vp8 overrides.
-const PREFER_WEBM = PARAMS.get('codec') === 'vp8' || (PARAMS.get('codec') !== 'h264' && /Kepler|Vega/i.test(navigator.userAgent));
+// Vega OS: the platform H.264/VP9 path stalls on the Virtual Device (model AQVV),
+// while VP8 WebM plays through (docs/vega/PLATFORM-FINDINGS.md). Hardware H.264 is
+// untested, so other Vega devices start with MP4 and switch to VP8 once if it
+// stalls. ?codec=h264 or ?codec=vp8 overrides.
+const ON_VEGA = /Kepler|Vega/i.test(navigator.userAgent);
+const CODEC = PARAMS.get('codec');
+const PREFER_WEBM = CODEC === 'vp8' || (CODEC !== 'h264' && /AQVV/.test(navigator.userAgent));
 const video = $('film');
 
 const store = {
@@ -37,19 +41,50 @@ const films = (DATA.films ?? []).filter(f => DEBUG || !f.dev).map(f => ({
   ...f, errors: validatePackage(f.package, { allowFixture: !!f.allowFixture }),
 }));
 
-let view = 'catalog', film = null, player = null, lastFilmId = films[0]?.package.id ?? null;
-let narration = null, lastSaved = 0, sawPlaying = false, bufferTimer = null, endedHandled = false;
-let suppressFocusSpeech = false, focusSpeechTimer = null, sceneAsks = { scene: null, count: 0 }, suggested = false;
-let pendingFocusSpeechTarget = null;
-const voice = createVoice({ clips: CLIPS });
+let view = 'catalog', film = null, entry = null, player = null, lastFilmId = films[0]?.package.id ?? null;
+let narration = null, preload = null, lastSaved = 0, sawPlaying = false, bufferTimer = null, endedHandled = false;
+let suppressFocusSpeech = false, focusSpeechTimer = null, asks = [], suggested = false, codecFallbackUsed = false;
+let pendingFocusSpeechTarget = null, restartArmed = null, duckTimer = null, lastSpoken = [];
+/** Vega diagnostics go to the device log through the host bridge: prompt IDs and playback events only, no user data. */
+function diagnostic(message) {
+  try { window.ReactNativeWebView?.postMessage(JSON.stringify(message)); } catch { /* optional bridge */ }
+}
+const voice = createVoice({ clips: CLIPS, onEvent: event => diagnostic({ sema: 'guidance', ...event }) });
 
 /* ---------- speech and status ---------- */
 const clipText = id => CLIPS[id]?.text ?? DATA.promptTexts?.[id] ?? '';
 /** ids: prompt ID, {id, text}, or a list of them. */
 function say(ids, visible) {
   const list = (Array.isArray(ids) ? ids : [ids]).map(i => typeof i === 'string' ? { id: i, text: clipText(i) } : i);
-  setStatus(visible ?? list.map(i => i.text).join(' '));
+  // Explicit spoken actions own the audio channel. Focus speech is separately
+  // suppressed during recovery; Help and preference actions deliberately stop it.
+  clearTimeout(focusSpeechTimer); pendingFocusSpeechTarget = null;
+  const interrupted = view === 'player' && player?.mode === 'recovering';
+  if (interrupted) {
+    stopNarration(); player.controls('guidance-request');
+    render(); focusOn('resume'); persist();
+    list.unshift({ id: 'recovery_stopped', text: clipText('recovery_stopped') });
+  }
+  const message = visible ?? list.map(i => i.text).join(' ');
+  setStatus(interrupted && visible ? `${clipText('recovery_stopped')} ${visible}` : message);
+  lastSpoken = list.map(i => i.id);
+  diagnostic({ sema: 'say', ids: lastSpoken, focus: document.activeElement?.id || document.activeElement?.dataset?.level || null });
   if (prefs.guidance) voice.say(list);
+}
+const accessibleName = el => (el.getAttribute('aria-label') || el.textContent).trim();
+/** The focused control as a speakable item, so speech names exactly what Select will activate. */
+function focusedItem() {
+  const el = document.activeElement;
+  return el && el !== document.body && el.dataset?.say ? [{ id: el.dataset.say, text: accessibleName(el) }] : [];
+}
+/**
+ * A state change: move focus, then say what happened followed by the control
+ * that now really has focus. Prompts never hard-code focus or directions, so
+ * speech cannot contradict the layout.
+ */
+function announce(ids, target) {
+  if (target) focusOn(target);
+  say([...(Array.isArray(ids) ? ids : [ids]), ...focusedItem()]);
 }
 /** Visible status, mirrored to a screen-reader live region when guidance is off. */
 function setStatus(message, { announce = true } = {}) {
@@ -109,6 +144,9 @@ function nearestInDirection(from, candidates, direction) {
   }).filter(c => c.forward > -1).sort((a, b) => a.score - b.score)[0];
 }
 function speakFocused() {
+  // A focus announcement queued before Select must not speak over narration
+  // or the film after the viewer activates that control.
+  if (view === 'player' && ['playing', 'recovering'].includes(player?.mode)) return;
   const el = document.activeElement;
   if (el?.dataset?.say) voice.say({ id: el.dataset.say, text: el.getAttribute('aria-label') || el.textContent });
 }
@@ -124,12 +162,13 @@ document.addEventListener('focusin', event => {
 /* ---------- rendering ---------- */
 function setAvailable(el, available) { el.setAttribute('aria-disabled', String(!available)); el.classList.toggle('unavailable', !available); }
 function renderToggles() {
+  // The visible label carries the state; no aria-pressed, so it is not announced twice.
   document.querySelectorAll('[data-toggle="text"]').forEach(b => {
-    b.textContent = `Description text: ${prefs.textMode ? 'on' : 'off'}`; b.setAttribute('aria-pressed', String(prefs.textMode));
+    b.textContent = `Description text: ${prefs.textMode ? 'on' : 'off'}`; b.classList.toggle('on', prefs.textMode);
     b.dataset.say = prefs.textMode ? 'label_text_on' : 'label_text_off';
   });
   document.querySelectorAll('[data-toggle="guidance"]').forEach(b => {
-    b.textContent = `Spoken guidance: ${prefs.guidance ? 'on' : 'off'}`; b.setAttribute('aria-pressed', String(prefs.guidance));
+    b.textContent = `Spoken guidance: ${prefs.guidance ? 'on' : 'off'}`; b.classList.toggle('on', prefs.guidance);
     b.dataset.say = prefs.guidance ? 'label_guidance_on' : 'label_guidance_off';
   });
   // With guidance off, a screen reader announces status changes instead.
@@ -159,12 +198,16 @@ function render() {
     $('retry').hidden = mode !== 'error';
     $('level-group').hidden = FIXED;
     document.querySelectorAll('[data-level]').forEach(b => {
-      const selected = b.dataset.level === player.level;
-      b.setAttribute('aria-pressed', String(selected));
-      b.dataset.say = `label_level_${b.dataset.level}${selected ? '_selected' : ''}`;
+      const current = b.dataset.level === player.level;
+      b.setAttribute('aria-checked', String(current));
+      b.dataset.say = `label_level_${b.dataset.level}${current ? '_selected' : ''}`;
     });
+    const restart = $('restart');
+    restart.textContent = restartArmed ? 'Select again to start over' : 'Start over';
+    restart.dataset.say = restartArmed ? 'label_start_over_confirm' : 'label_start_over';
+    restart.classList.toggle('armed', !!restartArmed);
   }
-  document.querySelectorAll('[data-choose-level]').forEach(b => b.setAttribute('aria-pressed', String(prefs.chosen && b.dataset.chooseLevel === prefs.level)));
+  document.querySelectorAll('[data-choose-level]').forEach(b => b.setAttribute('aria-checked', String(prefs.chosen && b.dataset.chooseLevel === prefs.level)));
   ensureFocus();
 }
 function renderCatalog() {
@@ -198,12 +241,45 @@ function persist() { if (film && player) store.set(resumeKey(film.id), player.sn
 /* ---------- narration ---------- */
 function stopNarration() {
   if (narration) { narration.onended = null; narration.onerror = null; narration.pause(); narration.removeAttribute('src'); }
-  narration = null; $('caption').hidden = true;
+  narration = null; $('caption').hidden = true; duck(false);
+}
+/** Lower the film under narration (broadcast practice) with a short ramp; restore after. */
+function duck(on) {
+  const target = on ? 0.35 : 1;
+  clearInterval(duckTimer);
+  if (Math.abs((video.volume ?? 1) - target) < 0.01) return;
+  duckTimer = setInterval(() => {
+    const v = video.volume, next = Math.abs(target - v) <= 0.08 ? target : v + Math.sign(target - v) * 0.08;
+    try { video.volume = next; } catch { /* volume unsupported */ }
+    if (next === target) clearInterval(duckTimer);
+  }, 20);
 }
 function showCaption(text) { $('caption').textContent = text; $('caption').hidden = !prefs.textMode; }
+/**
+ * Load the next cue's audio before it is due. Creating audio at the cue start
+ * measured 41-382 ms to playing on the Vega Virtual Device, more than the start
+ * budget of the tightest real cue (0.152 s).
+ */
+function preloadNext() {
+  if (!player || player.mode !== 'playing' || player.level === 'off') return;
+  const t = video.currentTime;
+  const next = film.cues.find(c => !player.attempted.has(c.id) && c.start + c.margin > t);
+  if (!next || next.start + next.margin - t > 2.5) return;
+  const key = `${next.id}:${player.level}`;
+  if (preload?.key === key) return;
+  dropPreload();
+  const audio = new Audio(next.variants[player.level].audio); audio.preload = 'auto'; audio.load?.();
+  preload = { key, audio };
+}
+function dropPreload() { if (preload) { preload.audio.removeAttribute('src'); preload = null; } }
+function takePreload(cue) {
+  if (cue.kind !== 'cue' || preload?.key !== `${cue.cue}:${cue.level}`) { dropPreload(); return null; }
+  const audio = preload.audio; preload = null; return audio;
+}
 function playNarration(cue) {
   stopNarration();
-  const audio = new Audio(cue.audio); narration = audio; audio.preload = 'auto';
+  const audio = takePreload(cue) ?? new Audio(cue.audio);
+  narration = audio; audio.preload = 'auto';
   const current = () => narration === audio && player?.active?.token === cue.token;
   audio.onended = () => {
     if (!current()) return;
@@ -211,16 +287,21 @@ function playNarration(cue) {
     if (cue.kind === 'recovery') onRecoveryComplete(); else render();
   };
   audio.onerror = () => { if (current()) fail('error_audio'); };
-  audio.addEventListener('canplay', () => {
+  const start = () => {
     if (!current()) return;
-    if (!player.canStart(cue.token, cue.kind === 'recovery' ? player.position : video.currentTime)) { stopNarration(); pauseForLoss(); return; }
+    if (!player.canStart(cue.token, cue.kind === 'recovery' ? player.position : video.currentTime)) {
+      // Optional detail is dropped and the film keeps playing; a lost critical fact pauses.
+      stopNarration(); if (player.mode !== 'playing') pauseForLoss(); return;
+    }
     audio.play().then(() => {
       if (!current()) { audio.pause(); return; }
-      player.record('audio-start', { token: cue.token, mediaPosition: video.currentTime });
+      player.record('audio-start', { token: cue.token, mediaPosition: video.currentTime, preloaded: audio.readyState >= 3 });
+      if (cue.kind === 'cue') duck(true);
       showCaption(cue.text);
     }).catch(() => { if (current()) fail('error_audio'); });
-  }, { once: true });
-  audio.load?.();
+  };
+  if (audio.readyState >= 3) start();
+  else { audio.addEventListener('canplay', start, { once: true }); audio.load?.(); }
 }
 
 /* ---------- state transitions ---------- */
@@ -229,18 +310,24 @@ function openControls(reason, prompt, focusId) {
   clearTimeout(bufferTimer);
   video.pause(); stopNarration(); voice.stop();
   player.position = video.currentTime; player.controls(reason);
-  render(); focusOn(focusId); say(prompt); persist();
+  if (FIXED && focusId === 'recover' && !player.pending().length) focusId = 'resume';
+  render(); announce(prompt, focusId); persist();
 }
 function pauseForLoss() {
   video.pause(); stopNarration();
   if (player.mode === 'playing') player.controls('critical-late');
   render();
-  if (player.pending().length) { focusOn('recover'); say('interrupted'); } else { focusOn('resume'); say('paused_resume'); }
+  const pending = player.pending().length > 0;
+  announce(pending ? 'interrupted' : 'paused', pending ? 'recover' : 'resume');
   persist();
+}
+/** Stop a recovery narration; its fact stays pending until heard. */
+function stopRecovery(reason = 'cancel-recovery') {
+  stopNarration(); player.controls(reason); render(); persist();
 }
 async function resume() {
   if (!player || view !== 'player' || player.mode === 'error') return;
-  if (player.mode === 'ended' || atEnd()) { focusOn(defaultFocusId()); say(player.pending().length ? 'film_ended_pending' : 'film_ended'); return; }
+  if (player.mode === 'ended' || atEnd()) { announce(player.pending().length ? 'film_ended_pending' : 'film_ended', defaultFocusId()); return; }
   voice.stop(); stopNarration();
   if (player.mode === 'recovering') player.controls('cancel-recovery');
   if (!player.resume()) return;
@@ -262,24 +349,26 @@ function recover() {
   if (FIXED && !player.pending().length && player.mode !== 'recovering') { say('level_fixed'); return; }
   video.pause(); voice.stop(); stopNarration();
   if (player.mode !== 'ended' && player.mode !== 'recovering') player.position = video.currentTime;
+  const forPending = player.pending().length > 0;
   const cue = player.recover(); render();
-  if (!cue) { focusOn('resume'); say('no_moment'); return; }
-  const scene = player.sceneAt()?.id;
-  sceneAsks = scene === sceneAsks.scene ? { scene, count: sceneAsks.count + 1 } : { scene, count: 1 };
+  if (!cue) { announce('no_moment', 'resume'); return; }
+  // Repeated asks for the latest moment within 30 s of film suggest more detail
+  // would help; recovering interrupted facts does not.
+  if (!forPending) { asks = asks.filter(t => player.position >= t && player.position - t < 30); asks.push(player.position); }
   setStatus('Describing what you missed…', { announce: false });
   focusOn('recover');
   playNarration(cue); persist();
 }
 function onRecoveryComplete() {
   render();
-  if (player.pending().length) { focusOn('recover'); say('recovery_more'); return; }
+  if (player.pending().length) { announce('recovery_more', 'recover'); return; }
   // Adaptive suggestion: offered at most once per viewing, only while already
-  // paused, after the viewer has asked about the same scene twice.
-  if (!FIXED && !suggested && sceneAsks.count >= 2 && player.level !== 'rich' && player.level !== 'off') {
+  // paused, after the viewer has asked about recent moments twice.
+  if (!FIXED && !suggested && asks.length >= 2 && player.level !== 'rich' && player.level !== 'off') {
     suggested = true; player.record('suggestion-offered', { level: 'rich' });
-    focusOn(document.querySelector('[data-level="rich"]')); say('suggest_rich'); return;
+    announce(['recovery_complete', 'suggest_rich'], document.querySelector('[data-level="rich"]')); return;
   }
-  focusOn('resume'); say('recovery_complete');
+  announce('recovery_complete', 'resume');
 }
 function chooseLevel(level) {
   if (!player) return;
@@ -297,13 +386,21 @@ function seek(delta) {
   voice.stop(); stopNarration(); clearTimeout(bufferTimer);
   player.seek(video.currentTime + delta); video.currentTime = player.position; endedHandled = false;
   if (wasPlaying && player.resume()) { sawPlaying = false; render(); persist(); startVideo(); return; }
-  video.pause(); render(); focusOn('resume'); say('seek_paused'); persist();
+  video.pause(); render(); announce('seek_paused', 'resume'); persist();
+}
+function disarmRestart() { if (!restartArmed) return; clearTimeout(restartArmed); restartArmed = null; render(); }
+/** Start over discards the viewer's place, so it needs a second Select (unless already at the start). */
+function requestStartOver() {
+  if (!player) return;
+  if (restartArmed || player.position < 0.25) { disarmRestart(); startOver(); return; }
+  if (player.mode === 'recovering') stopRecovery();
+  restartArmed = setTimeout(disarmRestart, 6000); render(); announce('start_over_confirm');
 }
 function startOver() {
   if (!player) return;
   video.pause(); voice.stop(); stopNarration();
-  player.restart(); video.currentTime = 0; endedHandled = false; sceneAsks = { scene: null, count: 0 }; suggested = false;
-  render(); focusOn('resume'); say('start_over'); persist();
+  player.restart(); video.currentTime = 0; endedHandled = false; asks = []; suggested = false;
+  render(); announce('start_over', 'resume'); persist();
 }
 function onEnded() {
   if (endedHandled || !player) return;
@@ -311,29 +408,32 @@ function onEnded() {
   if (player.mode === 'playing') player.tick(film.duration);
   video.pause(); stopNarration(); render();
   const pending = player.pending().length > 0;
-  focusOn(pending ? 'recover' : 'return'); say(pending ? 'film_ended_pending' : 'film_ended'); persist();
+  announce(pending ? 'film_ended_pending' : 'film_ended', pending ? 'recover' : 'return'); persist();
 }
 function fail(prompt) {
   video.pause(); stopNarration(); voice.stop(); clearTimeout(bufferTimer);
   if (player && player.mode !== 'error') { player.position = video.currentTime || player.position; persist(); player.fail(prompt); }
-  render(); focusOn('retry'); say(prompt);
+  render(); announce(prompt, 'retry');
 }
 function leave() {
   if (!player) { view = 'catalog'; render(); return; }
   video.pause(); voice.stop(); stopNarration(); clearTimeout(bufferTimer);
   if (!['error', 'ended'].includes(player.mode)) player.position = video.currentTime;
   if (player.mode !== 'error') { player.catalog(); persist(); }
-  view = 'catalog'; render(); focusOn(`film-${film.id}`);
-  say(['returning', { id: `film_${promptId(film.id)}`, text: `${film.title} is selected.` }]);
+  view = 'catalog'; render(); announce('returning', `film-${film.id}`);
 }
 function openFilm(id) {
-  const entry = films.find(f => f.package.id === id);
-  if (!entry) return;
+  const found = films.find(f => f.package.id === id);
+  if (!found) return;
   lastFilmId = id;
-  if (entry.errors.length) { say('error_package'); return; }
-  voice.stop(); stopNarration();
-  film = entry.package; player = new Playback(film, { allowFixture: true });
-  sceneAsks = { scene: null, count: 0 }; suggested = false; endedHandled = false;
+  if (found.errors.length) { say('error_package'); return; }
+  voice.stop(); stopNarration(); dropPreload();
+  entry = found; film = entry.package; player = new Playback(film, { allowFixture: true });
+  if (window.ReactNativeWebView) {
+    const record = player.record.bind(player), p = player;
+    p.record = (type, detail = {}) => { record(type, detail); diagnostic({ sema: 'playback', type, position: Math.round(p.position * 1000) / 1000, ...detail }); };
+  }
+  asks = []; suggested = false; endedHandled = false; codecFallbackUsed = false;
   video.src = (PREFER_WEBM && entry.webm) || film.video; video.load?.();
   const saved = store.get(resumeKey(film.id), null);
   const restored = saved ? player.restore(saved) : false;
@@ -342,17 +442,16 @@ function openFilm(id) {
   if (restored && player.position >= film.duration - 0.5) player.restart();
   player.level = FIXED ? 'standard' : prefs.level; player.enter();
   if (player.position > 0) { try { video.currentTime = player.position; } catch { /* set again on loadedmetadata */ } }
-  if (!prefs.chosen && !FIXED) { view = 'welcome'; render(); focusOn('choose-standard'); say('onboarding'); return; }
+  if (!prefs.chosen && !FIXED) { view = 'welcome'; render(); announce('onboarding', 'choose-standard'); return; }
   view = 'player'; render();
-  if (player.pending().length) { focusOn('recover'); say('interrupted'); }
-  else if (player.position > 0) { focusOn('resume'); say('resume_offer'); }
-  else { focusOn('resume'); say(changed ? 'package_changed' : 'ready'); }
+  if (player.pending().length) announce('interrupted', 'recover');
+  else if (player.position > 0) announce('resume_offer', 'resume');
+  else announce(changed ? 'package_changed' : 'ready', 'resume');
 }
 function chooseFirstLevel(level) {
   prefs.level = level; prefs.chosen = true; savePrefs();
   if (player) player.level = level;
-  view = 'player'; render(); focusOn('resume');
-  say([`level_${level}`, 'ready']);
+  view = 'player'; render(); announce([`level_${level}`, 'ready'], 'resume');
 }
 function toggle(kind) {
   if (kind === 'text') {
@@ -368,16 +467,23 @@ function toggle(kind) {
 
 /* ---------- input ---------- */
 function back() {
-  if (view === 'catalog') return false;
-  if (view === 'welcome') { view = 'catalog'; render(); focusOn(`film-${lastFilmId}`); say('returning'); return true; }
+  if (view === 'catalog') {
+    // At the root, Back leaves the app. On Vega the WebView receives Back, so ask the host to exit.
+    if (!window.ReactNativeWebView) return false;
+    try { window.ReactNativeWebView.postMessage(JSON.stringify({ sema: 'exit' })); } catch { return false; }
+    return true;
+  }
+  if (view === 'welcome') { view = 'catalog'; render(); announce('returning', `film-${lastFilmId}`); return true; }
   if (player.mode === 'playing') { openControls('back', 'paused_return', 'return'); return true; }
-  if (player.mode === 'recovering') { stopNarration(); player.controls('cancel-recovery'); render(); focusOn('resume'); say('recovery_stopped'); return true; }
+  if (player.mode === 'recovering') { stopRecovery(); announce('recovery_stopped', 'resume'); return true; }
   leave(); return true;
 }
+// Vega host entry point: the native layer claims hardware Back and forwards it here.
+window.__semaBack = () => { back(); };
 function playPause() {
   if (view !== 'player' || !player) return;
-  if (player.mode === 'playing') openControls('transport-pause', 'paused_resume', 'resume');
-  else if (player.mode === 'recovering') { stopNarration(); player.controls('cancel-recovery'); render(); focusOn('resume'); say('recovery_stopped'); }
+  if (player.mode === 'playing') openControls('transport-pause', 'paused', 'resume');
+  else if (player.mode === 'recovering') { stopRecovery(); announce('recovery_stopped', 'resume'); }
   else resume();
 }
 document.addEventListener('keydown', event => {
@@ -386,7 +492,8 @@ document.addEventListener('keydown', event => {
   const playing = view === 'player' && player?.mode === 'playing';
   if (action === 'back') { if (back()) event.preventDefault(); return; }
   if (playing) {
-    if (['select', 'menu', 'up', 'down'].includes(action)) { event.preventDefault(); openControls(action, 'paused_recover', 'recover'); return; }
+    // Any D-pad key reveals the controls; nothing seeks or changes level by accident.
+    if (['select', 'menu', 'up', 'down', 'left', 'right'].includes(action)) { event.preventDefault(); openControls(action, 'paused', 'recover'); return; }
     if (action === 'space') { event.preventDefault(); playPause(); return; }
   }
   if (action === 'playpause' || action === 'play' || action === 'pause') {
@@ -396,7 +503,15 @@ document.addEventListener('keydown', event => {
   }
   if (action === 'forward' || action === 'rewind') { event.preventDefault(); seek(action === 'forward' ? 5 : -5); return; }
   if (action === 'menu') { event.preventDefault(); if (view === 'player') say('help'); return; }
-  if (['up', 'down', 'left', 'right'].includes(action)) { event.preventDefault(); if (!playing) moveFocus(action); return; }
+  if (['up', 'down', 'left', 'right'].includes(action)) {
+    event.preventDefault();
+    if (playing) return;
+    if (view === 'player' && player?.mode === 'recovering') {
+      // Navigating means the viewer is done listening: stop, keep the fact pending, say where focus went.
+      stopRecovery('navigate'); moveFocus(action); say(['recovery_stopped', ...focusedItem()]); return;
+    }
+    moveFocus(action); return;
+  }
   if (action === 'select') {
     const active = document.activeElement;
     if (!active || active === document.body) { event.preventDefault(); ensureFocus(); speakFocused(); return; }
@@ -417,7 +532,8 @@ function guarded(handler) {
 $('resume').addEventListener('click', guarded(resume));
 $('recover').addEventListener('click', guarded(recover));
 $('retry').addEventListener('click', guarded(() => openFilm(film.id)));
-$('restart').addEventListener('click', guarded(startOver));
+$('restart').addEventListener('click', guarded(requestStartOver));
+$('restart').addEventListener('blur', disarmRestart);
 $('return').addEventListener('click', guarded(leave));
 $('help').addEventListener('click', guarded(() => say('help')));
 document.querySelectorAll('[data-level]').forEach(b => b.addEventListener('click', guarded(el => chooseLevel(el.dataset.level))));
@@ -431,8 +547,22 @@ video.addEventListener('waiting', () => {
   // playback that lasts long enough to matter pauses the experience.
   if (!sawPlaying || player?.mode !== 'playing') return;
   clearTimeout(bufferTimer);
-  bufferTimer = setTimeout(() => { if (player?.mode === 'playing' && video.readyState < 3) openControls('buffering', 'buffering', 'resume'); }, 900);
+  bufferTimer = setTimeout(() => {
+    if (player?.mode !== 'playing' || video.readyState >= 3) return;
+    if (!tryCodecFallback()) openControls('buffering', 'buffering', 'resume');
+  }, 900);
 });
+/** On Vega hardware (H.264 untested), switch once to the VP8 rendition proven on the simulator. */
+function tryCodecFallback() {
+  if (!ON_VEGA || codecFallbackUsed || !entry?.webm || /\.webm$/.test(video.src)) return false;
+  codecFallbackUsed = true;
+  const at = video.currentTime;
+  player.record('codec-fallback', { from: 'mp4', to: 'webm', at });
+  video.src = entry.webm; video.load?.();
+  try { video.currentTime = at; } catch { /* applied on loadedmetadata */ }
+  sawPlaying = false; startVideo();
+  return true;
+}
 video.addEventListener('loadedmetadata', () => { if (player && Math.abs(video.currentTime - player.position) > 0.25) video.currentTime = player.position; });
 video.addEventListener('error', () => { if (player && view === 'player') fail('error_video'); });
 video.addEventListener('ended', onEnded);
@@ -445,7 +575,7 @@ document.addEventListener('visibilitychange', () => {
     }
   } else if (player.mode === 'controls') {
     render(); const pending = player.pending().length > 0;
-    focusOn(pending ? 'recover' : 'resume'); say(pending ? 'interrupted' : 'paused_resume');
+    announce(pending ? 'interrupted' : 'paused', pending ? 'recover' : 'resume');
   }
 });
 if ('mediaSession' in navigator) {
@@ -457,7 +587,9 @@ function loop() {
   const cue = player.tick(video.currentTime);
   if (player.mode === 'ended') { onEnded(); return; }
   if (player.mode !== 'playing') { pauseForLoss(); return; }
+  if (narration && !player.active) stopNarration();  // optional cue dropped by the scheduler
   if (cue) playNarration(cue);
+  preloadNext();
   if (performance.now() - lastSaved > 1000) { lastSaved = performance.now(); persist(); }
 }
 setInterval(loop, 30);
@@ -471,12 +603,10 @@ if (DEBUG) {
   $('logs').addEventListener('click', () => { $('event-log').textContent = JSON.stringify({ snapshot: player?.snapshot(), events: player?.log }, null, 2); });
 }
 if (FIXED) $('mode-badge').hidden = false;
-if (window.SEMA_TEST) window.__sema = { loop, get player() { return player; }, get view() { return view; }, get narration() { return narration; }, voice, prefs };
+if (window.SEMA_TEST) window.__sema = { loop, get player() { return player; }, get view() { return view; }, get narration() { return narration; }, get lastSpoken() { return lastSpoken; }, get preload() { return preload; }, voice, prefs };
 
 
 /* ---------- start ---------- */
 renderCatalog();
 $('load-status').textContent = films.length ? '' : 'No packaged films found.';
-render(); focusOn(defaultFocusId());
-const first = films.find(f => f.package.id === lastFilmId)?.package;
-say(first ? ['welcome', { id: `film_${promptId(first.id)}`, text: `${first.title} is selected.` }] : 'welcome');
+render(); announce('welcome', defaultFocusId());

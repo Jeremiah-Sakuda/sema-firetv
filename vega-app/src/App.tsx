@@ -1,9 +1,10 @@
 import {WebView} from '@amazon-devices/webview';
 import * as React from 'react';
-import {useRef} from 'react';
+import {useEffect, useRef} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {
   useHideSplashScreenCallback,
+  useKeplerBackHandler,
   usePreventHideSplashScreen,
 } from '@amazon-devices/react-native-kepler';
 import {
@@ -11,16 +12,30 @@ import {
   WebViewErrorEvent,
   WebViewHttpErrorEvent,
   WebViewMessageEvent,
+  WebViewMethods,
   WebViewNavigationEvent,
 } from '@amazon-devices/webview/dist/types/WebViewTypes';
 
 export const App = () => {
-  const webRef = useRef(null);
+  const webRef = useRef<WebViewMethods | null>(null);
   // By default splash screen is shown in app launch, as the splash
   // screen images are bundled in this app (assets/raw/ folder)
   // Declare that application wants to extend splash screen lifecycle
   usePreventHideSplashScreen();
   const hideSplashScreenCallback = useHideSplashScreenCallback();
+  // Vega's root-tag-aware back handler: exitApp() closes this app's screen.
+  // The page owns Back (it pauses, leaves the film, then returns to the
+  // catalog), so claim every hardware Back here; otherwise the native handler
+  // would exit the app on the first press. The page asks to exit on its root.
+  const backHandler = useKeplerBackHandler();
+  useEffect(() => {
+    const subscription = backHandler.addEventListener('hardwareBackPress', () => {
+      // Claiming Back stops the WebView receiving it, so forward it to the page.
+      webRef.current?.injectJavaScript('window.__semaBack && window.__semaBack(); true;');
+      return true;
+    });
+    return () => subscription.remove();
+  }, [backHandler]);
   return (
     <View style={styles.container}>
       <WebView
@@ -67,7 +82,18 @@ export const App = () => {
         // so page diagnostics are written to the device log instead
         // (`loggingctl log -f`, or tools/vega-probe/collect.js --device-log).
         onMessage={(event: WebViewMessageEvent) => {
-          console.info(`[WebViewMessage] ${event.nativeEvent.data}`);
+          const data = event.nativeEvent.data;
+          // The page posts {"sema":"exit"} when Back is pressed on its root
+          // catalog screen; the WebView consumes Back, so the host exits.
+          try {
+            if (JSON.parse(data)?.sema === 'exit') {
+              backHandler.exitApp();
+              return;
+            }
+          } catch {
+            // Not JSON: a plain diagnostics line.
+          }
+          console.info(`[WebViewMessage] ${data}`);
         }}
       />
     </View>

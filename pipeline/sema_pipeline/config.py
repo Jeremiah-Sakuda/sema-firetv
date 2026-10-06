@@ -62,17 +62,18 @@ DEFAULTS: dict = {
     "agent": {"model_id": "us.amazon.nova-pro-v1:0", "max_renders": 3},
     "transcribe": {"poll_seconds": 5, "timeout_seconds": 1800},
     "bedrock": {"request_metadata": True, "max_attempts": 4},
-    # ESTIMATES ONLY. On-demand list prices, us-east-1, as recalled when this file
-    # was written (2026-10). Verify at https://aws.amazon.com/pricing/ before
-    # quoting numbers. Free tier and credits are ignored.
+    # List-price estimates. Pilot rates verified with AWS Price List API on
+    # 2026-10-04 in us-east-1; unused alternative model/engine rates remain
+    # unverified. Free tier, credits, tax, request fees and transfer are excluded.
     "prices": {
-        "asOf": "2026-10-01 (unverified estimate; check aws.amazon.com/pricing)",
+        "asOf": "2026-10-04 (Nova Pro/2 Lite, neural Polly, batch Transcribe and S3 Standard verified via AWS Price List API; other rates unverified)",
         "currency": "USD",
-        "transcribe_per_minute": 0.024,
-        "transcribe_min_seconds": 15,
+        "transcribe_per_minute": 0.006,
+        "transcribe_min_seconds": 0,
         "polly_per_million_chars": {"standard": 4.0, "neural": 16.0, "long-form": 100.0, "generative": 30.0},
         "bedrock_per_1k_tokens": {
             "amazon.nova-pro-v1:0": {"input": 0.0008, "output": 0.0032},
+            "amazon.nova-2-lite-v1:0": {"input": 0.00033, "output": 0.00275},
             "amazon.nova-lite-v1:0": {"input": 0.00006, "output": 0.00024},
             "amazon.nova-micro-v1:0": {"input": 0.000035, "output": 0.00014},
         },

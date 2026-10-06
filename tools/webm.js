@@ -4,6 +4,7 @@
 // "Codec trials"). The player picks the WebM on Vega OS. Requires ffmpeg.
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -15,8 +16,16 @@ for (const entry of catalog.films) {
   const src = path.join(root, JSON.parse(fs.readFileSync(pkgFile, 'utf8')).video);
   const out = src.replace(/\.mp4$/, '.webm');
   if (out === src) { console.warn(`skip ${entry.id}: video is not .mp4`); continue; }
-  if (fs.existsSync(out) && fs.statSync(out).mtimeMs >= fs.statSync(src).mtimeMs) { console.log(`up to date: ${path.relative(root, out)}`); continue; }
+  const hash = file => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+  const sourceSha256 = hash(src), record = `${out}.json`;
+  let previous;
+  try { previous = JSON.parse(fs.readFileSync(record, 'utf8')); } catch { /* rebuild unbound renditions */ }
+  if (fs.existsSync(out) && previous?.sourceSha256 === sourceSha256 && previous?.renditionSha256 === hash(out)) {
+    console.log(`up to date: ${path.relative(root, out)}`); continue;
+  }
   execFileSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', '-i', src,
     '-c:v', 'libvpx', '-b:v', '1.5M', '-deadline', 'good', '-cpu-used', '2', '-c:a', 'libopus', '-b:a', '96k', out]);
+  fs.writeFileSync(record, JSON.stringify({ schemaVersion: 1, sourceSha256, renditionSha256: hash(out),
+    encoder: 'ffmpeg libvpx VP8 / libopus', generatedAt: new Date().toISOString() }, null, 2) + '\n');
   console.log(`webm: ${path.relative(root, out)} (${(fs.statSync(out).size / 1e6).toFixed(1)} MB)`);
 }

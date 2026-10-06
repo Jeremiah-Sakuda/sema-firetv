@@ -1,0 +1,572 @@
+{
+  "asset": "sintel-dragon",
+  "status": "proposed; human audiovisual review pending",
+  "characters": [
+    {
+      "ref": "red-haired-woman",
+      "description": "A young woman with short reddish hair, a pale sleeveless top, brown trousers, fingerless gloves and a shoulder guard.",
+      "firstSeenAt": 6.0
+    },
+    {
+      "ref": "small-dragon",
+      "description": "A small golden-brown dragon with horns, large eyes and pale wing membranes.",
+      "firstSeenAt": 33.0
+    }
+  ],
+  "events": [
+    {
+      "id": "city-view",
+      "description": "A sunlit city stretches toward a tall tower.",
+      "startTime": 0.5,
+      "availableAt": 0.5,
+      "critical": false,
+      "scene": "s01",
+      "modelSceneId": null,
+      "characters": [],
+      "details": {}
+    },
+    {
+      "id": "woman-in-alley",
+      "description": "A red-haired woman walks through a narrow alley with a staff.",
+      "startTime": 6.0,
+      "availableAt": 6.0,
+      "critical": false,
+      "scene": "s02",
+      "modelSceneId": null,
+      "characters": [
+        "red-haired-woman"
+      ],
+      "details": {}
+    },
+    {
+      "id": "woman-lifts-lid",
+      "description": "She holds open a large dark lid and peers underneath it.",
+      "startTime": 15.0,
+      "availableAt": 15.0,
+      "critical": false,
+      "scene": "s03",
+      "modelSceneId": null,
+      "characters": [
+        "red-haired-woman"
+      ],
+      "details": {}
+    },
+    {
+      "id": "woman-holds-food",
+      "description": "She holds a rough brown piece of food in her gloved hand.",
+      "startTime": 24.0,
+      "availableAt": 24.0,
+      "critical": false,
+      "scene": "s03",
+      "modelSceneId": null,
+      "characters": [
+        "red-haired-woman"
+      ],
+      "details": {}
+    },
+    {
+      "id": "woman-climbs-roof",
+      "description": "She climbs up onto a sloping tiled roof.",
+      "startTime": 30.0,
+      "availableAt": 30.0,
+      "critical": false,
+      "scene": "s05",
+      "modelSceneId": null,
+      "characters": [
+        "red-haired-woman"
+      ],
+      "details": {}
+    },
+    {
+      "id": "injured-dragon",
+      "description": "A small dragon crouches beside a chimney with blood on its torn wing.",
+      "startTime": 33.0,
+      "availableAt": 33.0,
+      "critical": true,
+      "scene": "s07",
+      "modelSceneId": null,
+      "characters": [
+        "small-dragon"
+      ],
+      "details": {},
+      "requiredTerms": [
+        [
+          "dragon"
+        ],
+        [
+          "injured",
+          "torn",
+          "bloody"
+        ]
+      ]
+    },
+    {
+      "id": "torn-wing",
+      "description": "The dragon's pale wing is ripped and blood pools on the roof.",
+      "startTime": 39.0,
+      "availableAt": 39.0,
+      "critical": false,
+      "scene": "s08",
+      "modelSceneId": null,
+      "characters": [
+        "small-dragon"
+      ],
+      "details": {}
+    },
+    {
+      "id": "woman-kneels",
+      "description": "The woman kneels beside the injured dragon.",
+      "startTime": 42.0,
+      "availableAt": 42.0,
+      "critical": false,
+      "scene": "s10",
+      "modelSceneId": null,
+      "characters": [
+        "red-haired-woman",
+        "small-dragon"
+      ],
+      "details": {}
+    },
+    {
+      "id": "offered-hand",
+      "description": "She reaches out an open hand toward the dragon, which opens its mouth.",
+      "startTime": 45.0,
+      "availableAt": 45.0,
+      "critical": true,
+      "scene": "s11",
+      "modelSceneId": null,
+      "characters": [
+        "red-haired-woman",
+        "small-dragon"
+      ],
+      "details": {},
+      "requiredTerms": [
+        [
+          "hand"
+        ],
+        [
+          "dragon"
+        ]
+      ]
+    },
+    {
+      "id": "dragon-in-lap",
+      "description": "Inside a dim room, she cradles the dragon in her lap and tends its injured wing.",
+      "startTime": 56.0,
+      "availableAt": 56.0,
+      "critical": true,
+      "scene": "s15",
+      "modelSceneId": null,
+      "characters": [
+        "red-haired-woman",
+        "small-dragon"
+      ],
+      "details": {},
+      "requiredTerms": [
+        [
+          "wing"
+        ],
+        [
+          "tends",
+          "tending",
+          "cares"
+        ]
+      ]
+    },
+    {
+      "id": "woman-and-dragon",
+      "description": "She smiles as she holds the dragon close.",
+      "startTime": 68.0,
+      "availableAt": 68.0,
+      "critical": false,
+      "scene": "s17",
+      "modelSceneId": null,
+      "characters": [
+        "red-haired-woman",
+        "small-dragon"
+      ],
+      "details": {}
+    },
+    {
+      "id": "bowl-down",
+      "description": "She lowers a dark bowl onto a surface.",
+      "startTime": 71.0,
+      "availableAt": 71.0,
+      "critical": false,
+      "scene": "s18",
+      "modelSceneId": null,
+      "characters": [
+        "red-haired-woman"
+      ],
+      "details": {}
+    }
+  ],
+  "editorialPrecheck": {
+    "preparedAt": "2026-10-04T15:27:58Z",
+    "preparedBy": "Codex (AI)",
+    "kind": "AI editorial precheck, not human approval",
+    "originalObservationsSha256": "2072f89743507e43ad8aa9f0f7e57f18f1ea168f296ec6af388cbbf2d4ee8b60",
+    "rawDraft": "attempts/2026-10-04-frame-draft-precheck/observations.json",
+    "proposals": [
+      {
+        "id": "city-view",
+        "time": 0.5,
+        "frame": "pipeline/work/sintel-dragon/frames/frame_00002.jpg",
+        "reason": "Establishing view; city does not visibly rise from darkness.",
+        "frameSourceTime": 0.5
+      },
+      {
+        "id": "woman-in-alley",
+        "time": 6,
+        "frame": "pipeline/work/sintel-dragon/frames/frame_00013.jpg",
+        "reason": "Retain the visible alley action; use one stable character ref.",
+        "frameSourceTime": 6.0
+      },
+      {
+        "id": "woman-lifts-lid",
+        "time": 15,
+        "frame": "pipeline/work/sintel-dragon/frames/frame_00031.jpg",
+        "reason": "Frames 12-18 show a lid; no ladder climb.",
+        "frameSourceTime": 15.0
+      },
+      {
+        "id": "woman-holds-food",
+        "time": 24,
+        "frame": "pipeline/work/sintel-dragon/frames/frame_00049.jpg",
+        "reason": "No visible evidence that the object is a pineapple.",
+        "frameSourceTime": 24.0
+      },
+      {
+        "id": "woman-climbs-roof",
+        "time": 30,
+        "frame": "pipeline/work/sintel-dragon/frames/frame_00061.jpg",
+        "reason": "Visible climbing; no attack or combat.",
+        "frameSourceTime": 30.0
+      },
+      {
+        "id": "injured-dragon",
+        "time": 33,
+        "frame": "pipeline/work/sintel-dragon/frames/frame_00067.jpg",
+        "reason": "The creature is alive and injured; no bat death or killing is shown.",
+        "frameSourceTime": 33.0
+      },
+      {
+        "id": "torn-wing",
+        "time": 39,
+        "frame": "pipeline/work/sintel-dragon/frames/frame_00077.jpg",
+        "reason": "Visible torn membrane; the woman does not disintegrate.",
+        "frameSourceTime": 38.75
+      },
+      {
+        "id": "woman-kneels",
+        "time": 42,
+        "frame": "pipeline/work/sintel-dragon/frames/frame_00083.jpg",
+        "reason": "Visible kneeling beside the dragon.",
+        "frameSourceTime": 41.75
+      },
+      {
+        "id": "offered-hand",
+        "time": 45,
+        "frame": "pipeline/work/sintel-dragon/frames/frame_00089.jpg",
+        "reason": "An offered hand is shown, not feeding.",
+        "frameSourceTime": 44.75
+      },
+      {
+        "id": "dragon-in-lap",
+        "time": 56,
+        "frame": "pipeline/work/sintel-dragon/frames/frame_00111.jpg",
+        "reason": "The scene changes indoors; care of the injured wing is visible.",
+        "frameSourceTime": 55.75
+      },
+      {
+        "id": "woman-and-dragon",
+        "time": 68,
+        "frame": "pipeline/work/sintel-dragon/frames/frame_00135.jpg",
+        "reason": "Visible expression; no guess about intent.",
+        "frameSourceTime": 67.75
+      },
+      {
+        "id": "bowl-down",
+        "time": 71,
+        "frame": "pipeline/work/sintel-dragon/frames/frame_00141.jpg",
+        "reason": "Retain the final visible action; may remain optional/unplaced.",
+        "frameSourceTime": 70.75
+      },
+      {
+        "id": "dragon-in-lap",
+        "time": 63,
+        "frame": "pipeline/work/sintel-dragon/frames/frame_00125.jpg",
+        "reason": "Use tends rather than wraps/bandages; the close-up supports care of the wound, not a clearly completed bandage.",
+        "frameSourceTime": 62.75
+      }
+    ],
+    "humanReviewRequired": true,
+    "frameTimestampBasis": "Source-frame PTS; each referenced evidence frame is at or before the proposed available time. Original model samples retained separately."
+  },
+  "textPreparation": {
+    "preparedBy": "Codex (AI)",
+    "preparedAt": "2026-10-04T15:44:00Z",
+    "kind": "Draft editing, not human approval",
+    "humanReviewRequired": true,
+    "changes": [
+      {
+        "cue": "c01",
+        "level": "essential",
+        "before": "City stretches.",
+        "after": "Sunlit city."
+      },
+      {
+        "cue": "c01",
+        "level": "standard",
+        "before": "City stretches toward tower.",
+        "after": "Sunlit rooftops."
+      },
+      {
+        "cue": "c01",
+        "level": "rich",
+        "before": "Sunlit city stretches toward tall tower.",
+        "after": "Sunlit rooftops."
+      },
+      {
+        "cue": "c02",
+        "level": "essential",
+        "before": "A woman walks through an alley.",
+        "after": "A woman walks."
+      },
+      {
+        "cue": "c02",
+        "level": "standard",
+        "before": "The red-haired woman walks through a narrow alley.",
+        "after": "She walks through a narrow alley."
+      },
+      {
+        "cue": "c02",
+        "level": "rich",
+        "before": "The red-haired woman walks through a narrow alley with a staff.",
+        "after": "Red-haired, she carries a staff through the narrow alley."
+      },
+      {
+        "cue": "c03",
+        "level": "essential",
+        "before": "She opens a lid and looks underneath.",
+        "after": "She lifts a lid."
+      },
+      {
+        "cue": "c03",
+        "level": "standard",
+        "before": "The red-haired woman opens a large dark lid and peers underneath it.",
+        "after": "She lifts a dark lid and peers underneath."
+      },
+      {
+        "cue": "c03",
+        "level": "rich",
+        "before": "The red-haired woman, dressed in a pale sleeveless top, opens a large dark lid and peers underneath it in the alley.",
+        "after": "In fingerless gloves, she holds open the large lid and peers underneath."
+      },
+      {
+        "cue": "c04",
+        "level": "essential",
+        "before": "She holds food.",
+        "after": "She holds food."
+      },
+      {
+        "cue": "c04",
+        "level": "standard",
+        "before": "She holds brown food.",
+        "after": "She holds brown food."
+      },
+      {
+        "cue": "c04",
+        "level": "rich",
+        "before": "She holds rough brown food.",
+        "after": "Brown food in hand."
+      },
+      {
+        "cue": "c05",
+        "level": "essential",
+        "before": "She climbs the roof.",
+        "after": "She climbs."
+      },
+      {
+        "cue": "c05",
+        "level": "standard",
+        "before": "She climbs the roof now.",
+        "after": "She climbs up."
+      },
+      {
+        "cue": "c05",
+        "level": "rich",
+        "before": "She climbs the tiled roof now.",
+        "after": "Onto the roof."
+      },
+      {
+        "cue": "c06",
+        "level": "essential",
+        "before": "Dragon injured, torn, bloody.",
+        "after": "Dragon, injured wing."
+      },
+      {
+        "cue": "c06",
+        "level": "standard",
+        "before": "Dragon crouches beside chimney, wing torn and bloody.",
+        "after": "A dragon crouches with a torn, bloody wing."
+      },
+      {
+        "cue": "c06",
+        "level": "rich",
+        "before": "Small dragon crouches by chimney, wing torn and bloody.",
+        "after": "A golden dragon by a chimney, its wing torn and bloody."
+      },
+      {
+        "cue": "c07",
+        "level": "essential",
+        "before": "Blood pools.",
+        "after": "Blood pools."
+      },
+      {
+        "cue": "c07",
+        "level": "standard",
+        "before": "Blood pools on roof.",
+        "after": "Blood on the roof."
+      },
+      {
+        "cue": "c07",
+        "level": "rich",
+        "before": "Blood pools near dragon's wing.",
+        "after": "Blood below its wing."
+      },
+      {
+        "cue": "c08",
+        "level": "essential",
+        "before": "woman kneels",
+        "after": "She kneels."
+      },
+      {
+        "cue": "c08",
+        "level": "standard",
+        "before": "woman kneels beside dragon",
+        "after": "She kneels beside it."
+      },
+      {
+        "cue": "c08",
+        "level": "rich",
+        "before": "red-haired woman kneels by small dragon",
+        "after": "She kneels beside the dragon."
+      },
+      {
+        "cue": "c09",
+        "level": "essential",
+        "before": "She offers her hand to the dragon.",
+        "after": "She offers the dragon her hand."
+      },
+      {
+        "cue": "c09",
+        "level": "standard",
+        "before": "She reaches out a hand toward the dragon on the roof.",
+        "after": "She reaches an open hand toward the dragon."
+      },
+      {
+        "cue": "c09",
+        "level": "rich",
+        "before": "The red-haired woman extends her open hand toward the small dragon beside her.",
+        "after": "She extends her gloved hand; the small dragon opens its mouth."
+      },
+      {
+        "cue": "c10",
+        "level": "essential",
+        "before": "She wraps the wing.",
+        "after": "She tends its wing."
+      },
+      {
+        "cue": "c10",
+        "level": "standard",
+        "before": "She wraps the dragon's wing.",
+        "after": "She tends the dragon's wing."
+      },
+      {
+        "cue": "c10",
+        "level": "rich",
+        "before": "In dim room, she wraps its injured wing.",
+        "after": "On her lap, she tends its wing."
+      },
+      {
+        "cue": "c11",
+        "level": "essential",
+        "before": "She smiles.",
+        "after": "She smiles."
+      },
+      {
+        "cue": "c11",
+        "level": "standard",
+        "before": "She smiles, holding it.",
+        "after": "She smiles at it."
+      },
+      {
+        "cue": "c11",
+        "level": "rich",
+        "before": "She smiles, holding the dragon close.",
+        "after": "She holds it close, smiling."
+      },
+      {
+        "recovery": "city-view",
+        "before": "A sunlit city stretches toward a tall tower. Buildings and streets are visible under bright daylight. The scene shows an urban landscape from a distance.",
+        "after": "A sunlit city stretches toward a tall tower."
+      },
+      {
+        "recovery": "woman-in-alley",
+        "before": "A red-haired woman in a sleeveless top and gloves walks through a narrow alley, holding a staff. The alley walls are close on either side. She moves forward steadily.",
+        "after": "A red-haired woman walks through a narrow alley with a staff."
+      },
+      {
+        "recovery": "woman-lifts-lid",
+        "before": "The red-haired woman stands in the alley, gripping the edge of a large dark lid. She lifts it upward, leaning over to look underneath. Her posture shows curiosity and focus.",
+        "after": "She holds open a large dark lid and peers underneath it."
+      },
+      {
+        "recovery": "woman-holds-food",
+        "before": "The red-haired woman stands in the alley, holding a rough brown piece of food in her gloved hand. She wears a pale sleeveless top and brown trousers. The alley remains unchanged around her.",
+        "after": "She holds a rough brown piece of food in her gloved hand."
+      },
+      {
+        "recovery": "woman-climbs-roof",
+        "before": "The red-haired woman stands on a sloping tiled roof, wearing a pale sleeveless top, brown trousers, and fingerless gloves. She pauses, looking around the rooftop area.",
+        "after": "She climbs up onto a sloping tiled roof."
+      },
+      {
+        "recovery": "injured-dragon",
+        "before": "A small dragon crouches beside a chimney, its wing torn and stained with blood. It remains still, huddled close to the structure. The scene focuses solely on the injured creature.",
+        "after": "A small dragon crouches beside a chimney with blood on its torn wing."
+      },
+      {
+        "recovery": "torn-wing",
+        "before": "The dragon's pale wing is ripped, and blood pools on the roof beside a chimney. The dragon crouches nearby, its wing injured and stained with blood.",
+        "after": "The dragon's pale wing is ripped and blood pools on the roof."
+      },
+      {
+        "recovery": "woman-kneels",
+        "before": "The red-haired woman kneels beside the small dragon on the roof. The dragon's wing is torn and bleeding. Both are near a chimney on the tiled roof.",
+        "after": "The woman kneels beside the injured dragon."
+      },
+      {
+        "recovery": "offered-hand",
+        "before": "The red-haired woman kneels beside the small dragon on the roof. She reaches out an open hand toward the dragon, which opens its mouth. Blood is on the dragon's torn wing.",
+        "after": "The woman kneels beside the small dragon on the roof. Its wing is torn and bloody. She offers her open hand; the dragon opens its mouth."
+      },
+      {
+        "recovery": "dragon-in-lap",
+        "before": "The red-haired woman sits in a dim room, holding the small dragon on her lap. She carefully wraps the dragon's injured wing. The dragon rests quietly against her.",
+        "after": "Inside a dim room, the woman cradles the dragon in her lap. She tends its injured wing."
+      },
+      {
+        "recovery": "woman-and-dragon",
+        "before": "The red-haired woman smiles while cradling the small dragon in her lap inside a dim room, holding it close. The dragon's injured wing is wrapped.",
+        "after": "In the dim room, the woman smiles and holds the small dragon close."
+      },
+      {
+        "recovery": "bowl-down",
+        "before": "The red-haired woman places a dark bowl on a surface. She still holds the small dragon close, cradling it in her lap with its injured wing wrapped.",
+        "after": "The woman lowers a dark bowl onto a surface."
+      }
+    ]
+  }
+}

@@ -15,6 +15,19 @@ export class Playback {
     if (this.log.length > 2000) this.log.shift();
   }
   pending() { return this.asset.events.filter(e => e.availableAt <= this.position && this.delivery.get(e.id) === 'pending').sort((a,b) => a.availableAt-b.availableAt); }
+  critical(id) { return !!this.asset.events.find(e => e.id === id)?.critical; }
+  /**
+   * The active cue can no longer finish inside its window. Undelivered critical
+   * facts become recoverable and pause playback; optional detail is dropped
+   * without interrupting the film. Returns true when playback paused.
+   */
+  lose(reason) {
+    const lost = (this.active?.events ?? []).filter(id => this.critical(id) && this.delivery.get(id) !== 'delivered');
+    if (lost.length) { this.controls(reason); return true; }
+    this.record('audio-cancel', { reason, token: this.active?.token, optional: true });
+    this.active = null; this.epoch++;
+    return false;
+  }
   enter() { this.mode = 'controls'; this.record('open'); }
   resume() {
     if (this.mode === 'catalog' || this.mode === 'error' || this.position >= this.asset.duration) return false;
@@ -68,7 +81,7 @@ export class Playback {
     if (!Number.isFinite(position) || this.mode !== 'playing') return null;
     this.position = Math.max(0, Math.min(position, this.asset.duration));
     if (this.active) {
-      if (this.active.kind === 'cue' && this.position >= this.active.end - this.active.margin) this.controls('window-expired');
+      if (this.active.kind === 'cue' && this.position >= this.active.end - this.active.margin) this.lose('window-expired');
       return null;
     }
     for (const c of this.asset.cues) {
@@ -85,9 +98,12 @@ export class Playback {
       const v = c.variants[level ?? this.level];
       if (level && level !== this.level) this.record('level-fallback', { cue: c.id, from: this.level, to: level });
       if (!level) {
-        for (const id of c.events) if (this.asset.events.find(e => e.id === id)?.critical && this.delivery.get(id) !== 'delivered') this.delivery.set(id, 'pending');
-        this.record('late-cue', { cue: c.id });
-        if (this.pending().length) { this.controls('critical-late'); return null; }
+        // Only this cue's own critical facts justify interrupting the film; an
+        // earlier fact the viewer chose to leave pending must not re-trigger it.
+        const lost = c.events.filter(id => this.critical(id) && this.delivery.get(id) !== 'delivered');
+        for (const id of lost) this.delivery.set(id, 'pending');
+        this.record('late-cue', { cue: c.id, critical: lost.length > 0 });
+        if (lost.length) { this.controls('critical-late'); return null; }
         continue;
       }
       this.active = { ...v, kind: 'cue', level, token: ++this.epoch, events: c.events, end: c.end, margin: c.margin, cue: c.id };
@@ -103,7 +119,7 @@ export class Playback {
     if (this.active.kind === 'recovery') return this.mode === 'recovering';
     if (this.mode !== 'playing') return false;
     if (position + this.active.duration + this.active.margin > this.active.end) {
-      this.position = position; this.controls('late-audio-start'); return false;
+      this.position = position; this.lose('late-audio-start'); return false;
     }
     return true;
   }
@@ -118,13 +134,21 @@ export class Playback {
   sceneAt(position = this.position) {
     return this.asset.scenes.find(s => position >= s.start && (position < s.end || position === this.asset.duration && s.end === position));
   }
+  /**
+   * "What did I miss?": the earliest interrupted critical fact first, otherwise
+   * the most recent visual moment already on screen. Package scenes are camera
+   * shots, not story scenes, so recovery is not limited to the current shot;
+   * nothing that becomes available after the current position is eligible.
+   */
   recover() {
     this.controls('recovery');
-    const scene = this.sceneAt();
-    const event = this.pending()[0] ?? this.asset.events.filter(e => e.scene === scene?.id && e.availableAt <= this.position).sort((a,b) => b.availableAt-a.availableAt)[0];
+    const latest = this.asset.events.filter(e => e.availableAt <= this.position).sort((a,b) => b.availableAt-a.availableAt)[0];
+    const event = this.pending()[0] ?? latest;
     if (!event) { this.record('recovery-unavailable'); return null; }
     this.active = { ...event.recovery, kind: 'recovery', events: [event.id], token: ++this.epoch };
-    this.mode = 'recovering'; this.record('recovery', { event: event.id }); return this.active;
+    this.mode = 'recovering';
+    this.record('recovery', { event: event.id, pending: this.delivery.get(event.id) === 'pending', otherShot: event.scene !== this.sceneAt()?.id });
+    return this.active;
   }
   snapshot() {
     const delivery = Object.fromEntries(this.delivery);

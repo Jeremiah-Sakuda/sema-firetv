@@ -10,6 +10,7 @@ from pathlib import Path
 from .config import PIPELINE_DIR, PROJECT_ROOT
 from .report import aggregate_usage, estimate_cost, run_mode
 from .review import approval_record
+from .integrity import verify_review
 from .timeline import LEVELS
 from .workspace import PipelineError, Workspace, now_iso
 
@@ -51,6 +52,9 @@ def run_package(ws: Workspace, cfg: dict, *, web_root: Path | None = None, versi
         raise PipelineError("Review is not complete; refusing to publish. Pending: "
                             f"{review.get('pending', [])[:5]} Blockers: {review.get('blockers', [])}. "
                             "Finish `review`, or pass --draft to write an unpublishable draft for inspection.")
+
+    if approved:
+        verify_review(ws, doc, review)
 
     web_root = Path(web_root) if web_root else default_web_root(ws)
     if draft:
@@ -105,8 +109,10 @@ def run_package(ws: Workspace, cfg: dict, *, web_root: Path | None = None, versi
             "models": {"observe": obs["model"]["modelId"], "script": script["model"]["modelId"],
                        **({"fitAgent": render["agent"]["modelId"]} if render.get("agent") else {})},
             "observeInput": obs["model"].get("videoSource"),
+            "editorialPrecheck": {k: v for k, v in obs.get("editorialPrecheck", {}).items() if k in {"preparedAt", "preparedBy", "kind", "originalObservationsSha256", "humanReviewRequired"}},
             "region": obs["model"].get("region"),
             "voice": render["voice"],
+            "editorialTextPreparation": {k: v for k, v in script.get("editorialTextPreparation", {}).items() if k != "changes"},
             "fitMode": render["fitMode"],
             "fitSlackSeconds": render["slack"],
             "timings": {name: s.get("seconds") for name, s in stages.items()

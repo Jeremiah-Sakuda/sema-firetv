@@ -69,10 +69,10 @@
     "max_attempts": 4
   },
   "prices": {
-    "asOf": "2026-10-01 (unverified estimate; check aws.amazon.com/pricing)",
+    "asOf": "2026-10-04 (Nova Pro/2 Lite, neural Polly, batch Transcribe and S3 Standard verified via AWS Price List API; other rates unverified)",
     "currency": "USD",
-    "transcribe_per_minute": 0.024,
-    "transcribe_min_seconds": 15,
+    "transcribe_per_minute": 0.006,
+    "transcribe_min_seconds": 0,
     "polly_per_million_chars": {
       "standard": 4.0,
       "neural": 16.0,
@@ -91,6 +91,10 @@
       "amazon.nova-micro-v1:0": {
         "input": 3.5e-05,
         "output": 0.00014
+      },
+      "amazon.nova-2-lite-v1:0": {
+        "input": 0.00033,
+        "output": 0.00275
       }
     },
     "s3_per_gb_month": 0.023

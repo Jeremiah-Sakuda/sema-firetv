@@ -61,6 +61,17 @@ class NormalizeObservationsTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             normalize_observations({"evts": []}, 15.0, SCENES)
 
+    def test_schema_echo_is_rejected_even_with_valid_times(self):
+        with self.assertRaisesRegex(ValueError, "schema placeholder"):
+            normalize_observations({"events": [{"description": "One factual present-tense sentence.",
+                                               "startTime": 1.5, "availableAt": 2.0}]}, 15, SCENES)
+
+    def test_quiet_frame_batch_can_be_empty_but_invalid_events_cannot(self):
+        self.assertEqual(normalize_observations({"events": [], "characters": []}, 15, SCENES,
+                                               allow_empty=True), ([], [], []))
+        with self.assertRaises(ValueError):
+            normalize_observations({"events": [{"description": ""}]}, 15, SCENES, allow_empty=True)
+
     def test_parse_time(self):
         self.assertEqual(parse_time("01:02.5"), 62.5)
         self.assertEqual(parse_time("1:00:01"), 3601.0)

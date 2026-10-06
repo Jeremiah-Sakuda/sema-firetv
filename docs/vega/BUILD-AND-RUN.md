@@ -40,7 +40,7 @@ node tools/vega-sync.js        # copies index.html, style.css, src/bundle.js, sr
 
 * It deletes only the paths it owns under `vega-app/assets/` and leaves everything else, such as a future `assets/raw/`.
 * It copies whatever is on disk at that moment.
-* From `media/` it copies only `.mp4 .mp3 .json .vtt .png .jpg .svg` files.
+* From `media/` it copies only `.mp4 .webm .mp3 .json .vtt .png .jpg .svg` files.
 * It warns when `src/bundle.js` is older than any `src/*.js` module. It never rebuilds the bundle itself.
 * The synced copies are git-ignored (`vega-app/.gitignore`).
 
@@ -201,7 +201,7 @@ The probe shows results on screen and sends them through the React Native bridge
 **Video codec for the VVD: use WebM with VP8 video and Opus audio.** On the VVD, H.264 MP4 and VP9 stop after about 3 s, and AV1 shows no picture. See `PLATFORM-FINDINGS.md`, "Codec trials", for the evidence and the ffmpeg command.
 
 ```sh
-npm run bundle && node tools/vega-sync.js
+npm run webm && npm run bundle && node tools/vega-sync.js
 vega-app/scripts/build-staged.sh Debug aarch64
 vega run-app vega-app/build/vpkg/sema_aarch64.vpkg com.sema.viewer.main
 tools/vega-probe/remote.sh select          # e.g. open the focused film

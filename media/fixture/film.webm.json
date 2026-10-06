@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "sourceSha256": "aa20a1b6b91a4bd73564cf73f8b4cc22cc0cc2033ff70b4d50a5b15bea7f43b9",
+  "renditionSha256": "87d98a4f2aa8679246a90648b73723c4218478967faca29002e39560f4461d6b",
+  "encoder": "ffmpeg libvpx VP8 / libopus",
+  "generatedAt": "2026-10-04T17:58:57.644Z"
+}

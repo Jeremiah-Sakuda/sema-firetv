@@ -7,6 +7,7 @@ Progress is saved after every decision; re-running resumes where you stopped.
 from __future__ import annotations
 
 import os
+import math
 import shutil
 import subprocess
 import sys
@@ -15,6 +16,8 @@ import time
 from pathlib import Path
 
 from .aws import Services
+from .integrity import playback_contract, review_fingerprint
+from .script import validate_required_terms
 from .render import Narrator
 from .timeline import LEVELS, available_speech_seconds, count_words, fits
 from .workspace import PipelineError, Workspace, now_iso
@@ -86,7 +89,7 @@ def build_reviewed(ws: Workspace, cfg: dict) -> dict:
     for e in obs["events"]:
         rec = render["recoveries"][e["id"]]
         events.append({"id": e["id"], "scene": e["scene"], "availableAt": e["availableAt"], "critical": e["critical"],
-                       "description": e["description"], "recovery": dict(rec)})
+                       "description": e["description"], "requiredTerms": e.get("requiredTerms", []), "recovery": dict(rec)})
     unplaced = [i["event"] for i in issues if i["type"] == "critical-unplaced"]
     return {"asset": ws.asset, "slack": render["slack"], "renderedAt": render["renderedAt"], "cues": cues,
             "events": events, "unplaced": unplaced}
@@ -104,6 +107,23 @@ def blockers(doc: dict, slack: float) -> list[str]:
         for level, v in c["variants"].items():
             if not fits(v["duration"], c["seconds"], c["margin"], slack):
                 out.append(f"{c['id']}/{level} does not fit ({v['duration']:.2f} s, window {c['seconds']:.2f} s)")
+    # Preserve the configured lexical floors even through human edits. This
+    # supplements, and never replaces, audiovisual semantic review.
+    for e in doc["events"]:
+        try:
+            validate_required_terms(e["recovery"]["text"], e.get("requiredTerms", []))
+        except ValueError as exc:
+            out.append(f"recovery:{e['id']}: {exc}")
+    for c in doc["cues"]:
+        if c["dropped"]:
+            continue
+        groups = [g for e in doc["events"] if e["critical"] and e["id"] in c["events"]
+                  for g in e.get("requiredTerms", [])]
+        for level, v in c["variants"].items():
+            try:
+                validate_required_terms(v["text"], groups)
+            except ValueError as exc:
+                out.append(f"{c['id']}/{level}: {exc}")
     return out
 
 
@@ -120,9 +140,15 @@ class ReviewSession:
             if self.doc is not None:
                 io.say("Render output changed since the last review session; starting the review over.")
             self.doc, self.log = build_reviewed(ws, cfg), fresh_log
+        # Reusing an old timestamp cannot preserve approval after bytes/text or
+        # inputs change. Legacy reviews must also be repeated with fingerprints.
+        if self.log.get("decisions") and self.log.get("reviewState") != review_fingerprint(ws, self.doc):
+            io.say("Reviewed artifacts changed or lack fingerprints; starting the review over.")
+            self.doc, self.log = build_reviewed(ws, cfg), fresh_log
         if self.log.get("reviewer") != reviewer:
             self.log.setdefault("otherReviewers", []).append(self.log.get("reviewer"))
             self.log["reviewer"] = reviewer
+        self.initial_inputs = review_fingerprint(ws, self.doc)["inputs"]
         self.slack = float(self.doc.get("slack", cfg["cues"]["fit_slack"]))
         self.started = time.monotonic()
         self.session = {"startedAt": now_iso()}
@@ -134,7 +160,12 @@ class ReviewSession:
         self.session["seconds"] = round(time.monotonic() - self.started, 1)
         sessions = [s for s in self.log["sessions"] if s.get("startedAt") != self.session["startedAt"]]
         self.log["sessions"] = sessions + [self.session]
-        self.log["reviewMinutes"] = round(sum(s["seconds"] for s in self.log["sessions"]) / 60, 2)
+        self.log["terminalReviewMinutes"] = round(sum(s["seconds"] for s in self.log["sessions"]) / 60, 2)
+        self.log["reviewMinutes"] = round(self.log["terminalReviewMinutes"] + self.log.get("previewReviewMinutes", 0), 2)
+        state = review_fingerprint(self.ws, self.doc)
+        if state["inputs"] != self.initial_inputs:
+            raise PipelineError("Authoring inputs changed during review; restart review before approving.")
+        self.log["reviewState"] = state
         self.ws.write("reviewed.json", self.doc)
         self.ws.write("review.json", self.log)
 
@@ -208,8 +239,16 @@ class ReviewSession:
             if choice == "a":
                 bad = [lvl for lvl, v in c["variants"].items()
                        if not fits(v["duration"], c["seconds"], c["margin"], self.slack)]
+                groups = [g for e in self.doc["events"] if e["critical"] and e["id"] in c["events"]
+                          for g in e.get("requiredTerms", [])]
+                for level, v in c["variants"].items():
+                    try:
+                        validate_required_terms(v["text"], groups)
+                    except ValueError as exc:
+                        self.io.say(f"   {level}: {exc}")
+                        if level not in bad: bad.append(level)
                 if bad:
-                    self.io.say(f"   cannot approve: {', '.join(bad)} do not fit. Edit them" +
+                    self.io.say(f"   cannot approve: {', '.join(bad)} fail timing or required-concept checks. Edit them" +
                                 (" or drop the cue." if not critical else "."))
                     continue
                 return "approved"
@@ -256,6 +295,11 @@ class ReviewSession:
             self.io.say("   Spoiler check: it may only use facts visible by this moment.")
             choice = self.io.ask("   [a]pprove  [e]dit  [p]lay  [q]uit: ").strip().lower()
             if choice == "a":
+                try:
+                    validate_required_terms(r["text"], e.get("requiredTerms", []))
+                except ValueError as exc:
+                    self.io.say(f"   cannot approve recovery: {exc}")
+                    continue
                 return "approved"
             if choice == "e":
                 text = self.io.edit("recovery", r["text"])
@@ -318,19 +362,29 @@ class ReviewSession:
         self.log["completed"] = not stopped and not found and not pending
         if self.log["completed"]:
             self.log["approvedAt"] = now_iso()
+            self.log["integrity"] = review_fingerprint(self.ws, self.doc)
+            self.log["playback"] = playback_contract(self.ws.read("analysis.json"), self.doc)
+        else:
+            for key in ("approvedAt", "integrity", "playback"):
+                self.log.pop(key, None)
         self.save()
         return self.log
 
 
 def run_review(ws: Workspace, cfg: dict, services: Services | None, *, reviewer: str, approve_all: bool = False,
-               io: ReviewIO | None = None, restart: bool = False) -> dict:
+               io: ReviewIO | None = None, restart: bool = False, preview_minutes: float | None = None) -> dict:
     if not reviewer or not reviewer.strip():
         raise PipelineError("--reviewer NAME is required (it is recorded in the package approval).")
+    if preview_minutes is not None and (not math.isfinite(preview_minutes) or preview_minutes < 0):
+        raise PipelineError("Preview review minutes must be a finite nonnegative number.")
     if restart:
         for name in ("reviewed.json", "review.json"):
             if ws.exists(name):
                 (ws.dir / name).unlink()
     session = ReviewSession(ws, cfg, services, reviewer.strip(), io or ReviewIO())
+    if preview_minutes is not None:
+        # This is the cumulative outside-terminal time, not an increment each resume.
+        session.log["previewReviewMinutes"] = preview_minutes
     log = session.approve_all() if approve_all else session.run()
     return log
 
@@ -341,4 +395,7 @@ def approval_record(review: dict) -> dict:
             "reviewMinutes": review.get("reviewMinutes", 0.0), "edits": len(review.get("edits", [])),
             "drops": len(review.get("drops", [])), "method": review.get("method"),
             "downgradedCriticalEvents": len(review.get("downgrades", [])),
+            "terminalReviewMinutes": review.get("terminalReviewMinutes"),
+            "previewReviewMinutes": review.get("previewReviewMinutes", 0),
+            "integrity": review.get("integrity"), "playback": review.get("playback"),
             **({"note": review["note"]} if review.get("note") else {})}

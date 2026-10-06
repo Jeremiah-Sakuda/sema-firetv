@@ -1,5 +1,5 @@
 {
-  "name": "@amazon-devices/sema",
+  "name": "sema",
   "version": "0.0.1",
   "private": true,
   "files": [
