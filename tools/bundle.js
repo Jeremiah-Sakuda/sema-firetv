@@ -18,7 +18,7 @@ export function buildBundle(root = ROOT) {
   return '(()=>{\n' + code.join('\n') + '\n})();\n';
 }
 
-export function buildData(root = ROOT, warn = () => {}) {
+export function buildData(root = ROOT, warn = () => {}, { preview = false } = {}) {
   const read = file => fs.readFileSync(path.join(root, file), 'utf8');
   const exists = file => fs.existsSync(path.join(root, file));
   const catalog = JSON.parse(read('media/catalog.json'));
@@ -27,12 +27,17 @@ export function buildData(root = ROOT, warn = () => {}) {
     if (entry.status === 'pending') { warn(`skip ${entry.id}: marked pending (not reviewed for this release)`); continue; }
     if (!exists(entry.package)) { warn(`skip ${entry.id}: ${entry.package} not built yet`); continue; }
     const pkg = JSON.parse(read(entry.package));
+    if (pkg.reviewStatus === 'draft' && !preview) { warn(`skip ${entry.id}: draft only; use the separate review build`); continue; }
     const allowFixture = pkg.reviewStatus === 'fixture';
-    const errors = validatePackage(pkg, { allowFixture });
+    const allowDraft = preview && pkg.reviewStatus === 'draft';
+    const errors = validatePackage(pkg, { allowFixture, allowDraft });
     if (errors.length) warn(`warning ${entry.id}: package fails validation and will show as unavailable:\n  ${errors.join('\n  ')}`);
     const poster = `media/${entry.id}/poster.jpg`;
     const webm = pkg.video.replace(/\.mp4$/, '.webm');  // VP8 rendition for Vega (tools/webm.js)
-    films.push({ package: pkg, poster: exists(poster) ? poster : null, webm: webm !== pkg.video && exists(webm) ? webm : null, dev: !!entry.dev, allowFixture });
+    const standardMix = `media/${entry.id}/standard.mp4`, standardMixWebm = `media/${entry.id}/standard.webm`;
+    films.push({ package: pkg, poster: exists(poster) ? poster : null, webm: webm !== pkg.video && exists(webm) ? webm : null,
+      standardMix: exists(standardMix) ? standardMix : null, standardMixWebm: exists(standardMixWebm) ? standardMixWebm : null,
+      dev: !!entry.dev, allowFixture, allowDraft });
   }
   // Until a reviewed film is packaged, show the engineering fixture rather than an empty catalog.
   if (!films.some(f => !f.dev)) for (const f of films) f.dev = false;
@@ -46,12 +51,32 @@ export function buildData(root = ROOT, warn = () => {}) {
   }
   const missing = Object.keys(promptTexts).filter(id => !prompts[id]);
   if (missing.length) warn(`spoken guidance: ${missing.length} prompt(s) need (re-)rendering and will use text fallback: ${missing.join(', ')}`);
-  return { data: { films, prompts, promptTexts }, missingClips: missing, staleClips: stale };
+  const momentPrompts = {};
+  for (const film of films) {
+    if (validatePackage(film.package, {allowFixture: film.allowFixture, allowDraft: film.allowDraft}).length) continue;
+    for (const event of film.package.events) {
+      // Preview a moment with its shortest timed description. A moment with no
+      // timed slot has no short form: previewing its recovery would speak the
+      // same description Select is about to play, so it gets no spoken preview.
+      const cue = film.package.cues.find(c => c.events.length === 1 && c.events[0] === event.id);
+      const clip = cue?.variants.essential;
+      if (!clip || !exists(clip.audio)) continue;
+      const id = `moment_${film.package.id}_${event.id}`.replace(/-/g, '_');
+      event.label = clip.text.replace(/[.!?]$/, ''); event.labelPrompt = id;
+      momentPrompts[id] = clip;
+    }
+  }
+  return { data: { films, prompts, momentPrompts, promptTexts, preview }, missingClips: missing, staleClips: stale };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  fs.writeFileSync(path.join(ROOT, 'src/bundle.js'), buildBundle());
-  const { data, missingClips } = buildData(ROOT, message => console.warn(message));
-  fs.writeFileSync(path.join(ROOT, 'src/data.js'), `window.SEMA_DATA = ${JSON.stringify(data)};\n`);
+  const args = process.argv.slice(2);
+  if (args.length && (args.length !== 2 || args[0] !== '--preview-root' || !args[1])) throw new Error('Usage: bundle.js [--preview-root directory]');
+  const out = args.length ? path.resolve(args[1]) : ROOT;
+  if (args.length && out === ROOT) throw new Error('Review builds must use a separate output directory');
+  fs.mkdirSync(path.join(out, 'src'), { recursive: true });
+  fs.writeFileSync(path.join(out, 'src/bundle.js'), buildBundle());
+  const { data, missingClips } = buildData(out, message => console.warn(message), { preview: args.length > 0 });
+  fs.writeFileSync(path.join(out, 'src/data.js'), `window.SEMA_DATA = ${JSON.stringify(data)};\n`);
   console.log(`Bundled player (${MODULES.length} modules); data: ${data.films.length} film(s) [${data.films.map(f => f.package.id + (f.dev ? ' (dev)' : '')).join(', ')}], ${Object.keys(data.prompts).length} current prompt clip(s)${missingClips.length ? `, ${missingClips.length} awaiting render` : ''}.`);
 }

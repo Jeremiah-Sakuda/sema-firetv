@@ -1,0 +1,674 @@
+{
+  "asset": "tears-of-steel",
+  "title": "Tears of Steel \u2014 The Bridge",
+  "generatedAt": "2026-10-04T15:58:54Z",
+  "runMode": "live",
+  "filmSeconds": 72.0,
+  "timings": {
+    "ingest": {
+      "seconds": 1.622,
+      "status": "done",
+      "mode": "live"
+    },
+    "analyze": {
+      "seconds": 6.152,
+      "status": "done",
+      "mode": "live"
+    },
+    "observe": {
+      "seconds": 58.487,
+      "status": "done",
+      "mode": "live"
+    },
+    "script": {
+      "seconds": 14.225,
+      "status": "done",
+      "mode": "live"
+    },
+    "render": {
+      "seconds": 5.93,
+      "status": "done",
+      "mode": "live"
+    },
+    "report": {
+      "seconds": 0.004,
+      "status": "done",
+      "mode": "local"
+    }
+  },
+  "totalPipelineSeconds": 86.416,
+  "timingBasis": "Latest attempt per stage; cumulative paid usage includes rejected attempts and reruns.",
+  "usage": {
+    "transcribe": {
+      "jobs": 1,
+      "seconds": 72.0,
+      "billedSeconds": 72.0
+    },
+    "bedrock": {
+      "us.amazon.nova-pro-v1:0": {
+        "requests": 58,
+        "inputTokens": 149698,
+        "outputTokens": 5210
+      },
+      "us.amazon.nova-2-lite-v1:0": {
+        "requests": 84,
+        "inputTokens": 30245,
+        "outputTokens": 2734
+      }
+    },
+    "polly": {
+      "neural": {
+        "requests": 218,
+        "characters": 10019
+      }
+    },
+    "s3": {
+      "bytes": 13370498,
+      "requests": 1
+    },
+    "modes": [
+      "live"
+    ]
+  },
+  "estimatedCost": {
+    "totalUSD": 0.3217,
+    "lines": [
+      {
+        "service": "transcribe",
+        "item": "sema-tears-of-steel-20261004151116",
+        "quantity": "72.0 s",
+        "usd": 0.0072
+      },
+      {
+        "service": "bedrock",
+        "item": "us.amazon.nova-pro-v1:0",
+        "quantity": "149698 in / 5210 out tokens",
+        "usd": 0.13643
+      },
+      {
+        "service": "bedrock",
+        "item": "us.amazon.nova-2-lite-v1:0",
+        "quantity": "30245 in / 2734 out tokens",
+        "usd": 0.017499
+      },
+      {
+        "service": "polly",
+        "item": "neural",
+        "quantity": "10019 characters",
+        "usd": 0.160304
+      },
+      {
+        "service": "s3",
+        "item": "storage (1 month)",
+        "quantity": "0.0134 GB",
+        "usd": 0.000308
+      }
+    ],
+    "unpriced": [],
+    "priceTableAsOf": "2026-10-04 (Nova Pro/2 Lite, neural Polly, batch Transcribe and S3 Standard verified via AWS Price List API; other rates unverified)",
+    "label": "ESTIMATE at list prices; not a bill. Excludes free tier/credits, tax, S3 requests, data transfer."
+  },
+  "models": {
+    "observe": "us.amazon.nova-pro-v1:0",
+    "script": "us.amazon.nova-2-lite-v1:0",
+    "agent": null,
+    "region": "us-east-1"
+  },
+  "voice": {
+    "voiceId": "Joanna",
+    "engine": "neural",
+    "sampleRate": "24000",
+    "outputFormat": "mp3"
+  },
+  "editorialTextPreparation": {
+    "preparedBy": "Codex (AI)",
+    "preparedAt": "2026-10-04T15:44:00Z",
+    "kind": "Draft editing, not human approval",
+    "humanReviewRequired": true
+  },
+  "observations": {
+    "events": 13,
+    "critical": 2,
+    "characters": 5,
+    "repairs": 0,
+    "source": "frames",
+    "editorialPrecheck": {
+      "preparedAt": "2026-10-04T15:27:58Z",
+      "preparedBy": "Codex (AI)",
+      "kind": "AI editorial precheck, not human approval",
+      "originalObservationsSha256": "c18f84d4c4a8038fc9926ac10678296018ebd65b86440969468ae0ac4b7e1203",
+      "rawDraft": "attempts/2026-10-04-frame-draft-precheck/observations.json",
+      "proposals": [
+        {
+          "id": "blender-credit",
+          "time": 1.5,
+          "frame": "pipeline/work/tears-of-steel/frames/frame_00004.jpg",
+          "reason": "Credit text is not a story-changing reveal.",
+          "frameSourceTime": 1.5
+        },
+        {
+          "id": "rocket-engines",
+          "time": 9.5,
+          "frame": "pipeline/work/tears-of-steel/frames/frame_00020.jpg",
+          "reason": "Combine repetitive unchanged engine observations.",
+          "frameSourceTime": 9.5
+        },
+        {
+          "id": "rocket-over-city",
+          "time": 20,
+          "frame": "pipeline/work/tears-of-steel/frames/frame_00041.jpg",
+          "reason": "Establishing imagery, not repeated critical events.",
+          "frameSourceTime": 20.0
+        },
+        {
+          "id": "pair-on-bridge",
+          "time": 25,
+          "frame": "pipeline/work/tears-of-steel/frames/frame_00051.jpg",
+          "reason": "Visible bridge setting.",
+          "frameSourceTime": 25.0
+        },
+        {
+          "id": "mechanical-hand",
+          "time": 33,
+          "frame": "pipeline/work/tears-of-steel/frames/frame_00067.jpg",
+          "reason": "The hand is visibly mechanical, not a separate glove. Dialogue also names her robot hand; proposed optional classification requires human review.",
+          "frameSourceTime": 33.0
+        },
+        {
+          "id": "forty-years-later",
+          "time": 44,
+          "frame": "pipeline/work/tears-of-steel/frames/frame_00089.jpg",
+          "reason": "Time-jump text is visible at 44 seconds.",
+          "frameSourceTime": 44.0
+        },
+        {
+          "id": "wireframe-figures",
+          "time": 47,
+          "frame": "pipeline/work/tears-of-steel/frames/frame_00095.jpg",
+          "reason": "Wireframe figures, not invented interactions.",
+          "frameSourceTime": 47.0
+        },
+        {
+          "id": "control-panel",
+          "time": 50,
+          "frame": "pipeline/work/tears-of-steel/frames/frame_00101.jpg",
+          "reason": "Only the visible hand and control are described.",
+          "frameSourceTime": 50.0
+        },
+        {
+          "id": "workers-at-machine",
+          "time": 55,
+          "frame": "pipeline/work/tears-of-steel/frames/frame_00111.jpg",
+          "reason": "Do not invent a white-coated woman or misidentify the operator.",
+          "frameSourceTime": 55.0
+        },
+        {
+          "id": "brain-on-platform",
+          "time": 58,
+          "frame": "pipeline/work/tears-of-steel/frames/frame_00117.jpg",
+          "reason": "Do not classify the object as a model without evidence.",
+          "frameSourceTime": 58.0
+        },
+        {
+          "id": "eye-device",
+          "time": 62,
+          "frame": "pipeline/work/tears-of-steel/frames/frame_00125.jpg",
+          "reason": "Visible eye apparatus, not the man with glasses.",
+          "frameSourceTime": 62.0
+        },
+        {
+          "id": "film-title",
+          "time": 66,
+          "frame": "pipeline/work/tears-of-steel/frames/frame_00133.jpg",
+          "reason": "Title card is visible.",
+          "frameSourceTime": 66.0
+        },
+        {
+          "id": "dark-city",
+          "time": 70,
+          "frame": "pipeline/work/tears-of-steel/frames/frame_00141.jpg",
+          "reason": "Visible closing city view; optional.",
+          "frameSourceTime": 70.0
+        }
+      ],
+      "humanReviewRequired": true,
+      "frameTimestampBasis": "Source-frame PTS; each referenced evidence frame is at or before the proposed available time. Original model samples retained separately."
+    }
+  },
+  "cues": 8,
+  "windows": 11,
+  "fit": {
+    "summary": {
+      "variants": 24,
+      "fitFirstTry": 22,
+      "fitAfterRegeneration": 2,
+      "unresolved": 0,
+      "regenerations": 2,
+      "minHeadroom": 0.053,
+      "recoveries": 13
+    },
+    "fitMode": "deterministic",
+    "rows": [
+      {
+        "cue": "c02",
+        "level": "essential",
+        "window": 2.748,
+        "available": 2.198,
+        "duration": 1.176,
+        "headroom": 1.022,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c02",
+        "level": "standard",
+        "window": 2.748,
+        "available": 2.198,
+        "duration": 1.584,
+        "headroom": 0.614,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c02",
+        "level": "rich",
+        "window": 2.748,
+        "available": 2.198,
+        "duration": 1.992,
+        "headroom": 0.206,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c03",
+        "level": "essential",
+        "window": 3.05,
+        "available": 2.5,
+        "duration": 1.344,
+        "headroom": 1.156,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c03",
+        "level": "standard",
+        "window": 3.05,
+        "available": 2.5,
+        "duration": 1.368,
+        "headroom": 1.132,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c03",
+        "level": "rich",
+        "window": 3.05,
+        "available": 2.5,
+        "duration": 2.16,
+        "headroom": 0.34,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c04",
+        "level": "essential",
+        "window": 4.7,
+        "available": 4.15,
+        "duration": 1.248,
+        "headroom": 2.902,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c04",
+        "level": "standard",
+        "window": 4.7,
+        "available": 4.15,
+        "duration": 1.968,
+        "headroom": 2.182,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c04",
+        "level": "rich",
+        "window": 4.7,
+        "available": 4.15,
+        "duration": 2.76,
+        "headroom": 1.39,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c05",
+        "level": "essential",
+        "window": 2.787,
+        "available": 2.237,
+        "duration": 1.224,
+        "headroom": 1.013,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c05",
+        "level": "standard",
+        "window": 2.787,
+        "available": 2.237,
+        "duration": 1.368,
+        "headroom": 0.869,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c05",
+        "level": "rich",
+        "window": 2.787,
+        "available": 2.237,
+        "duration": 2.184,
+        "headroom": 0.053,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c06",
+        "level": "essential",
+        "window": 2.8,
+        "available": 2.25,
+        "duration": 1.32,
+        "headroom": 0.93,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c06",
+        "level": "standard",
+        "window": 2.8,
+        "available": 2.25,
+        "duration": 2.016,
+        "headroom": 0.234,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c06",
+        "level": "rich",
+        "window": 2.8,
+        "available": 2.25,
+        "duration": 1.848,
+        "headroom": 0.402,
+        "status": "fit",
+        "regenerations": 1,
+        "firstTry": false
+      },
+      {
+        "cue": "c07",
+        "level": "essential",
+        "window": 1.998,
+        "available": 1.448,
+        "duration": 1.152,
+        "headroom": 0.296,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c07",
+        "level": "standard",
+        "window": 1.998,
+        "available": 1.448,
+        "duration": 1.248,
+        "headroom": 0.2,
+        "status": "fit",
+        "regenerations": 1,
+        "firstTry": false
+      },
+      {
+        "cue": "c07",
+        "level": "rich",
+        "window": 1.998,
+        "available": 1.448,
+        "duration": 1.08,
+        "headroom": 0.368,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c08",
+        "level": "essential",
+        "window": 3.917,
+        "available": 3.367,
+        "duration": 1.2,
+        "headroom": 2.167,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c08",
+        "level": "standard",
+        "window": 3.917,
+        "available": 3.367,
+        "duration": 1.608,
+        "headroom": 1.759,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c08",
+        "level": "rich",
+        "window": 3.917,
+        "available": 3.367,
+        "duration": 1.944,
+        "headroom": 1.423,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c09",
+        "level": "essential",
+        "window": 2.0,
+        "available": 1.45,
+        "duration": 1.176,
+        "headroom": 0.274,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c09",
+        "level": "standard",
+        "window": 2.0,
+        "available": 1.45,
+        "duration": 1.32,
+        "headroom": 0.13,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c09",
+        "level": "rich",
+        "window": 2.0,
+        "available": 1.45,
+        "duration": 1.32,
+        "headroom": 0.13,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      }
+    ],
+    "agent": null
+  },
+  "review": {
+    "reviewer": null,
+    "method": null,
+    "completed": false,
+    "reviewMinutes": null,
+    "reviewMinutesPerFinishedMinute": null,
+    "edits": 0,
+    "drops": 0,
+    "downgrades": 0,
+    "attachments": 0,
+    "blockers": []
+  },
+  "regenerations": {
+    "fitLoop": 2,
+    "reviewEdits": 0,
+    "droppedCues": 0
+  },
+  "issues": [
+    {
+      "type": "optional-unplaced",
+      "severity": "info",
+      "event": "pair-on-bridge",
+      "availableAt": 25.0,
+      "message": "No narration window of >= 1.5 s starts after 25.00 s for 'A man and a woman stand beside a canal on a metal bridge.'. It stays available through 'What did I miss?' recovery.",
+      "stage": "script"
+    },
+    {
+      "type": "optional-unplaced",
+      "severity": "info",
+      "event": "mechanical-hand",
+      "availableAt": 33.0,
+      "message": "No narration window of >= 1.5 s starts after 33.00 s for 'The woman raises her mechanical right hand toward the man.'. It stays available through 'What did I miss?' recovery.",
+      "stage": "script"
+    },
+    {
+      "type": "optional-unplaced",
+      "severity": "info",
+      "event": "wireframe-figures",
+      "availableAt": 47.0,
+      "message": "No narration window of >= 1.5 s starts after 47.00 s for 'Orange and blue wireframe figures stand among machinery and floating colored lines.'. It stays available through 'What did I miss?' recovery.",
+      "stage": "script"
+    }
+  ],
+  "package": {},
+  "recordedStageAttempts": {
+    "count": 13,
+    "sumElapsedSeconds": 179.745,
+    "attempts": [
+      {
+        "stage": "ingest",
+        "startedAt": "2026-10-04T15:11:15Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 1.622,
+        "endedAt": "2026-10-04T15:11:16Z"
+      },
+      {
+        "stage": "analyze",
+        "startedAt": "2026-10-04T15:11:16Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 6.152,
+        "endedAt": "2026-10-04T15:11:23Z"
+      },
+      {
+        "stage": "observe",
+        "startedAt": "2026-10-04T15:11:23Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 9.876,
+        "endedAt": "2026-10-04T15:11:32Z"
+      },
+      {
+        "stage": "script",
+        "startedAt": "2026-10-04T15:11:32Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 1.508,
+        "endedAt": "2026-10-04T15:11:34Z"
+      },
+      {
+        "stage": "render",
+        "startedAt": "2026-10-04T15:11:34Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 2.534,
+        "endedAt": "2026-10-04T15:11:36Z"
+      },
+      {
+        "stage": "observe",
+        "startedAt": "2026-10-04T15:19:23Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 58.487,
+        "endedAt": "2026-10-04T15:20:22Z"
+      },
+      {
+        "stage": "script",
+        "startedAt": "2026-10-04T15:28:27Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 15.316,
+        "endedAt": "2026-10-04T15:28:42Z"
+      },
+      {
+        "stage": "render",
+        "startedAt": "2026-10-04T15:28:42Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 15.889,
+        "endedAt": "2026-10-04T15:28:58Z"
+      },
+      {
+        "stage": "script",
+        "startedAt": "2026-10-04T15:36:05Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 13.701,
+        "endedAt": "2026-10-04T15:36:19Z"
+      },
+      {
+        "stage": "render",
+        "startedAt": "2026-10-04T15:36:19Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 17.571,
+        "endedAt": "2026-10-04T15:36:37Z"
+      },
+      {
+        "stage": "script",
+        "startedAt": "2026-10-04T15:38:35Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 14.225,
+        "endedAt": "2026-10-04T15:38:49Z"
+      },
+      {
+        "stage": "render",
+        "startedAt": "2026-10-04T15:38:50Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 16.934,
+        "endedAt": "2026-10-04T15:39:07Z"
+      },
+      {
+        "stage": "render",
+        "startedAt": "2026-10-04T15:44:08Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 5.93,
+        "endedAt": "2026-10-04T15:44:14Z"
+      }
+    ],
+    "scope": "Unique completed/failed stage entries from current log and retained attempt logs. Excludes AI editorial preparation, unlogged quality probes, human review and packaging. Sum of attempt elapsed times, not end-to-end wall time."
+  }
+}

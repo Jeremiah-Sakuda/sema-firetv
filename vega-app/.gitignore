@@ -20,3 +20,7 @@ assets/media/
 assets/probe-script.js
 assets/probe-media/
 assets/.sema-sync.json
+
+# Machine-specific generated build metadata
+buildinfo.json
+*.tsbuildinfo

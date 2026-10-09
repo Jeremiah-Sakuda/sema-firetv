@@ -3,7 +3,7 @@ const finite = n => Number.isFinite(n);
 const safePath = p => typeof p === 'string' && /^(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_.-]+$/.test(p) && !p.includes('..');
 
 /** Publication is strict by default; fixture use must be explicit. */
-export function validatePackage(p, { allowFixture = false } = {}) {
+export function validatePackage(p, { allowFixture = false, allowDraft = false } = {}) {
   const errors = [];
   const check = (ok, message) => { if (!ok) errors.push(message); };
   check(p && typeof p === 'object', 'Package must be an object');
@@ -12,7 +12,7 @@ export function validatePackage(p, { allowFixture = false } = {}) {
   check(typeof p.version === 'string', 'Version required');
   check(finite(p.duration) && p.duration > 0, 'Positive duration required');
   check(safePath(p.video), 'Safe relative video path required');
-  check(p.reviewStatus === 'approved' || (allowFixture && p.reviewStatus === 'fixture'), 'Human approval required for publication');
+  check(p.reviewStatus === 'approved' || (allowFixture && p.reviewStatus === 'fixture') || (allowDraft && p.reviewStatus === 'draft'), 'Human approval required for publication');
   check(typeof p.rights === 'string' && !!p.rights, 'Rights record required');
   for (const key of ['scenes', 'events', 'cues', 'dialogue']) check(Array.isArray(p[key]), `${key} must be an array`);
   if (['scenes','events','cues','dialogue'].some(k => !Array.isArray(p[k]))) return errors;

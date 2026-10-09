@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Capture the "Vega Virtual Device" window on macOS to a PNG.
-#   tools/vega-probe/vvd-screenshot.sh docs/vega/screenshots/name.png
+#   tools/vega-probe/vvd-screenshot.sh artifacts/vega/name.png
 # The on-device tools (screenshooter, gwsi-tool-screenshooter) do not work from the
 # developer-mode shell on SDK 0.24.12112 (permission denied / hang), so this captures
 # the host window instead. The window is raised first because with Stage Manager a

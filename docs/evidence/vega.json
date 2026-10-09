@@ -1,0 +1,4848 @@
+{
+  "date": "2026-10-07",
+  "platform": "Vega Virtual Device, aarch64, SDK 0.24.12112",
+  "scope": "App media/guidance events from real simulator; not human listening or physical VoiceView validation",
+  "normalization": "Only app messages retained; identical native logger duplicates within 100 ms removed. Repeated later events retained.",
+  "fullStandardRuns": {
+    "sintel-dragon": {
+      "narrationCuesCompleted": 11,
+      "endedAt": "2026-10-07T22:49:13.935380Z"
+    },
+    "tears-of-steel": {
+      "narrationCuesCompleted": 8,
+      "endedAt": "2026-10-07T22:51:08.678394Z"
+    }
+  },
+  "subsequentEndedAt": [
+    "2026-10-07T22:52:32.078946Z",
+    "2026-10-07T22:54:15.305548Z",
+    "2026-10-07T22:57:08.462466Z",
+    "2026-10-07T22:59:31.151956Z"
+  ],
+  "pendingCriticalRecoveryEvents": 4,
+  "events": [
+    {
+      "at": "2026-10-07T22:47:31.012099Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "preview_notice",
+        "duration": 5.496
+      }
+    },
+    {
+      "at": "2026-10-07T22:47:36.512767Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "preview_notice",
+        "duration": 5.496
+      }
+    },
+    {
+      "at": "2026-10-07T22:47:36.513383Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "welcome",
+        "duration": 4.344
+      }
+    },
+    {
+      "at": "2026-10-07T22:47:36.653402Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "welcome",
+        "duration": 4.344
+      }
+    },
+    {
+      "at": "2026-10-07T22:47:41.169629Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "welcome",
+        "duration": 4.344
+      }
+    },
+    {
+      "at": "2026-10-07T22:47:41.170022Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "film_sintel_dragon",
+        "duration": 7.008
+      }
+    },
+    {
+      "at": "2026-10-07T22:47:41.317470Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "film_sintel_dragon",
+        "duration": 7.008
+      }
+    },
+    {
+      "at": "2026-10-07T22:47:48.470919Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "film_sintel_dragon",
+        "duration": 7.008
+      }
+    },
+    {
+      "at": "2026-10-07T22:47:49.498427Z",
+      "event": {
+        "sema": "playback",
+        "type": "open",
+        "position": 0
+      }
+    },
+    {
+      "at": "2026-10-07T22:47:49.503138Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "onboarding",
+          "label_level_standard_suggested"
+        ],
+        "focus": "choose-standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:47:49.503569Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "onboarding",
+        "duration": 19.776
+      }
+    },
+    {
+      "at": "2026-10-07T22:47:49.712773Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "onboarding",
+        "duration": 19.776
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:00.955669Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "level_standard",
+          "ready",
+          "label_play"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:00.956806Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "level_standard",
+        "duration": 2.904
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:01.170694Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "level_standard",
+        "duration": 2.904
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:01.884221Z",
+      "event": {
+        "sema": "playback",
+        "type": "resume",
+        "position": 0
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:03.153221Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 1.237,
+        "token": 2,
+        "cue": "c01",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:03.155498Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 1.237,
+        "token": 2,
+        "mediaPosition": 1.23896,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:04.678947Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 2.727,
+        "token": 2
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:08.132465Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 6.21,
+        "token": 3,
+        "cue": "c02",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:08.135815Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 6.21,
+        "token": 3,
+        "mediaPosition": 6.212147,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:10.512985Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 8.572,
+        "token": 3
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:17.139416Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 15.211,
+        "token": 4,
+        "cue": "c03",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:17.147141Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 15.211,
+        "token": 4,
+        "mediaPosition": 15.222344,
+        "preloaded": true,
+        "onsetMs": 4
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:19.652676Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 17.694,
+        "token": 4
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:26.140395Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 24.212,
+        "token": 5,
+        "cue": "c04",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:26.150609Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 24.212,
+        "token": 5,
+        "mediaPosition": 24.219881,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:27.920562Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 25.968,
+        "token": 5
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:32.222829Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 30.306,
+        "token": 6,
+        "cue": "c05",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:32.231580Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 30.306,
+        "token": 6,
+        "mediaPosition": 30.307539,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:33.472595Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 31.529,
+        "token": 6
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:36.513107Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 34.596,
+        "token": 7,
+        "cue": "c06",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:36.518502Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 34.596,
+        "token": 7,
+        "mediaPosition": 34.602467,
+        "preloaded": true,
+        "onsetMs": 4
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:39.312444Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 37.374,
+        "token": 7
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:41.915610Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 39.994,
+        "token": 8,
+        "cue": "c07",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:41.924707Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 39.994,
+        "token": 8,
+        "mediaPosition": 39.998643,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:43.156520Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 41.214,
+        "token": 8
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:44.132696Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 42.217,
+        "token": 9,
+        "cue": "c08",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:44.135996Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 42.217,
+        "token": 9,
+        "mediaPosition": 42.218292,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:45.691297Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 43.746,
+        "token": 9
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:48.542009Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 46.62,
+        "token": 10,
+        "cue": "c09",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:48.545946Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 46.62,
+        "token": 10,
+        "mediaPosition": 46.622413,
+        "preloaded": true,
+        "onsetMs": 2
+      }
+    },
+    {
+      "at": "2026-10-07T22:48:51.076212Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 49.141,
+        "token": 10
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:03.576496Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 61.656,
+        "token": 11,
+        "cue": "c10",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:03.581200Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 61.656,
+        "token": 11,
+        "mediaPosition": 61.658941,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:06.090896Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 64.127,
+        "token": 11
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:11.585339Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 69.667,
+        "token": 12,
+        "cue": "c11",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:11.591372Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 69.667,
+        "token": 12,
+        "mediaPosition": 69.669137,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:12.990581Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 71.037,
+        "token": 12
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:13.935380Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "film_ended",
+          "label_return"
+        ],
+        "focus": "return"
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:13.935439Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "film_ended",
+        "duration": 1.2
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:14.055966Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "film_ended",
+        "duration": 1.2
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:15.331359Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "film_ended",
+        "duration": 1.2
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:15.331537Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_return",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:15.471858Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_return",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:16.969961Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "label_return",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:53.824414Z",
+      "event": {
+        "sema": "playback",
+        "type": "catalog",
+        "position": 72
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:53.824575Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "returning",
+          "film_sintel_dragon"
+        ],
+        "focus": "film-sintel-dragon"
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:53.827046Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "returning",
+        "duration": 1.536
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:54.007146Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "returning",
+        "duration": 1.536
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:54.921879Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "film_tears_of_steel",
+        "duration": 5.352
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:55.051522Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "film_tears_of_steel",
+        "duration": 5.352
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:55.711168Z",
+      "event": {
+        "sema": "playback",
+        "type": "open",
+        "position": 0
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:55.714234Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "ready",
+          "label_play"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:55.715115Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "ready",
+        "duration": 4.152
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:55.765475Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "ready",
+        "duration": 4.152
+      }
+    },
+    {
+      "at": "2026-10-07T22:49:56.615782Z",
+      "event": {
+        "sema": "playback",
+        "type": "resume",
+        "position": 0
+      }
+    },
+    {
+      "at": "2026-10-07T22:50:07.606488Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 10.913,
+        "token": 2,
+        "cue": "c02",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:50:07.618061Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 10.913,
+        "token": 2,
+        "mediaPosition": 10.937904,
+        "preloaded": true,
+        "onsetMs": 19
+      }
+    },
+    {
+      "at": "2026-10-07T22:50:09.209279Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 12.506,
+        "token": 2
+      }
+    },
+    {
+      "at": "2026-10-07T22:50:16.891971Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 20.224,
+        "token": 3,
+        "cue": "c03",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:50:16.895291Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 20.224,
+        "token": 3,
+        "mediaPosition": 20.225754,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:50:18.926261Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 22.235,
+        "token": 3
+      }
+    },
+    {
+      "at": "2026-10-07T22:50:42.128507Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 45.451,
+        "token": 4,
+        "cue": "c04",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:50:42.128977Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 45.451,
+        "token": 4,
+        "mediaPosition": 45.45369,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:50:44.143247Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 47.461,
+        "token": 4
+      }
+    },
+    {
+      "at": "2026-10-07T22:50:50.765130Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 54.093,
+        "token": 5,
+        "cue": "c05",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:50:50.767533Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 54.093,
+        "token": 5,
+        "mediaPosition": 54.093313,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:50:52.248369Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 55.558,
+        "token": 5
+      }
+    },
+    {
+      "at": "2026-10-07T22:50:54.903675Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 58.235,
+        "token": 6,
+        "cue": "c06",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:50:54.905358Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 58.235,
+        "token": 6,
+        "mediaPosition": 58.236433,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:50:57.042299Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 60.36,
+        "token": 6
+      }
+    },
+    {
+      "at": "2026-10-07T22:50:59.342702Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 62.674,
+        "token": 7,
+        "cue": "c07",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:50:59.344681Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 62.674,
+        "token": 7,
+        "mediaPosition": 62.673552,
+        "preloaded": true,
+        "onsetMs": 0
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:00.703046Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 64.023,
+        "token": 7
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:02.885363Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 66.215,
+        "token": 8,
+        "cue": "c08",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:02.887010Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 66.215,
+        "token": 8,
+        "mediaPosition": 66.218533,
+        "preloaded": true,
+        "onsetMs": 2
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:04.585224Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 67.882,
+        "token": 8
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:06.902234Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 70.234,
+        "token": 9,
+        "cue": "c09",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:06.905264Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 70.234,
+        "token": 9,
+        "mediaPosition": 70.234311,
+        "preloaded": true,
+        "onsetMs": 0
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:08.322513Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 71.633,
+        "token": 9
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:08.678394Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "film_ended",
+          "label_return"
+        ],
+        "focus": "return"
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:08.678430Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "film_ended",
+        "duration": 1.2
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:08.803480Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "film_ended",
+        "duration": 1.2
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:10.123384Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "film_ended",
+        "duration": 1.2
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:10.123590Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_return",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:10.249481Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_return",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:11.763386Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "label_return",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:49.927314Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_start_over",
+        "duration": 0.984
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:49.936222Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_start_over",
+        "duration": 0.984
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:50.687130Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "start_over_confirm",
+          "label_start_over_confirm"
+        ],
+        "focus": "restart"
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:50.687619Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "start_over_confirm",
+        "duration": 2.616
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:50.733258Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "start_over_confirm",
+        "duration": 2.616
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:51.613209Z",
+      "event": {
+        "sema": "playback",
+        "type": "restart",
+        "position": 0
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:51.614245Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "start_over",
+          "label_play"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:51.614869Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "start_over",
+        "duration": 1.224
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:51.638595Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "start_over",
+        "duration": 1.224
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:52.587877Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 5,
+        "from": 0
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:52.588246Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:52.588543Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:52.653683Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:53.519943Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 10,
+        "from": 5
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:53.520456Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:53.521124Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:53.560406Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:54.451656Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 15,
+        "from": 10
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:54.454364Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:54.455386Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:54.503922Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:55.371335Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 20,
+        "from": 15
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:55.371357Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:55.371374Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:55.398462Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:56.300423Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 25,
+        "from": 20
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:56.311005Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:56.311164Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:56.323376Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:57.233604Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 30,
+        "from": 25
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:57.234015Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:57.234461Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:57.263440Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:58.145041Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 35,
+        "from": 30
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:58.145276Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:58.145297Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:58.163844Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:59.057803Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 40,
+        "from": 35
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:59.058126Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:59.058939Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:51:59.101157Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:00.003134Z",
+      "event": {
+        "sema": "playback",
+        "type": "resume",
+        "position": 40
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:05.528549Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 45.454,
+        "token": 20,
+        "cue": "c04",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:05.531940Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 45.454,
+        "token": 20,
+        "mediaPosition": 45.460816,
+        "preloaded": true,
+        "onsetMs": 2
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:07.634979Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 47.552,
+        "token": 20
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:14.163927Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 54.091,
+        "token": 21,
+        "cue": "c05",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:14.167038Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 54.091,
+        "token": 21,
+        "mediaPosition": 54.092827,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:15.702270Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 55.628,
+        "token": 21
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:18.302675Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 58.235,
+        "token": 22,
+        "cue": "c06",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:18.315240Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 58.235,
+        "token": 22,
+        "mediaPosition": 58.23668,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:20.481825Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 60.399,
+        "token": 22
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:22.742977Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 62.666,
+        "token": 23,
+        "cue": "c07",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:22.745298Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 62.666,
+        "token": 23,
+        "mediaPosition": 62.666897,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:24.139539Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 64.047,
+        "token": 23
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:26.283908Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 66.218,
+        "token": 24,
+        "cue": "c08",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:26.286898Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 66.218,
+        "token": 24,
+        "mediaPosition": 66.220406,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:28.034074Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 67.955,
+        "token": 24
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:30.303019Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 70.236,
+        "token": 25,
+        "cue": "c09",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:30.305444Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 70.236,
+        "token": 25,
+        "mediaPosition": 70.237691,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:31.777487Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 71.7,
+        "token": 25
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:32.078946Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "film_ended",
+          "label_return"
+        ],
+        "focus": "return"
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:32.079015Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "film_ended",
+        "duration": 1.2
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:32.195645Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "film_ended",
+        "duration": 1.2
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:33.048676Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 67,
+        "from": 72
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:33.050088Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:33.050338Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:33.146870Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:33.520225Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 62,
+        "from": 67.000166
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:33.521245Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:33.521755Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:33.560489Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:33.983157Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 57,
+        "from": 62.000164
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:33.983889Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:33.991000Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:34.032885Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:34.446567Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 52,
+        "from": 57.000164
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:34.447359Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:34.447466Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:34.512940Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:34.906186Z",
+      "event": {
+        "sema": "playback",
+        "type": "resume",
+        "position": 52
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:37.113917Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 54.097,
+        "token": 31,
+        "cue": "c05",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:37.118481Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 54.097,
+        "token": 31,
+        "mediaPosition": 54.097798,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:38.656286Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 55.635,
+        "token": 31
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:41.223536Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 58.202,
+        "token": 32,
+        "cue": "c06",
+        "level": "standard"
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:41.228198Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 58.202,
+        "token": 32,
+        "mediaPosition": 58.204076,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:41.491828Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-cancel",
+        "position": 58.479,
+        "reason": "select",
+        "token": 32
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:41.491862Z",
+      "event": {
+        "sema": "playback",
+        "type": "pause",
+        "position": 58.479,
+        "reason": "select"
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:41.491882Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "paused",
+          "label_recover_pending"
+        ],
+        "focus": "recover"
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:41.491900Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "paused",
+        "duration": 0.792
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:41.633673Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "paused",
+        "duration": 0.792
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:42.575447Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "paused",
+        "duration": 0.792
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:42.577180Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_recover_pending",
+        "duration": 1.488
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:42.614462Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_recover_pending",
+        "duration": 1.488
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:44.275429Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "label_recover_pending",
+        "duration": 1.488
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:57.863801Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_level_rich",
+        "duration": 2.544
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:57.870665Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_level_rich",
+        "duration": 2.544
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:58.761350Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_level_off",
+        "duration": 2.16
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:58.801586Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_level_off",
+        "duration": 2.16
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:59.497126Z",
+      "event": {
+        "sema": "playback",
+        "type": "pause",
+        "position": 58.479,
+        "reason": "level"
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:59.497308Z",
+      "event": {
+        "sema": "playback",
+        "type": "level",
+        "position": 58.479,
+        "level": "off"
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:59.497637Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "level_off"
+        ],
+        "focus": "off"
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:59.497752Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "level_off",
+        "duration": 1.152
+      }
+    },
+    {
+      "at": "2026-10-07T22:52:59.518980Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "level_off",
+        "duration": 1.152
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:00.839309Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "level_off",
+        "duration": 1.152
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:09.932949Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_start_over",
+        "duration": 0.984
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:10.059341Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_start_over",
+        "duration": 0.984
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:10.873355Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_earlier",
+        "duration": 1.152
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:10.900518Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_earlier",
+        "duration": 1.152
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:11.627568Z",
+      "event": {
+        "sema": "playback",
+        "type": "pause",
+        "position": 58.479,
+        "reason": "recovery"
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:11.628322Z",
+      "event": {
+        "sema": "playback",
+        "type": "recovery",
+        "position": 58.479,
+        "event": "workers-at-machine",
+        "pending": false,
+        "otherShot": true
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:11.683923Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 58.479,
+        "token": 36,
+        "mediaPosition": 58.479197,
+        "preloaded": false,
+        "onsetMs": 50
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:12.809734Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-cancel",
+        "position": 58.479,
+        "reason": "cancel-recovery",
+        "token": 36
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:12.810219Z",
+      "event": {
+        "sema": "playback",
+        "type": "pause",
+        "position": 58.479,
+        "reason": "cancel-recovery"
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:12.812241Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "recovery_stopped",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:12.812649Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "recovery_stopped",
+        "duration": 1.32
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:12.960643Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "recovery_stopped",
+        "duration": 1.32
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:13.664749Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_recover",
+        "duration": 1.608
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:13.679013Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_recover",
+        "duration": 1.608
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:14.419104Z",
+      "event": {
+        "sema": "playback",
+        "type": "pause",
+        "position": 58.479,
+        "reason": "recovery"
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:14.419300Z",
+      "event": {
+        "sema": "playback",
+        "type": "recovery",
+        "position": 58.479,
+        "event": "brain-on-platform",
+        "pending": false,
+        "otherShot": false
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:14.442641Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 58.479,
+        "token": 39,
+        "mediaPosition": 58.479197,
+        "preloaded": false,
+        "onsetMs": 20
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:20.080520Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 58.479,
+        "token": 39
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:20.083752Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "recovery_complete",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:20.085800Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "recovery_complete",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:20.300006Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "recovery_complete",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:21.864867Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "recovery_complete",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:21.865624Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_resume",
+        "duration": 1.128
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:22.003751Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_resume",
+        "duration": 1.128
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:23.283537Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "label_resume",
+        "duration": 1.128
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:36.607512Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_level_essential",
+        "duration": 2.544
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:36.615850Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_level_essential",
+        "duration": 2.544
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:37.533937Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_level_standard",
+        "duration": 2.76
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:37.567719Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_level_standard",
+        "duration": 2.76
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:38.438605Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_level_rich",
+        "duration": 2.544
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:38.467053Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_level_rich",
+        "duration": 2.544
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:39.215175Z",
+      "event": {
+        "sema": "playback",
+        "type": "pause",
+        "position": 58.479,
+        "reason": "level"
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:39.215217Z",
+      "event": {
+        "sema": "playback",
+        "type": "level",
+        "position": 58.479,
+        "level": "rich"
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:39.215809Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "level_rich"
+        ],
+        "focus": "rich"
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:39.215848Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "level_rich",
+        "duration": 2.856
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:39.226382Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "level_rich",
+        "duration": 2.856
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:40.330116Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_earlier",
+        "duration": 1.152
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:40.468227Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_earlier",
+        "duration": 1.152
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:41.085676Z",
+      "event": {
+        "sema": "playback",
+        "type": "pause",
+        "position": 58.479,
+        "reason": "recovery"
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:41.085742Z",
+      "event": {
+        "sema": "playback",
+        "type": "recovery",
+        "position": 58.479,
+        "event": "workers-at-machine",
+        "pending": false,
+        "otherShot": true
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:41.107469Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 58.479,
+        "token": 42,
+        "mediaPosition": 58.479197,
+        "preloaded": false,
+        "onsetMs": 21
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:45.449740Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 58.479,
+        "token": 42
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:45.454885Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "recovery_complete",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:45.455279Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "recovery_complete",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:45.586496Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "recovery_complete",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:47.169623Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "recovery_complete",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:47.170656Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_resume",
+        "duration": 1.128
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:47.287834Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_resume",
+        "duration": 1.128
+      }
+    },
+    {
+      "at": "2026-10-07T22:53:48.570395Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "label_resume",
+        "duration": 1.128
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:01.803495Z",
+      "event": {
+        "sema": "playback",
+        "type": "resume",
+        "position": 58.479
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:05.972841Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 62.69,
+        "token": 44,
+        "cue": "c07",
+        "level": "rich"
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:05.974690Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 62.69,
+        "token": 44,
+        "mediaPosition": 62.692615,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:07.098773Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 63.804,
+        "token": 44
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:09.513021Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 66.225,
+        "token": 45,
+        "cue": "c08",
+        "level": "rich"
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:09.515957Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 66.225,
+        "token": 45,
+        "mediaPosition": 66.226957,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:11.576722Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 68.274,
+        "token": 45
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:13.502942Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 70.212,
+        "token": 46,
+        "cue": "c09",
+        "level": "rich"
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:13.505613Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 70.212,
+        "token": 46,
+        "mediaPosition": 70.214316,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:14.956371Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 71.657,
+        "token": 46
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:15.305548Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "film_ended",
+          "label_return"
+        ],
+        "focus": "return"
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:15.305572Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "film_ended",
+        "duration": 1.2
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:15.416817Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "film_ended",
+        "duration": 1.2
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:16.739924Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "film_ended",
+        "duration": 1.2
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:16.743047Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_return",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:16.875634Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_return",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:18.397014Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "label_return",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:36.243284Z",
+      "event": {
+        "sema": "playback",
+        "type": "catalog",
+        "position": 72
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:36.243764Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "returning",
+          "film_tears_of_steel"
+        ],
+        "focus": "film-tears-of-steel"
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:36.244677Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "returning",
+        "duration": 1.536
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:36.468491Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "returning",
+        "duration": 1.536
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:37.071991Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "film_sintel_dragon",
+        "duration": 7.008
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:37.110858Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "film_sintel_dragon",
+        "duration": 7.008
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:37.814587Z",
+      "event": {
+        "sema": "playback",
+        "type": "restart",
+        "position": 0
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:37.814614Z",
+      "event": {
+        "sema": "playback",
+        "type": "open",
+        "position": 0
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:37.815731Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "ready",
+          "label_play"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:37.815947Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "ready",
+        "duration": 4.152
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:37.869736Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "ready",
+        "duration": 4.152
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:38.704283Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 5,
+        "from": 0
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:38.704514Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:38.704768Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:38.779857Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:39.651302Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 10,
+        "from": 5
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:39.651323Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:39.651418Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:39.679072Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:40.589313Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 15,
+        "from": 10
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:40.589467Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:40.590700Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:40.614902Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:41.541313Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 20,
+        "from": 15
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:41.542526Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:41.543086Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:41.595861Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:42.478891Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 25,
+        "from": 20
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:42.478927Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:42.479200Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:42.536444Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:43.409089Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 30,
+        "from": 25
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:43.409688Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:43.414888Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:43.441139Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:44.346518Z",
+      "event": {
+        "sema": "playback",
+        "type": "resume",
+        "position": 30
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:44.763231Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 30.306,
+        "token": 10,
+        "cue": "c05",
+        "level": "rich"
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:44.766922Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 30.306,
+        "token": 10,
+        "mediaPosition": 30.307356,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:45.995334Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 31.507,
+        "token": 10
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:49.057658Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 34.597,
+        "token": 11,
+        "cue": "c06",
+        "level": "rich"
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:49.059790Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 34.597,
+        "token": 11,
+        "mediaPosition": 34.600338,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:49.552627Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-cancel",
+        "position": 35.099,
+        "reason": "select",
+        "token": 11
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:49.552642Z",
+      "event": {
+        "sema": "playback",
+        "type": "pause",
+        "position": 35.099,
+        "reason": "select"
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:49.553722Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "paused",
+          "label_recover_pending"
+        ],
+        "focus": "recover"
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:49.554060Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "paused",
+        "duration": 0.792
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:49.651641Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "paused",
+        "duration": 0.792
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:50.593856Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "paused",
+        "duration": 0.792
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:50.594976Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_recover_pending",
+        "duration": 1.488
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:50.633978Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_recover_pending",
+        "duration": 1.488
+      }
+    },
+    {
+      "at": "2026-10-07T22:54:52.294665Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "label_recover_pending",
+        "duration": 1.488
+      }
+    },
+    {
+      "at": "2026-10-07T22:55:23.858893Z",
+      "event": {
+        "sema": "playback",
+        "type": "pause",
+        "position": 35.099,
+        "reason": "recovery"
+      }
+    },
+    {
+      "at": "2026-10-07T22:55:23.858956Z",
+      "event": {
+        "sema": "playback",
+        "type": "recovery",
+        "position": 35.099,
+        "event": "injured-dragon",
+        "pending": true,
+        "otherShot": true
+      }
+    },
+    {
+      "at": "2026-10-07T22:55:23.950757Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 35.099,
+        "token": 14,
+        "mediaPosition": 35.09924,
+        "preloaded": false,
+        "onsetMs": 90
+      }
+    },
+    {
+      "at": "2026-10-07T22:55:25.044016Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-cancel",
+        "position": 35.099,
+        "reason": "cancel-recovery",
+        "token": 14
+      }
+    },
+    {
+      "at": "2026-10-07T22:55:25.044089Z",
+      "event": {
+        "sema": "playback",
+        "type": "pause",
+        "position": 35.099,
+        "reason": "cancel-recovery"
+      }
+    },
+    {
+      "at": "2026-10-07T22:55:25.047036Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "recovery_stopped",
+          "label_resume_skip"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:55:25.047499Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "recovery_stopped",
+        "duration": 1.32
+      }
+    },
+    {
+      "at": "2026-10-07T22:55:25.154920Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "recovery_stopped",
+        "duration": 1.32
+      }
+    },
+    {
+      "at": "2026-10-07T22:55:25.904115Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_recover_pending",
+        "duration": 1.488
+      }
+    },
+    {
+      "at": "2026-10-07T22:55:25.913834Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_recover_pending",
+        "duration": 1.488
+      }
+    },
+    {
+      "at": "2026-10-07T22:55:26.656709Z",
+      "event": {
+        "sema": "playback",
+        "type": "pause",
+        "position": 35.099,
+        "reason": "recovery"
+      }
+    },
+    {
+      "at": "2026-10-07T22:55:26.657133Z",
+      "event": {
+        "sema": "playback",
+        "type": "recovery",
+        "position": 35.099,
+        "event": "injured-dragon",
+        "pending": true,
+        "otherShot": true
+      }
+    },
+    {
+      "at": "2026-10-07T22:55:26.674699Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 35.099,
+        "token": 17,
+        "mediaPosition": 35.09924,
+        "preloaded": false,
+        "onsetMs": 17
+      }
+    },
+    {
+      "at": "2026-10-07T22:55:30.618487Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 35.099,
+        "token": 17
+      }
+    },
+    {
+      "at": "2026-10-07T22:55:30.623421Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "recovery_complete",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:55:30.624297Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "recovery_complete",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:55:30.774503Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "recovery_complete",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:55:32.358690Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "recovery_complete",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:55:32.360296Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_resume",
+        "duration": 1.128
+      }
+    },
+    {
+      "at": "2026-10-07T22:55:32.505046Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_resume",
+        "duration": 1.128
+      }
+    },
+    {
+      "at": "2026-10-07T22:55:33.782437Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "label_resume",
+        "duration": 1.128
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:03.894354Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_level_essential",
+        "duration": 2.544
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:03.902321Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_level_essential",
+        "duration": 2.544
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:04.678083Z",
+      "event": {
+        "sema": "playback",
+        "type": "pause",
+        "position": 35.099,
+        "reason": "level"
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:04.678236Z",
+      "event": {
+        "sema": "playback",
+        "type": "level",
+        "position": 35.099,
+        "level": "essential"
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:04.678875Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "level_essential"
+        ],
+        "focus": "essential"
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:04.681473Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "level_essential",
+        "duration": 2.664
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:04.694085Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "level_essential",
+        "duration": 2.664
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:05.814563Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_resume",
+        "duration": 1.128
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:05.946647Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_resume",
+        "duration": 1.128
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:06.738059Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_recover",
+        "duration": 1.608
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:06.756697Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_recover",
+        "duration": 1.608
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:07.692789Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_earlier",
+        "duration": 1.152
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:07.735064Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_earlier",
+        "duration": 1.152
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:08.423838Z",
+      "event": {
+        "sema": "playback",
+        "type": "pause",
+        "position": 35.099,
+        "reason": "recovery"
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:08.423866Z",
+      "event": {
+        "sema": "playback",
+        "type": "recovery",
+        "position": 35.099,
+        "event": "woman-climbs-roof",
+        "pending": false,
+        "otherShot": true
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:08.455040Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 35.099,
+        "token": 20,
+        "mediaPosition": 35.09924,
+        "preloaded": false,
+        "onsetMs": 30
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:11.101173Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 35.099,
+        "token": 20
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:11.107224Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "recovery_complete",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:11.108518Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "recovery_complete",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:11.276831Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "recovery_complete",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:12.858126Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "recovery_complete",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:12.860311Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_resume",
+        "duration": 1.128
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:12.980377Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_resume",
+        "duration": 1.128
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:14.254589Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "label_resume",
+        "duration": 1.128
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:31.418861Z",
+      "event": {
+        "sema": "playback",
+        "type": "resume",
+        "position": 35.099
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:36.424482Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 40.015,
+        "token": 22,
+        "cue": "c07",
+        "level": "essential"
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:36.429484Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 40.015,
+        "token": 22,
+        "mediaPosition": 40.016349,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:37.492877Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 41.057,
+        "token": 22
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:38.611811Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 42.204,
+        "token": 23,
+        "cue": "c08",
+        "level": "essential"
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:38.615085Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 42.204,
+        "token": 23,
+        "mediaPosition": 42.204941,
+        "preloaded": true,
+        "onsetMs": 0
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:39.712730Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 43.279,
+        "token": 23
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:43.054452Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 46.64,
+        "token": 24,
+        "cue": "c09",
+        "level": "essential"
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:43.055712Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 46.64,
+        "token": 24,
+        "mediaPosition": 46.643055,
+        "preloaded": true,
+        "onsetMs": 2
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:44.952054Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 48.533,
+        "token": 24
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:58.082907Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 61.673,
+        "token": 25,
+        "cue": "c10",
+        "level": "essential"
+      }
+    },
+    {
+      "at": "2026-10-07T22:56:58.087762Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 61.673,
+        "token": 25,
+        "mediaPosition": 61.67542,
+        "preloaded": true,
+        "onsetMs": 2
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:00.115047Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 63.683,
+        "token": 25
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:06.092871Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 69.68,
+        "token": 26,
+        "cue": "c11",
+        "level": "essential"
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:06.097996Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 69.68,
+        "token": 26,
+        "mediaPosition": 69.681248,
+        "preloaded": true,
+        "onsetMs": 0
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:07.335495Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 70.909,
+        "token": 26
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:08.462466Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "film_ended",
+          "label_return"
+        ],
+        "focus": "return"
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:08.463008Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "film_ended",
+        "duration": 1.2
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:08.612494Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "film_ended",
+        "duration": 1.2
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:09.895931Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "film_ended",
+        "duration": 1.2
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:09.896499Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_return",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:10.013067Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_return",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:11.553762Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "label_return",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:49.459298Z",
+      "event": {
+        "sema": "playback",
+        "type": "catalog",
+        "position": 72
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:49.469395Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "returning",
+          "film_sintel_dragon"
+        ],
+        "focus": "film-sintel-dragon"
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:49.469527Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "returning",
+        "duration": 1.536
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:49.569118Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "returning",
+        "duration": 1.536
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:50.403018Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "film_tears_of_steel",
+        "duration": 5.352
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:50.432483Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "film_tears_of_steel",
+        "duration": 5.352
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:51.218396Z",
+      "event": {
+        "sema": "playback",
+        "type": "restart",
+        "position": 0
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:51.218478Z",
+      "event": {
+        "sema": "playback",
+        "type": "open",
+        "position": 0
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:51.220793Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "ready",
+          "label_play"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:51.221558Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "ready",
+        "duration": 4.152
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:51.250974Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "ready",
+        "duration": 4.152
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:52.154464Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 5,
+        "from": 0
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:52.154908Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:52.155127Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:52.209994Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:53.087493Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 10,
+        "from": 5
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:53.087523Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:53.089291Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:53.127587Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:54.030451Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 15,
+        "from": 10
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:54.030483Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:54.030500Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:54.061522Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:54.985035Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 20,
+        "from": 15
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:54.986399Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:54.986425Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:55.036360Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:55.925479Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 25,
+        "from": 20
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:55.929996Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:55.930039Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:55.983022Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:56.859882Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 30,
+        "from": 25
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:56.862491Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:56.862508Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:56.917592Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:57.824823Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 35,
+        "from": 30
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:57.825470Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:57.825938Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:57.854253Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:58.741383Z",
+      "event": {
+        "sema": "playback",
+        "type": "seek",
+        "position": 40,
+        "from": 35
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:58.742100Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "seek_paused",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:58.742469Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:58.794299Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "seek_paused",
+        "duration": 1.44
+      }
+    },
+    {
+      "at": "2026-10-07T22:57:59.714938Z",
+      "event": {
+        "sema": "playback",
+        "type": "resume",
+        "position": 40
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:05.223323Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 45.433,
+        "token": 12,
+        "cue": "c04",
+        "level": "essential"
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:05.225699Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 45.433,
+        "token": 12,
+        "mediaPosition": 45.435183,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:05.375060Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-cancel",
+        "position": 45.584,
+        "reason": "select",
+        "token": 12
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:05.375100Z",
+      "event": {
+        "sema": "playback",
+        "type": "pause",
+        "position": 45.584,
+        "reason": "select"
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:05.378625Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "paused",
+          "label_recover_pending"
+        ],
+        "focus": "recover"
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:05.378823Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "paused",
+        "duration": 0.792
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:05.489983Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "paused",
+        "duration": 0.792
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:06.297255Z",
+      "event": {
+        "sema": "playback",
+        "type": "pause",
+        "position": 45.584,
+        "reason": "recovery"
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:06.297489Z",
+      "event": {
+        "sema": "playback",
+        "type": "recovery",
+        "position": 45.584,
+        "event": "forty-years-later",
+        "pending": true,
+        "otherShot": false
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:06.349475Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 45.584,
+        "token": 15,
+        "mediaPosition": 45.583857,
+        "preloaded": false,
+        "onsetMs": 51
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:07.496348Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-cancel",
+        "position": 45.584,
+        "reason": "cancel-recovery",
+        "token": 15
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:07.496569Z",
+      "event": {
+        "sema": "playback",
+        "type": "pause",
+        "position": 45.584,
+        "reason": "cancel-recovery"
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:07.498181Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "recovery_stopped",
+          "label_resume_skip"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:07.498688Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "recovery_stopped",
+        "duration": 1.32
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:07.631461Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "recovery_stopped",
+        "duration": 1.32
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:08.360804Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_recover_pending",
+        "duration": 1.488
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:08.390538Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_recover_pending",
+        "duration": 1.488
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:09.084947Z",
+      "event": {
+        "sema": "playback",
+        "type": "pause",
+        "position": 45.584,
+        "reason": "recovery"
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:09.085375Z",
+      "event": {
+        "sema": "playback",
+        "type": "recovery",
+        "position": 45.584,
+        "event": "forty-years-later",
+        "pending": true,
+        "otherShot": false
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:09.108238Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 45.584,
+        "token": 18,
+        "mediaPosition": 45.583857,
+        "preloaded": false,
+        "onsetMs": 22
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:13.653815Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 45.584,
+        "token": 18
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:13.657846Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "recovery_complete",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:13.657949Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "recovery_complete",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:13.812555Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "recovery_complete",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:15.388393Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "recovery_complete",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:15.389051Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_resume",
+        "duration": 1.128
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:15.508123Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_resume",
+        "duration": 1.128
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:16.795310Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "label_resume",
+        "duration": 1.128
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:35.285915Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_recover",
+        "duration": 1.608
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:35.299666Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_recover",
+        "duration": 1.608
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:36.251282Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_earlier",
+        "duration": 1.152
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:36.323765Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_earlier",
+        "duration": 1.152
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:36.980067Z",
+      "event": {
+        "sema": "playback",
+        "type": "pause",
+        "position": 45.584,
+        "reason": "recovery"
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:36.980534Z",
+      "event": {
+        "sema": "playback",
+        "type": "recovery",
+        "position": 45.584,
+        "event": "mechanical-hand",
+        "pending": false,
+        "otherShot": true
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:37.077183Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 45.584,
+        "token": 20,
+        "mediaPosition": 45.583857,
+        "preloaded": false,
+        "onsetMs": 92
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:40.199632Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 45.584,
+        "token": 20
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:40.205047Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "recovery_complete",
+          "label_resume"
+        ],
+        "focus": "resume"
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:40.207004Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "recovery_complete",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:40.456066Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "recovery_complete",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:42.036939Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "recovery_complete",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:42.037450Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_resume",
+        "duration": 1.128
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:42.159899Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_resume",
+        "duration": 1.128
+      }
+    },
+    {
+      "at": "2026-10-07T22:58:43.436513Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "label_resume",
+        "duration": 1.128
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:04.715276Z",
+      "event": {
+        "sema": "playback",
+        "type": "resume",
+        "position": 45.584
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:13.234221Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 54.102,
+        "token": 22,
+        "cue": "c05",
+        "level": "essential"
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:13.239528Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 54.102,
+        "token": 22,
+        "mediaPosition": 54.107318,
+        "preloaded": true,
+        "onsetMs": 2
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:14.472305Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 55.319,
+        "token": 22
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:17.345650Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 58.208,
+        "token": 23,
+        "cue": "c06",
+        "level": "essential"
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:17.349109Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 58.208,
+        "token": 23,
+        "mediaPosition": 58.210559,
+        "preloaded": true,
+        "onsetMs": 2
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:18.710655Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 59.553,
+        "token": 23
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:21.813937Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 62.679,
+        "token": 24,
+        "cue": "c07",
+        "level": "essential"
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:21.814706Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 62.679,
+        "token": 24,
+        "mediaPosition": 62.680487,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:23.029558Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 63.878,
+        "token": 24
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:25.353408Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 66.222,
+        "token": 25,
+        "cue": "c08",
+        "level": "essential"
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:25.357887Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 66.222,
+        "token": 25,
+        "mediaPosition": 66.22308,
+        "preloaded": true,
+        "onsetMs": 1
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:26.691044Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 67.538,
+        "token": 25
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:29.372870Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-request",
+        "position": 70.235,
+        "token": 26,
+        "cue": "c09",
+        "level": "essential"
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:29.383951Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-start",
+        "position": 70.235,
+        "token": 26,
+        "mediaPosition": 70.238758,
+        "preloaded": true,
+        "onsetMs": 3
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:30.652525Z",
+      "event": {
+        "sema": "playback",
+        "type": "audio-complete",
+        "position": 71.492,
+        "token": 26
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:31.151956Z",
+      "event": {
+        "sema": "say",
+        "ids": [
+          "film_ended",
+          "label_return"
+        ],
+        "focus": "return"
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:31.152786Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "film_ended",
+        "duration": 1.2
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:31.249715Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "film_ended",
+        "duration": 1.2
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:32.575622Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "film_ended",
+        "duration": 1.2
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:32.576506Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-requested",
+        "id": "label_return",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:32.716469Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-playing",
+        "id": "label_return",
+        "duration": 1.416
+      }
+    },
+    {
+      "at": "2026-10-07T22:59:34.233850Z",
+      "event": {
+        "sema": "guidance",
+        "type": "clip-ended",
+        "id": "label_return",
+        "duration": 1.416
+      }
+    }
+  ]
+}

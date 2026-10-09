@@ -121,7 +121,7 @@ def build_page():
     parts += ['<label>Reviewer name (for notes only)<input id="reviewer"></label><button id="export">Download review notes</button><p id="status" role="status"></p>',
               '<script>const status=document.querySelector("#status");document.querySelectorAll("audio,video").forEach(el=>{el.addEventListener("play",()=>document.querySelectorAll("audio,video").forEach(other=>{if(other!==el)other.pause()}));el.addEventListener("error",()=>status.textContent="Media failed to load. Stop and check the local review server.")});document.querySelectorAll("select[data-video]").forEach(el=>el.onchange=()=>{const v=document.getElementById(el.dataset.video);v.pause();v.src=el.value;v.load()});document.querySelectorAll("button[data-at]").forEach(el=>el.onclick=()=>{const v=document.getElementById(el.dataset.video);v.currentTime=Number(el.dataset.at);v.play().catch(()=>status.textContent="Press Play on the preview video.")});document.querySelector("#export").onclick=()=>{const notes=[...document.querySelectorAll("[data-note]")].filter(el=>el.value.trim()).map(el=>({item:el.dataset.note,note:el.value}));const reviewMinutesByAsset=Object.fromEntries([...document.querySelectorAll("[data-review-minutes]")].map(el=>[el.dataset.reviewMinutes,el.value.trim()?Number(el.value):null]));const payload={reviewMinutesByAsset,reviewer:document.querySelector("#reviewer").value,at:new Date().toISOString(),status:"Notes only; human approval not recorded",notes};const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}));a.download="sema-review-notes.json";a.click();URL.revokeObjectURL(a.href);status.textContent="Notes downloaded. Complete approval through the pipeline after changes."}</script></html>']
     (OUT/'index.html').write_text('\n'.join(parts))
-    # Public review scaffold, never filled in as human validation automatically.
+    # Local editorial worksheet; never recorded as human validation automatically.
     lines = ['# Proposed critical-fact coverage — October 4, 2026', '',
              'Generated from the current AI-prepared drafts. Human source annotation, classifications, reveal times, coverage and listening decisions are pending. An omitted fact cannot be detected from this inventory alone. A recorded text link is not semantic validation.', '']
     for asset in ASSETS:
@@ -134,7 +134,7 @@ def build_page():
             values = [f'{row["fact"]} @ {row["availableAt"]:.2f}s', *(row['levels'][l] for l in LEVELS), row['recovery'], 'Pending']
             lines.append('| ' + ' | '.join(cell(v) for v in values) + ' |')
         lines += ['', 'Reviewer: pending. Active review minutes: pending. Missing facts/classification changes: pending.', '']
-    (ROOT/'docs/verification/DRAFT-CRITICAL-COVERAGE-2026-10-04.md').write_text('\n'.join(lines))
+    (OUT/'CRITICAL-COVERAGE.md').write_text('\n'.join(lines))
 
 
 def serve(port):

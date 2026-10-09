@@ -1,0 +1,27 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    { "Sid": "SemaBucket", "Effect": "Allow",
+      "Action": ["s3:ListBucket", "s3:CreateBucket"],
+      "Resource": "arn:aws:s3:::BUCKET" },
+    { "Sid": "SemaObjects", "Effect": "Allow",
+      "Action": ["s3:PutObject", "s3:GetObject"],
+      "Resource": "arn:aws:s3:::BUCKET/sema/*" },
+    { "Sid": "Transcribe", "Effect": "Allow",
+      "Action": ["transcribe:StartTranscriptionJob", "transcribe:GetTranscriptionJob"],
+      "Resource": "*" },
+    { "Sid": "BedrockNova", "Effect": "Allow",
+      "Action": ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"],
+      "Resource": [
+        "arn:aws:bedrock:us-east-1:ACCOUNT_ID:inference-profile/us.amazon.nova-pro-v1:0",
+        "arn:aws:bedrock:us-east-1:ACCOUNT_ID:inference-profile/us.amazon.nova-lite-v1:0",
+        "arn:aws:bedrock:us-east-1:ACCOUNT_ID:inference-profile/us.amazon.nova-2-lite-v1:0",
+        "arn:aws:bedrock:*::foundation-model/amazon.nova-pro-v1:0",
+        "arn:aws:bedrock:*::foundation-model/amazon.nova-lite-v1:0",
+        "arn:aws:bedrock:*::foundation-model/amazon.nova-2-lite-v1:0"
+      ] },
+    { "Sid": "Polly", "Effect": "Allow",
+      "Action": ["polly:SynthesizeSpeech"],
+      "Resource": "*" }
+  ]
+}

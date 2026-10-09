@@ -1,0 +1,558 @@
+{
+  "id": "sintel-dragon",
+  "version": "review-5258e0923342",
+  "title": "Sintel — The Rooftop",
+  "synopsis": "An encounter on a rooftop.",
+  "credits": "© copyright Blender Foundation | durian.blender.org | CC BY 3.0",
+  "rights": "Work: Sintel (2010), Blender Foundation / Durian Open Movie Project.\nLicense: Creative Commons Attribution 3.0 (CC BY 3.0), https://creativecommons.org/licenses/by/3.0/\nRequired attribution: (c) copyright Blender Foundation | durian.blender.org\nSource: https://download.blender.org/durian/movies/Sintel.2010.1080p.mkv (official Blender mirror)\nExcerpt used: 00:02:30-00:03:42, scaled to 1280 px wide and re-encoded to H.264/AAC by tools/fetch-content.sh.\nChanges: excerpted, scaled and re-encoded; separate audio description narration added by Sema. No endorsement by the Blender Foundation is implied.",
+  "reviewStatus": "draft",
+  "duration": 72.0,
+  "video": "media/sintel-dragon/film.mp4",
+  "scenes": [
+    {
+      "id": "s01",
+      "start": 0,
+      "end": 5.833
+    },
+    {
+      "id": "s02",
+      "start": 5.833,
+      "end": 12.083
+    },
+    {
+      "id": "s03",
+      "start": 12.083,
+      "end": 26.417
+    },
+    {
+      "id": "s04",
+      "start": 26.417,
+      "end": 27.542
+    },
+    {
+      "id": "s05",
+      "start": 27.542,
+      "end": 30.083
+    },
+    {
+      "id": "s06",
+      "start": 30.083,
+      "end": 32.0
+    },
+    {
+      "id": "s07",
+      "start": 32.0,
+      "end": 34.375
+    },
+    {
+      "id": "s08",
+      "start": 34.375,
+      "end": 39.792
+    },
+    {
+      "id": "s09",
+      "start": 39.792,
+      "end": 41.875
+    },
+    {
+      "id": "s10",
+      "start": 41.875,
+      "end": 44.625
+    },
+    {
+      "id": "s11",
+      "start": 44.625,
+      "end": 46.417
+    },
+    {
+      "id": "s12",
+      "start": 46.417,
+      "end": 47.625
+    },
+    {
+      "id": "s13",
+      "start": 47.625,
+      "end": 53.125
+    },
+    {
+      "id": "s14",
+      "start": 53.125,
+      "end": 55.0
+    },
+    {
+      "id": "s15",
+      "start": 55.0,
+      "end": 61.75
+    },
+    {
+      "id": "s16",
+      "start": 61.75,
+      "end": 64.917
+    },
+    {
+      "id": "s17",
+      "start": 64.917,
+      "end": 69.458
+    },
+    {
+      "id": "s18",
+      "start": 69.458,
+      "end": 72.0
+    }
+  ],
+  "dialogue": [
+    {
+      "start": 0.0,
+      "end": 1.01
+    },
+    {
+      "start": 2.93,
+      "end": 5.32
+    },
+    {
+      "start": 23.65,
+      "end": 23.89
+    },
+    {
+      "start": 55.8,
+      "end": 58.36
+    },
+    {
+      "start": 59.84,
+      "end": 61.45
+    }
+  ],
+  "cues": [
+    {
+      "id": "c01",
+      "events": [
+        "city-view"
+      ],
+      "start": 1.01,
+      "end": 2.93,
+      "margin": 0.2,
+      "variants": {
+        "essential": {
+          "text": "Sunlit city.",
+          "duration": 1.152,
+          "audio": "media/sintel-dragon/audio/c01-essential.mp3"
+        },
+        "standard": {
+          "text": "Sunlit rooftops.",
+          "duration": 1.368,
+          "audio": "media/sintel-dragon/audio/c01-standard.mp3"
+        },
+        "rich": {
+          "text": "Sunlit rooftops.",
+          "duration": 1.368,
+          "audio": "media/sintel-dragon/audio/c01-rich.mp3"
+        }
+      }
+    },
+    {
+      "id": "c02",
+      "events": [
+        "woman-in-alley"
+      ],
+      "start": 6.0,
+      "end": 12.083,
+      "margin": 0.2,
+      "variants": {
+        "essential": {
+          "text": "A woman walks.",
+          "duration": 1.176,
+          "audio": "media/sintel-dragon/audio/c02-essential.mp3"
+        },
+        "standard": {
+          "text": "A red-haired woman walks through an alley.",
+          "duration": 2.232,
+          "audio": "media/sintel-dragon/audio/c02-standard.mp3"
+        },
+        "rich": {
+          "text": "A red-haired woman carries a staff through a narrow sunlit alley.",
+          "duration": 3.576,
+          "audio": "media/sintel-dragon/audio/c02-rich.mp3"
+        }
+      }
+    },
+    {
+      "id": "c03",
+      "events": [
+        "woman-lifts-lid"
+      ],
+      "start": 15.0,
+      "end": 23.65,
+      "margin": 0.2,
+      "variants": {
+        "essential": {
+          "text": "She lifts a lid.",
+          "duration": 1.224,
+          "audio": "media/sintel-dragon/audio/c03-essential.mp3"
+        },
+        "standard": {
+          "text": "She lifts a dark lid and peers underneath.",
+          "duration": 2.4,
+          "audio": "media/sintel-dragon/audio/c03-standard.mp3"
+        },
+        "rich": {
+          "text": "In fingerless gloves, she holds open the large lid and peers underneath.",
+          "duration": 4.128,
+          "audio": "media/sintel-dragon/audio/c03-rich.mp3"
+        }
+      }
+    },
+    {
+      "id": "c04",
+      "events": [
+        "woman-holds-food"
+      ],
+      "start": 24.0,
+      "end": 26.417,
+      "margin": 0.2,
+      "variants": {
+        "essential": {
+          "text": "She holds food.",
+          "duration": 1.248,
+          "audio": "media/sintel-dragon/audio/c04-essential.mp3"
+        },
+        "standard": {
+          "text": "She holds brown food.",
+          "duration": 1.584,
+          "audio": "media/sintel-dragon/audio/c04-standard.mp3"
+        },
+        "rich": {
+          "text": "She holds brown food.",
+          "duration": 1.584,
+          "audio": "media/sintel-dragon/audio/c04-rich.mp3"
+        }
+      }
+    },
+    {
+      "id": "c05",
+      "events": [
+        "woman-climbs-roof"
+      ],
+      "start": 30.083,
+      "end": 32.0,
+      "margin": 0.2,
+      "variants": {
+        "essential": {
+          "text": "She climbs.",
+          "duration": 1.032,
+          "audio": "media/sintel-dragon/audio/c05-essential.mp3"
+        },
+        "standard": {
+          "text": "She climbs up.",
+          "duration": 1.104,
+          "audio": "media/sintel-dragon/audio/c05-standard.mp3"
+        },
+        "rich": {
+          "text": "She climbs up.",
+          "duration": 1.104,
+          "audio": "media/sintel-dragon/audio/c05-rich.mp3"
+        }
+      }
+    },
+    {
+      "id": "c06",
+      "events": [
+        "injured-dragon"
+      ],
+      "start": 34.375,
+      "end": 39.792,
+      "margin": 0.2,
+      "variants": {
+        "essential": {
+          "text": "A dragon has a torn wing.",
+          "duration": 1.608,
+          "audio": "media/sintel-dragon/audio/c06-essential.mp3"
+        },
+        "standard": {
+          "text": "A dragon crouches with a torn, bloody wing.",
+          "duration": 2.64,
+          "audio": "media/sintel-dragon/audio/c06-standard.mp3"
+        },
+        "rich": {
+          "text": "A golden dragon by a chimney, its wing torn and bloody.",
+          "duration": 3.312,
+          "audio": "media/sintel-dragon/audio/c06-rich.mp3"
+        }
+      }
+    },
+    {
+      "id": "c07",
+      "events": [
+        "torn-wing"
+      ],
+      "start": 39.792,
+      "end": 41.875,
+      "margin": 0.2,
+      "variants": {
+        "essential": {
+          "text": "Blood pools.",
+          "duration": 1.056,
+          "audio": "media/sintel-dragon/audio/c07-essential.mp3"
+        },
+        "standard": {
+          "text": "Blood on the roof.",
+          "duration": 1.104,
+          "audio": "media/sintel-dragon/audio/c07-standard.mp3"
+        },
+        "rich": {
+          "text": "Blood below its wing.",
+          "duration": 1.344,
+          "audio": "media/sintel-dragon/audio/c07-rich.mp3"
+        }
+      }
+    },
+    {
+      "id": "c08",
+      "events": [
+        "woman-kneels"
+      ],
+      "start": 42.0,
+      "end": 44.625,
+      "margin": 0.2,
+      "variants": {
+        "essential": {
+          "text": "She kneels.",
+          "duration": 0.984,
+          "audio": "media/sintel-dragon/audio/c08-essential.mp3"
+        },
+        "standard": {
+          "text": "She kneels beside it.",
+          "duration": 1.416,
+          "audio": "media/sintel-dragon/audio/c08-standard.mp3"
+        },
+        "rich": {
+          "text": "She kneels beside the dragon.",
+          "duration": 1.776,
+          "audio": "media/sintel-dragon/audio/c08-rich.mp3"
+        }
+      }
+    },
+    {
+      "id": "c09",
+      "events": [
+        "offered-hand"
+      ],
+      "start": 46.417,
+      "end": 53.125,
+      "margin": 0.2,
+      "variants": {
+        "essential": {
+          "text": "She offers the dragon her hand.",
+          "duration": 1.824,
+          "audio": "media/sintel-dragon/audio/c09-essential.mp3"
+        },
+        "standard": {
+          "text": "She reaches an open hand toward the dragon.",
+          "duration": 2.352,
+          "audio": "media/sintel-dragon/audio/c09-standard.mp3"
+        },
+        "rich": {
+          "text": "She extends her gloved hand; the small dragon opens its mouth.",
+          "duration": 3.864,
+          "audio": "media/sintel-dragon/audio/c09-rich.mp3"
+        }
+      }
+    },
+    {
+      "id": "c10",
+      "events": [
+        "dragon-in-lap"
+      ],
+      "start": 61.45,
+      "end": 64.917,
+      "margin": 0.2,
+      "variants": {
+        "essential": {
+          "text": "Indoors, she tends its wing.",
+          "duration": 1.992,
+          "audio": "media/sintel-dragon/audio/c10-essential.mp3"
+        },
+        "standard": {
+          "text": "Indoors, she tends the dragon’s wing.",
+          "duration": 2.448,
+          "audio": "media/sintel-dragon/audio/c10-standard.mp3"
+        },
+        "rich": {
+          "text": "Indoors, she tends its wing on her lap.",
+          "duration": 2.544,
+          "audio": "media/sintel-dragon/audio/c10-rich.mp3"
+        }
+      }
+    },
+    {
+      "id": "c11",
+      "events": [
+        "woman-and-dragon"
+      ],
+      "start": 69.458,
+      "end": 72.0,
+      "margin": 0.2,
+      "variants": {
+        "essential": {
+          "text": "She smiles.",
+          "duration": 1.176,
+          "audio": "media/sintel-dragon/audio/c11-essential.mp3"
+        },
+        "standard": {
+          "text": "She smiles at it.",
+          "duration": 1.344,
+          "audio": "media/sintel-dragon/audio/c11-standard.mp3"
+        },
+        "rich": {
+          "text": "She smiles at it.",
+          "duration": 1.344,
+          "audio": "media/sintel-dragon/audio/c11-rich.mp3"
+        }
+      }
+    }
+  ],
+  "events": [
+    {
+      "id": "city-view",
+      "scene": "s01",
+      "availableAt": 0.5,
+      "critical": false,
+      "recovery": {
+        "text": "A sunlit city stretches toward a tall tower.",
+        "duration": 2.664,
+        "audio": "media/sintel-dragon/audio/recover-city-view.mp3"
+      }
+    },
+    {
+      "id": "woman-in-alley",
+      "scene": "s02",
+      "availableAt": 6.0,
+      "critical": false,
+      "recovery": {
+        "text": "A red-haired woman walks through a narrow alley with a staff.",
+        "duration": 3.24,
+        "audio": "media/sintel-dragon/audio/recover-woman-in-alley.mp3"
+      }
+    },
+    {
+      "id": "woman-lifts-lid",
+      "scene": "s03",
+      "availableAt": 15.0,
+      "critical": false,
+      "recovery": {
+        "text": "She holds open a large dark lid and peers underneath it.",
+        "duration": 3.24,
+        "audio": "media/sintel-dragon/audio/recover-woman-lifts-lid.mp3"
+      }
+    },
+    {
+      "id": "woman-holds-food",
+      "scene": "s03",
+      "availableAt": 24.0,
+      "critical": false,
+      "recovery": {
+        "text": "She holds a rough brown piece of food in her gloved hand.",
+        "duration": 3.096,
+        "audio": "media/sintel-dragon/audio/recover-woman-holds-food.mp3"
+      }
+    },
+    {
+      "id": "woman-climbs-roof",
+      "scene": "s05",
+      "availableAt": 30.0,
+      "critical": false,
+      "recovery": {
+        "text": "She climbs up onto a sloping tiled roof.",
+        "duration": 2.472,
+        "audio": "media/sintel-dragon/audio/recover-woman-climbs-roof.mp3"
+      }
+    },
+    {
+      "id": "injured-dragon",
+      "scene": "s07",
+      "availableAt": 33.0,
+      "critical": true,
+      "recovery": {
+        "text": "A small dragon crouches beside a chimney with blood on its torn wing.",
+        "duration": 3.744,
+        "audio": "media/sintel-dragon/audio/recover-injured-dragon.mp3"
+      }
+    },
+    {
+      "id": "torn-wing",
+      "scene": "s08",
+      "availableAt": 39.0,
+      "critical": false,
+      "recovery": {
+        "text": "The dragon's pale wing is ripped and blood pools on the roof.",
+        "duration": 3.048,
+        "audio": "media/sintel-dragon/audio/recover-torn-wing.mp3"
+      }
+    },
+    {
+      "id": "woman-kneels",
+      "scene": "s10",
+      "availableAt": 42.0,
+      "critical": false,
+      "recovery": {
+        "text": "The woman kneels beside the injured dragon.",
+        "duration": 2.4,
+        "audio": "media/sintel-dragon/audio/recover-woman-kneels.mp3"
+      }
+    },
+    {
+      "id": "offered-hand",
+      "scene": "s11",
+      "availableAt": 45.0,
+      "critical": true,
+      "recovery": {
+        "text": "The woman kneels beside the small dragon on the roof. Its wing is torn and bloody. She offers her open hand; the dragon opens its mouth.",
+        "duration": 8.376,
+        "audio": "media/sintel-dragon/audio/recover-offered-hand.mp3"
+      }
+    },
+    {
+      "id": "dragon-in-lap",
+      "scene": "s15",
+      "availableAt": 56.0,
+      "critical": true,
+      "recovery": {
+        "text": "Inside a dim room, the woman cradles the dragon in her lap. She tends its injured wing.",
+        "duration": 5.52,
+        "audio": "media/sintel-dragon/audio/recover-dragon-in-lap.mp3"
+      }
+    },
+    {
+      "id": "woman-and-dragon",
+      "scene": "s17",
+      "availableAt": 68.0,
+      "critical": false,
+      "recovery": {
+        "text": "In the dim room, the woman smiles and holds the small dragon close.",
+        "duration": 3.84,
+        "audio": "media/sintel-dragon/audio/recover-woman-and-dragon.mp3"
+      }
+    },
+    {
+      "id": "bowl-down",
+      "scene": "s18",
+      "availableAt": 71.0,
+      "critical": false,
+      "recovery": {
+        "text": "The woman lowers a dark bowl onto a surface.",
+        "duration": 2.616,
+        "audio": "media/sintel-dragon/audio/recover-bowl-down.mp3"
+      }
+    }
+  ],
+  "pipeline": {
+    "mode": "live",
+    "sourceSha256": "b73e7cbcff96a80d111d9dd111e1887b4b65ebfa84983ee50967beccf2e587d3",
+    "voice": {
+      "voiceId": "Joanna",
+      "engine": "neural",
+      "sampleRate": "24000",
+      "outputFormat": "mp3"
+    },
+    "editorialPreparation": "AI preparation; human approval pending"
+  }
+}

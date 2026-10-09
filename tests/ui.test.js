@@ -16,22 +16,27 @@ const promptTexts = JSON.parse(fs.readFileSync('pipeline/prompts.json', 'utf8'))
 const windows = [];
 afterEach(async () => { await flush(); await flush(); while (windows.length) windows.pop().close(); });
 
-function boot({ prefs, search = '', films, resume, prompts = {} } = {}) {
+function boot({ prefs, search = '', films, resume, prompts = {}, audioPlay, preview = false, speech = true, bridge = null } = {}) {
   const dom = new JSDOM(html, { url: `http://localhost/${search}`, pretendToBeVisual: true, runScripts: 'outside-only' });
   const w = dom.window, audios = [];
   windows.push(w);
   const proto = w.HTMLMediaElement.prototype;
   Object.defineProperty(proto, 'currentTime', { get() { return this._t ?? 0; }, set(v) { this._t = v; }, configurable: true });
   Object.defineProperty(proto, 'readyState', { get() { return 4; }, configurable: true });
-  proto.play = function () { this._playing = true; setTimeout(() => this.dispatchEvent(new w.Event('playing'))); return Promise.resolve(); };
+  proto.play = function () { if (this.tagName === 'AUDIO' && audioPlay) return audioPlay(this); this._playing = true; setTimeout(() => this.dispatchEvent(new w.Event('playing'))); return Promise.resolve(); };
   proto.pause = function () { this._playing = false; };
   proto.load = function () { if (this.tagName === 'AUDIO') setTimeout(() => this.dispatchEvent(new w.Event('canplay'))); };
   w.Audio = function (src) { const a = w.document.createElement('audio'); if (src) a.src = src; audios.push(a); return a; };
   let fetched = false; w.fetch = () => { fetched = true; return Promise.reject(new Error('no fetch')); };
   if (prefs) w.localStorage.setItem('sema-prefs-v1', JSON.stringify(prefs));
   if (resume) w.localStorage.setItem(`sema-resume-v2:${fixture.id}`, JSON.stringify(resume));
+  if (speech) {
+    w.SpeechSynthesisUtterance = class { constructor(text) { this.text = text; } };
+    w.speechSynthesis = { speak(u) { setTimeout(() => u.onend?.(), 0); }, cancel() {} };
+  }
+  if (bridge) w.ReactNativeWebView = { postMessage: m => bridge.push(JSON.parse(m)) };
   w.SEMA_TEST = true;
-  w.SEMA_DATA = { films: films ?? [{ package: fixture, poster: null, dev: false, allowFixture: true }], prompts, promptTexts };
+  w.SEMA_DATA = { films: films ?? [{ package: fixture, poster: null, dev: false, allowFixture: true, standardMix: "media/fixture/standard.mp4" }], prompts, promptTexts, preview };
   w.eval(bundle);
   const $ = id => w.document.getElementById(id);
   const active = () => w.document.activeElement?.id || w.document.activeElement?.tagName;
@@ -42,6 +47,54 @@ function boot({ prefs, search = '', films, resume, prompts = {} } = {}) {
   return { w, $, app: w.__sema, audios, active, key, at, finishAudio, video, fetched: () => fetched };
 }
 async function playing(s) { s.$(`film-${fixture.id}`).click(); s.$('resume').click(); await flush(); await flush(); assert.equal(s.app.player.mode, 'playing'); }
+
+test('actual delayed audio start rechecks the film clock and retains a critical fact', async () => {
+  let requested;
+  const s = boot({ prefs: CHOSEN, audioPlay: a => { requested = a; return new Promise(() => {}); } });
+  await playing(s); await s.at(2.6);
+  assert.ok(requested);
+  s.video.currentTime = 6.5;
+  requested.dispatchEvent(new s.w.Event('playing'));
+  assert.equal(s.app.player.mode, 'controls');
+  assert.equal(s.app.player.delivery.get('envelope-hidden'), 'pending');
+  assert.equal(s.app.narration, null);
+  assert.equal(s.active(), 'recover');
+  assert.ok(s.app.player.log.some(e => e.reason === 'late-audio-start'));
+});
+
+test('actual delayed optional audio is dropped without interrupting playback', async () => {
+  const optional = structuredClone(fixture); optional.events[0].critical = false;
+  let requested;
+  const s = boot({ prefs: CHOSEN, films: [{ package: optional, dev: false, allowFixture: true }],
+    audioPlay: a => { requested = a; return new Promise(() => {}); } });
+  await playing(s); await s.at(2.6); s.video.currentTime = 6.5;
+  requested.dispatchEvent(new s.w.Event('playing'));
+  assert.equal(s.app.player.mode, 'playing');
+  assert.equal(s.app.narration, null);
+  assert.equal(s.app.player.pending().length, 0);
+});
+
+test('a recovery that never starts times out without marking its fact delivered', async () => {
+  const s = boot({ prefs: CHOSEN, audioPlay: () => new Promise(() => {}) });
+  await playing(s); await s.at(2.6); s.key('Enter');
+  const timers = [], original = s.w.setTimeout.bind(s.w);
+  s.w.setTimeout = (fn, ms) => { const id = original(fn, ms); timers.push({ fn, ms }); return id; };
+  s.$('recover').click();
+  assert.equal(s.app.player.mode, 'recovering');
+  timers.find(t => t.ms === 5000).fn();
+  assert.equal(s.app.player.mode, 'error');
+  assert.equal(s.app.player.delivery.get('envelope-hidden'), 'pending');
+  assert.equal(s.active(), 'retry');
+});
+
+test('measured narration onset is logged once even with playing and play resolution', async () => {
+  const s = boot({ prefs: CHOSEN }); await playing(s); await s.at(2.6);
+  const starts = s.app.player.log.filter(e => e.type === 'audio-start');
+  assert.equal(starts.length, 1);
+  assert.ok(Number.isFinite(starts[0].onsetMs));
+  assert.equal(s.app.player.delivery.get('envelope-hidden'), 'not-due');
+  await s.finishAudio(); assert.equal(s.app.player.delivery.get('envelope-hidden'), 'delivered');
+});
 
 test('launch focuses the first film and never fetches at runtime', () => {
   const s = boot();
@@ -71,8 +124,8 @@ test('core loop: interrupt, recover, resume — focus is never lost', async () =
   s.key('Enter');                                   // Select during playback
   assert.equal(s.app.player.mode, 'controls');
   assert.equal(s.active(), 'recover');
-  assert.match(s.$('recover').textContent, /1 missed/);
-  assert.match(s.$('status').textContent, /^Paused\. What did I miss\?/);
+  assert.match(s.$('recover').textContent, /Hear missed description \(1\)/);
+  assert.match(s.$('status').textContent, /^Paused\. Hear missed description/);
   assert.equal(s.app.lastSpoken.at(-1), 'label_recover_pending', 'speech names the focused control');
   s.$('recover').click();
   assert.equal(s.app.player.mode, 'recovering');
@@ -81,7 +134,7 @@ test('core loop: interrupt, recover, resume — focus is never lost', async () =
   assert.equal(s.app.player.mode, 'controls');
   assert.equal(s.app.player.delivery.get('envelope-hidden'), 'delivered');
   assert.equal(s.active(), 'resume');
-  assert.match(s.$('status').textContent, /^Description complete\. Resume from 0:02/);
+  assert.match(s.$('status').textContent, /^Description complete\. Resume from 0:02\.$/, 'each spoken piece reads as its own sentence');
   s.$('resume').click(); await flush();
   assert.equal(s.app.player.mode, 'playing');
 });
@@ -128,7 +181,9 @@ test('with guidance off, status is announced through a live region but recovery 
   await s.at(2.6);
   s.w.document.activeElement.blur(); s.key('Enter');
   assert.equal(s.$('announcer').getAttribute('aria-live'), 'polite');
-  assert.match(s.$('announcer').textContent, /What did I miss/);
+  // VoiceView reads the focused control itself; the live region says only what happened.
+  assert.equal(s.$('announcer').textContent, 'Paused.');
+  assert.equal(s.active(), 'recover');
   s.$('recover').click();
   assert.equal(s.$('announcer').textContent, '');
 });
@@ -158,14 +213,19 @@ test('a package that fails validation is listed as unavailable and cannot play',
   assert.match(s.$('status').textContent, /did not pass its checks|failed its checks/);
 });
 
-test('fixed-Standard study mode hides elective controls but keeps critical recovery', async () => {
+test('fixed Standard uses a mixed soundtrack and never schedules separate narration or recovery', async () => {
   const s = boot({ prefs: { ...CHOSEN, level: 'rich' }, search: '?study=fixed' });
   await playing(s);
   assert.equal(s.app.player.level, 'standard');
   assert.equal(s.$('level-group').hidden, true);
   await s.at(2.6);
   s.w.document.activeElement.blur(); s.key('Enter');
-  assert.equal(s.$('recover').hidden, false, 'pending critical recovery stays available');
+  assert.equal(s.$('recover').hidden, true);
+  assert.equal(s.$('earlier').hidden, true);
+  assert.match(s.video.src, /standard.mp4$/);
+  assert.equal(s.app.narration, null);
+  assert.equal(s.app.player.pending().length, 0);
+  assert.equal(s.app.player.log.filter(e => e.type === 'cue-start').length, 0);
 });
 
 test('fixed-Standard pause announces the focused Resume when elective recovery is hidden', async () => {
@@ -218,7 +278,7 @@ test('resuming at the end is refused with a spoken reason, not a silent no-op', 
 test('D-pad moves within rows and between adjacent rows (layout measured on the Vega Virtual Device)', () => {
   const s = boot({ prefs: CHOSEN });
   s.$(`film-${fixture.id}`).click();
-  // Button rectangles from docs/vega/screenshots (1920x1080 WebView), which exposed row-skipping.
+  // Button rectangles measured on the 1920x1080 Vega WebView, which exposed row-skipping.
   const layout = {
     '[data-level="essential"]': [106, 238, 727, 790], '[data-level="standard"]': [250, 397, 727, 790],
     '[data-level="rich"]': [409, 543, 727, 790], '[data-level="off"]': [556, 690, 727, 790],
@@ -368,4 +428,144 @@ test('Back on the catalog asks the Vega host to exit; in a browser it is left al
   const sent = []; s.w.ReactNativeWebView = { postMessage: m => sent.push(JSON.parse(m)) };
   s.key('GoBack');
   assert.deepEqual(sent.filter(m => m.sema === 'exit'), [{ sema: 'exit' }]);
+});
+
+
+test('earlier moments can be revisited while the film clock stays paused', async () => {
+  const s = boot({ prefs: CHOSEN }); await playing(s);
+  await s.at(2.6); await s.finishAudio(); await s.at(9.6); await s.finishAudio();
+  s.key('Enter'); const position = s.video.currentTime;
+  s.$('recover').click(); assert.equal(s.app.player.active.events[0], 'door-open');
+  await s.finishAudio(); s.$('earlier').click();
+  assert.equal(s.app.player.active.events[0], 'envelope-hidden');
+  assert.equal(s.video.currentTime, position);
+  await s.finishAudio(); assert.equal(s.$('earlier').getAttribute('aria-disabled'), 'true');
+});
+
+test('review packages only open inside an explicitly marked review build', () => {
+  const draft = { ...fixture, reviewStatus: 'draft' };
+  const films = [{ package: draft, allowDraft: true }];
+  const release = boot({ films, prefs: CHOSEN }); release.$(`film-${draft.id}`).click();
+  assert.equal(release.app.view, 'catalog');
+  const review = boot({ films, preview: true, prefs: CHOSEN }); review.$(`film-${draft.id}`).click();
+  assert.equal(review.app.view, 'player'); assert.equal(review.$('review-banner').hidden, false);
+});
+
+test('Standard plus revisit comparison keeps recovery but locks detail', async () => {
+  const s = boot({ prefs: { ...CHOSEN, level: 'rich' }, search: '?study=recovery' });
+  await playing(s); await s.at(2.6); s.key('Enter');
+  assert.equal(s.app.player.level, 'standard'); assert.equal(s.$('level-group').hidden, true);
+  assert.equal(s.$('recover').hidden, false); s.$('recover').click();
+  assert.equal(s.app.player.mode, 'recovering');
+});
+
+test('fixed comparison fails visibly when a mixed baseline is absent', () => {
+  const s = boot({ search: '?study=fixed', films: [{ package: fixture, allowFixture: true }] });
+  s.$(`film-${fixture.id}`).click(); assert.equal(s.app.view, 'catalog');
+  assert.match(s.$('status').textContent, /Standard comparison soundtrack/);
+});
+
+test('unavailable guidance keeps retry recoverable and Back enables screen-reader access', async () => {
+  const s = boot({prefs: CHOSEN, speech: false});
+  assert.equal(s.$('guidance-error').hidden, false);
+  assert.equal(s.active(), 'guidance-retry');
+  assert.equal(s.$('catalog').inert, true);
+  s.w.SpeechSynthesisUtterance = class { constructor(text) { this.text = text; } };
+  s.w.speechSynthesis = { speak(u) { u.onend(); }, cancel() {} };
+  // The existing voice captures its engine at startup: no engine can be enabled
+  // retroactively here. A retry must remain recoverable rather than dismissing failure.
+  s.$('guidance-retry').click();
+  assert.equal(s.$('guidance-error').hidden, false);
+  s.key('Escape');
+  assert.equal(s.app.view, 'catalog'); assert.equal(s.app.prefs.guidance, false);
+  assert.equal(s.$('guidance-error').hidden, true);
+  assert.equal(s.$('catalog').inert, false);
+  assert.equal(s.$('announcer').getAttribute('aria-live'), 'polite');
+});
+test('a failed clip pauses the film and retry can recover without losing position', async () => {
+  const s = boot({prefs: CHOSEN, speech: false, prompts: Object.fromEntries(Object.entries(promptTexts).map(([id,text]) => [id,{text,audio:`${id}.mp3`,duration:1}]))});
+  await playing(s); await s.at(1.5); s.key('Enter');
+  s.audios.at(-1).dispatchEvent(new s.w.Event('error'));
+  assert.equal(s.active(), 'guidance-retry');
+  assert.equal(s.app.player.mode, 'controls');
+  assert.equal(s.video.currentTime, 1.5);
+  s.$('guidance-retry').click();
+  await s.finishAudio(); await s.finishAudio();
+  assert.equal(s.$('guidance-error').hidden, true);
+  assert.equal(s.video.currentTime, 1.5);
+});
+test('earlier-moment browsing keeps focus on Earlier while another past moment exists', async () => {
+  const pkg = structuredClone(fixture);
+  pkg.events.push({...pkg.events[0],id:'oldest',availableAt:0.5,critical:false});
+  const s = boot({prefs:CHOSEN,films:[{package:pkg,allowFixture:true}]});
+  await playing(s); await s.at(2.6); await s.finishAudio(); await s.at(9.6); await s.finishAudio();
+  s.key('Enter'); s.$('recover').click(); await s.finishAudio();
+  s.$('earlier').click();
+  assert.equal(s.app.player.mode, 'recovering'); assert.equal(s.active(), 'earlier', 'focus is not pulled away while the moment plays');
+  await s.finishAudio();
+  assert.equal(s.active(), 'earlier'); assert.match(s.$('moment-context').textContent, /Visual moment at/);
+  s.$('earlier').click();
+  assert.equal(s.active(), 'earlier', 'still on Earlier while the last earlier moment plays');
+  await s.finishAudio();
+  assert.equal(s.active(), 'resume');
+});
+
+test('with guidance off, no announcement names the focused control (VoiceView already reads it)', async () => {
+  const s = boot({ prefs: { ...CHOSEN, guidance: false, guidanceChosen: true } });
+  const labelled = () => [...s.app.lastSpoken].some(id => /^label_|^film_/.test(id));
+  assert.equal(labelled(), false, 'welcome');
+  s.$(`film-${fixture.id}`).click(); assert.equal(labelled(), false, 'ready');
+  await playing(s); await s.at(2.6); s.w.document.activeElement.blur(); s.key('Enter'); assert.equal(labelled(), false, 'paused');
+  s.$('recover').click(); await s.finishAudio(); assert.equal(labelled(), false, 'recovery complete');
+  s.key('Escape'); assert.equal(labelled(), false, 'returning');
+});
+
+test("VoiceView detected by the Vega host turns Sema's voice off, unless the viewer chose", () => {
+  const sent = [];
+  const s = boot({ prefs: CHOSEN, bridge: sent });
+  assert.equal(s.app.lastSpoken.length, 0, 'on Vega, the first words wait for the screen-reader state');
+  s.w.__semaScreenReader(true);
+  assert.equal(s.app.prefs.guidance, false);
+  assert.equal(s.$('announcer').getAttribute('aria-live'), 'polite');
+  assert.equal([...s.app.lastSpoken][0], 'welcome', 'startup announced through the live region');
+  assert.ok(sent.some(m => m.sema === 'screen-reader' && m.on === true));
+  s.w.__semaScreenReader(false);
+  assert.equal(s.app.prefs.guidance, true, 'automatic choice follows the screen reader');
+  s.w.document.querySelector('#welcome [data-toggle="guidance"], [data-toggle="guidance"]').click();  // explicit: off
+  s.w.__semaScreenReader(false);
+  assert.equal(s.app.prefs.guidance, false, 'an explicit choice is never overridden');
+});
+
+test('on Vega, startup still speaks if the host never reports a screen-reader state', async () => {
+  const s = boot({ prefs: CHOSEN, bridge: [] });
+  assert.equal(s.app.lastSpoken.length, 0);
+  await new Promise(r => setTimeout(r, 1300));
+  assert.equal([...s.app.lastSpoken][0], 'welcome');
+});
+
+test('a browser blocking sound before the first key press does not show the failure dialog', async () => {
+  const clips = Object.fromEntries(Object.entries(promptTexts).map(([id, text]) => [id, { text, audio: `${id}.mp3`, duration: 1 }]));
+  let blocked = true;
+  const s = boot({ prefs: CHOSEN, prompts: clips, audioPlay: a => blocked ? Promise.reject(new Error('NotAllowedError')) : (a._playing = true, Promise.resolve()) });
+  s.w.speechSynthesis = { speak(u) { setTimeout(() => u.onerror?.({ error: 'not-allowed' })); }, cancel() {} };
+  await flush(); await flush(); await flush();
+  assert.equal(s.app.guidanceFailed, false);
+  assert.equal(s.$('guidance-error').hidden, true, 'no dialog before any interaction');
+  blocked = false;
+  s.key('ArrowDown');                                     // first interaction: guidance works from here
+  assert.equal(s.$('guidance-error').hidden, true);
+});
+
+test('Space resumes from the paused controls instead of pressing the focused button', async () => {
+  const s = boot({ prefs: CHOSEN });
+  await playing(s); await s.at(1); s.w.document.activeElement.blur(); s.key('Enter');
+  s.$('restart').focus();
+  s.key(' ', { code: 'Space' }); await flush();
+  assert.equal(s.app.player.mode, 'playing');
+  assert.equal(s.app.player.position, 1, 'Start over was not pressed');
+});
+
+test('level buttons have separated accessible names', () => {
+  const s = boot({ prefs: CHOSEN });
+  for (const b of s.w.document.querySelectorAll('[data-level], [data-choose-level]')) assert.match(b.getAttribute('aria-label'), /^\w+, /);
 });

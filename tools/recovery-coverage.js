@@ -2,7 +2,7 @@
 // viewing with the shipped Playback state machine, then ask for recovery every
 // half second. Reports how often recovery has an answer, that no answer is ever
 // a future fact, and the old shot-limited rule for comparison.
-//   node tools/recovery-coverage.js [--level standard] [--report docs/verification/RECOVERY-COVERAGE.md]
+//   node tools/recovery-coverage.js [--level standard] [--report artifacts/recovery-coverage.md]
 // Draft data: AI-prepared, not human-approved; durations are rendered audio.
 import fs from 'node:fs';
 import path from 'node:path';

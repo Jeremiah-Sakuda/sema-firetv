@@ -4,7 +4,7 @@
 # Why: in Vega SDK 0.24.12112, `react-native build-vega` (npm run build:debug)
 # shells out to the module manifest builder with an unquoted project path
 # (@amazon-devices/kepler-compatibility-metro-config/dist/src/utils.js), so it
-# fails with "/bin/sh: /Users/.../2025: No such file or directory" when the
+# fails with "/bin/sh: /Users/developer/Projects/TV: No such file or directory" when the
 # project lives under a path containing spaces. A symlink does not help because
 # the CLI resolves the physical cwd. If your checkout path has no spaces, just
 # run `npm run build:debug` in vega-app/ instead of this script.

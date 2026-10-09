@@ -4,12 +4,13 @@
  * never blocks the interface: a watchdog ends every utterance even when the
  * platform never reports completion, and any new request interrupts the last.
  */
-export function createVoice({ clips = {}, onChange = () => {}, onEvent = () => {} } = {}) {
-  const synth = typeof speechSynthesis === 'undefined' ? null : speechSynthesis;
+export function createVoice({ clips = {}, onChange = () => {}, onEvent = () => {}, onFailure = () => {}, environment = globalThis } = {}) {
+  const synth = environment.speechSynthesis;
+  const AudioClass = environment.Audio, Utterance = environment.SpeechSynthesisUtterance;
   let audio = null, timer = null, token = 0, speaking = false;
   const set = value => { if (speaking !== value) { speaking = value; onChange(value); } };
   function release() {
-    clearTimeout(timer); timer = null;
+    environment.clearTimeout(timer); timer = null;
     if (audio) { audio.onended = null; audio.onerror = null; audio.onplaying = null; audio.pause(); audio.removeAttribute('src'); audio = null; }
   }
   function stop() {
@@ -31,27 +32,49 @@ export function createVoice({ clips = {}, onChange = () => {}, onEvent = () => {
       // Completion, error and the watchdog can all fire; each item advances once.
       let settled = false;
       const advance = () => { if (!settled && mine === token) { settled = true; next(); } };
-      const fallback = () => { if (!settled && mine === token) { settled = true; speak(item.text); } };
+      const failed = reason => {
+        if (mine !== token) return;
+        try { onFailure({ id: item.id, text: item.text, reason }); } catch { /* reporting must not trap input */ }
+        next();
+      };
+      const fallback = () => { if (!settled && mine === token) { settled = true; speak(item, failed); } };
       const clip = clips[item.id];
       if (!clip) { fallback(); return; }
-      const a = new Audio(clip.audio); audio = a;
       const report = type => { try { onEvent({ type, id: item.id, duration: clip.duration }); } catch { /* diagnostics cannot block input */ } };
-      a.onplaying = () => report('clip-playing');
+      let a;
+      try { a = new AudioClass(clip.audio); audio = a; } catch { report('clip-error'); fallback(); return; }
+      a.onplaying = () => {
+        if (settled || mine !== token || audio !== a) return;
+        report('clip-playing');
+        environment.clearTimeout(timer);
+        timer = environment.setTimeout(() => { report('clip-watchdog'); if (!settled && mine === token) { settled = true; release(); failed('clip-completion-timeout'); } }, (clip.duration + 1.5) * 1000);
+      };
       a.onended = () => { report('clip-ended'); advance(); };
       a.onerror = () => { report('clip-error'); fallback(); };
-      timer = setTimeout(() => { report('clip-watchdog'); advance(); }, (clip.duration + 1.5) * 1000);
+      timer = environment.setTimeout(() => { report('clip-start-timeout'); fallback(); }, 5000);
       report('clip-requested');
       try { a.play()?.catch?.(fallback); } catch { fallback(); }
     };
-    const speak = text => {
+    const speak = (item, failed) => {
       release();
-      if (!synth || !text || typeof SpeechSynthesisUtterance === 'undefined') { next(); return; }
+      const text = item.text;
+      if (!synth || !text || !Utterance) { failed('speech-unavailable'); return; }
       let settled = false;
-      const advance = () => { if (!settled && mine === token) { settled = true; next(); } };
-      const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US';
-      u.onend = u.onerror = advance;
-      timer = setTimeout(advance, (text.split(/\s+/).length / 2.2 + 2) * 1000);
-      try { synth.speak(u); } catch { advance(); }
+      const finish = reason => {
+        if (settled || mine !== token) return;
+        settled = true;
+        if (reason) {
+          // Stop an engine that failed to signal completion before another item starts.
+          try { synth.cancel(); } catch { /* unavailable engine */ }
+          failed(reason);
+        } else next();
+      };
+      try {
+        const u = new Utterance(text); u.lang = 'en-US';
+        u.onend = () => finish(); u.onerror = () => finish('speech-error');
+        timer = environment.setTimeout(() => finish('speech-timeout'), (text.split(/\s+/).length / 2.2 + 2) * 1000);
+        synth.speak(u);
+      } catch { finish('speech-error'); }
     };
     next();
   }

@@ -1,13 +1,13 @@
 {
   "welcome": {
-    "text": "Welcome to Sema. Use the arrows to choose a film, then press Select.",
+    "text": "Welcome to Sema. Choose a film with the arrows, then press Select.",
     "audio": "media/prompts/welcome.mp3",
-    "duration": 4.776
+    "duration": 4.344
   },
   "onboarding": {
-    "text": "Before the film starts, choose how much description you want to hear. Essential covers key story moments. Standard adds story and context. Rich adds more visual detail. You can change this at any time. During the film, press Select, then choose What did I miss, to hear a recent moment again without spoilers. Standard is selected.",
+    "text": "Choose Essential for key actions, Standard for story and context, or Rich for more visual detail where dialogue allows. Press Select during the film to change your level or revisit a moment. Earlier moment describes an older scene without rewinding. Using VoiceView? Turn spoken guidance off to avoid hearing controls twice.",
     "audio": "media/prompts/onboarding.mp3",
-    "duration": 21.888
+    "duration": 19.776
   },
   "choose_level": {
     "text": "Choose a description level, then select Play.",
@@ -15,99 +15,89 @@
     "duration": 2.76
   },
   "ready": {
-    "text": "Ready. Play is selected. Move up to change the description level first, if you like.",
+    "text": "Ready. You can change the description level first, if you like.",
     "audio": "media/prompts/ready.mp3",
-    "duration": 5.88
+    "duration": 4.152
   },
   "resume_offer": {
-    "text": "You stopped partway through this film. Resume is selected. Move right to start over.",
+    "text": "You stopped partway through this film. You can resume, or start over.",
     "audio": "media/prompts/resume_offer.mp3",
-    "duration": 5.496
+    "duration": 4.416
   },
   "package_changed": {
-    "text": "This film's description was updated since you last watched, so it will start from the beginning. Play is selected.",
+    "text": "This film's description was updated since you last watched, so it starts from the beginning.",
     "audio": "media/prompts/package_changed.mp3",
-    "duration": 6.6
+    "duration": 4.968
   },
   "paused": {
-    "text": "Paused. Choose a control, then resume.",
+    "text": "Paused.",
     "audio": "media/prompts/paused.mp3",
-    "duration": 3.168
-  },
-  "paused_recover": {
-    "text": "Paused. What did I miss is selected.",
-    "audio": "media/prompts/paused_recover.mp3",
-    "duration": 2.784
-  },
-  "paused_resume": {
-    "text": "Paused. Resume is selected.",
-    "audio": "media/prompts/paused_resume.mp3",
-    "duration": 2.448
+    "duration": 0.792
   },
   "paused_return": {
-    "text": "Paused. Return to catalog is selected. Press Back again to leave the film.",
+    "text": "Paused. Press Back again to leave the film.",
     "audio": "media/prompts/paused_return.mp3",
-    "duration": 5.376
+    "duration": 3.072
   },
   "interrupted": {
-    "text": "A description was interrupted. What did I miss is selected.",
+    "text": "A description was interrupted.",
     "audio": "media/prompts/interrupted.mp3",
-    "duration": 3.672
+    "duration": 1.68
   },
   "delayed": {
-    "text": "Description was delayed. What did I miss is selected.",
+    "text": "A description was delayed.",
     "audio": "media/prompts/delayed.mp3",
-    "duration": 3.528
+    "duration": 1.584
   },
   "recovery_complete": {
-    "text": "Description complete. Resume is selected.",
+    "text": "Description complete.",
     "audio": "media/prompts/recovery_complete.mp3",
-    "duration": 3.096
+    "duration": 1.416
   },
   "recovery_more": {
-    "text": "Description complete. Another missed description is waiting. What did I miss is selected.",
+    "text": "Description complete. Another missed description is waiting.",
     "audio": "media/prompts/recovery_more.mp3",
-    "duration": 5.712
+    "duration": 3.72
   },
   "recovery_stopped": {
-    "text": "Description stopped. Resume is selected.",
+    "text": "Description stopped.",
     "audio": "media/prompts/recovery_stopped.mp3",
-    "duration": 3.0
+    "duration": 1.32
   },
   "suggest_rich": {
-    "text": "Description complete. You asked about this scene twice. Rich adds more visual detail. Rich is selected; press Select to switch, or move down to Resume.",
+    "text": "You asked about this part twice. Rich adds more visual detail.",
     "audio": "media/prompts/suggest_rich.mp3",
-    "duration": 10.44
+    "duration": 4.44
   },
   "no_moment": {
-    "text": "No visual moment to describe yet. Resume is selected.",
+    "text": "No visual moment is available yet. Play a little further, then try again.",
     "audio": "media/prompts/no_moment.mp3",
-    "duration": 3.96
+    "duration": 5.064
   },
   "film_ended": {
-    "text": "The film has ended. Return to catalog is selected.",
+    "text": "The film has ended.",
     "audio": "media/prompts/film_ended.mp3",
-    "duration": 3.504
+    "duration": 1.2
   },
   "film_ended_pending": {
-    "text": "The film has ended. A missed description is waiting. What did I miss is selected.",
+    "text": "The film has ended. A missed description is waiting.",
     "audio": "media/prompts/film_ended_pending.mp3",
-    "duration": 5.328
+    "duration": 3.336
   },
   "start_over": {
-    "text": "Back at the start. Play is selected.",
+    "text": "Back at the start.",
     "audio": "media/prompts/start_over.mp3",
-    "duration": 2.784
+    "duration": 1.224
   },
   "seek_paused": {
-    "text": "Paused after skipping. Resume is selected.",
+    "text": "Paused after skipping.",
     "audio": "media/prompts/seek_paused.mp3",
-    "duration": 3.12
+    "duration": 1.44
   },
   "buffering": {
-    "text": "Playback paused while the film loads. Resume is selected.",
+    "text": "Playback paused while the film loads.",
     "audio": "media/prompts/buffering.mp3",
-    "duration": 3.912
+    "duration": 2.232
   },
   "level_off": {
     "text": "Description off.",
@@ -160,14 +150,14 @@
     "duration": 1.536
   },
   "error_video": {
-    "text": "The film could not play. Try again is selected.",
+    "text": "The film could not play.",
     "audio": "media/prompts/error_video.mp3",
-    "duration": 3.216
+    "duration": 1.416
   },
   "error_audio": {
-    "text": "The description could not play. Try again is selected.",
+    "text": "The description could not play.",
     "audio": "media/prompts/error_audio.mp3",
-    "duration": 3.48
+    "duration": 1.656
   },
   "error_package": {
     "text": "This film's description package did not pass its checks, so it cannot play.",
@@ -175,9 +165,9 @@
     "duration": 4.32
   },
   "help": {
-    "text": "Use the arrows to move and Select to choose. During the film, Select pauses and opens the controls. What did I miss describes a recent moment, without spoilers. Back returns to the catalog.",
+    "text": "Press Select to pause. Choose a description level, revisit the latest moment, or hear an earlier one. Resume continues where you paused. Back returns to the catalog. Fast-forward and rewind move five seconds.",
     "audio": "media/prompts/help.mp3",
-    "duration": 12.192
+    "duration": 13.872
   },
   "label_play": {
     "text": "Play film",
@@ -195,14 +185,14 @@
     "duration": 1.632
   },
   "label_recover": {
-    "text": "What did I miss?",
+    "text": "Revisit latest moment",
     "audio": "media/prompts/label_recover.mp3",
-    "duration": 1.152
+    "duration": 1.608
   },
   "label_recover_pending": {
-    "text": "What did I miss? A missed description is waiting.",
+    "text": "Hear missed description",
     "audio": "media/prompts/label_recover_pending.mp3",
-    "duration": 3.288
+    "duration": 1.488
   },
   "label_start_over": {
     "text": "Start over",
@@ -265,24 +255,24 @@
     "duration": 2.544
   },
   "label_level_off_selected": {
-    "text": "Off. No description. Selected.",
+    "text": "Off. No description. Current level.",
     "audio": "media/prompts/label_level_off_selected.mp3",
-    "duration": 3.408
+    "duration": 3.456
   },
   "label_level_essential_selected": {
-    "text": "Essential. Key story moments. Selected.",
+    "text": "Essential. Key story moments. Current level.",
     "audio": "media/prompts/label_level_essential_selected.mp3",
-    "duration": 3.816
+    "duration": 3.864
   },
   "label_level_standard_selected": {
-    "text": "Standard. Story and context. Selected.",
+    "text": "Standard. Story and context. Current level.",
     "audio": "media/prompts/label_level_standard_selected.mp3",
-    "duration": 4.032
+    "duration": 4.08
   },
   "label_level_rich_selected": {
-    "text": "Rich. More visual detail. Selected.",
+    "text": "Rich. More visual detail. Current level.",
     "audio": "media/prompts/label_level_rich_selected.mp3",
-    "duration": 3.816
+    "duration": 3.84
   },
   "label_level_standard_suggested": {
     "text": "Standard. Story and context. Suggested.",
@@ -290,18 +280,48 @@
     "duration": 4.128
   },
   "film_tears_of_steel": {
-    "text": "Tears of Steel, The Bridge. One minute, twelve seconds. Audio description available.",
+    "text": "Tears of Steel. The Bridge. A seventy-two second science fiction excerpt.",
     "audio": "media/prompts/film_tears_of_steel.mp3",
-    "duration": 6.192
+    "duration": 5.352
   },
   "film_sintel_dragon": {
-    "text": "Sintel, The Rooftop. One minute, twelve seconds. Audio description available.",
+    "text": "Sintel. The Rooftop. A seventy-two second excerpt. A young woman explores a sunlit city.",
     "audio": "media/prompts/film_sintel_dragon.mp3",
-    "duration": 5.928
+    "duration": 7.008
   },
   "film_red_envelope_fixture": {
     "text": "The red envelope. Fifteen second engineering test clip.",
     "audio": "media/prompts/film_red_envelope_fixture.mp3",
     "duration": 3.984
+  },
+  "start_over_confirm": {
+    "text": "Press Select again to start over from the beginning.",
+    "audio": "media/prompts/start_over_confirm.mp3",
+    "duration": 2.616
+  },
+  "label_start_over_confirm": {
+    "text": "Press Select again to start over.",
+    "audio": "media/prompts/label_start_over_confirm.mp3",
+    "duration": 1.968
+  },
+  "label_earlier": {
+    "text": "Earlier moment",
+    "audio": "media/prompts/label_earlier.mp3",
+    "duration": 1.152
+  },
+  "no_earlier": {
+    "text": "There is no earlier moment to revisit yet.",
+    "audio": "media/prompts/no_earlier.mp3",
+    "duration": 2.64
+  },
+  "preview_notice": {
+    "text": "Content review build. Narration has been prepared with AI and still needs human approval.",
+    "audio": "media/prompts/preview_notice.mp3",
+    "duration": 5.496
+  },
+  "error_baseline": {
+    "text": "The fixed Standard comparison soundtrack is not available for this film.",
+    "audio": "media/prompts/error_baseline.mp3",
+    "duration": 4.008
   }
 }

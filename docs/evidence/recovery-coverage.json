@@ -1,0 +1,282 @@
+[
+  {
+    "id": "sintel-dragon",
+    "shots": 18,
+    "events": 12,
+    "unplaced": [],
+    "levels": [
+      {
+        "level": "essential",
+        "step": 0.5,
+        "firstEventAt": 0.5,
+        "samples": 144,
+        "covered": 100,
+        "coveredOld": 62.5,
+        "futureFacts": 0,
+        "unansweredOld": [
+          [
+            12.5,
+            15
+          ],
+          [
+            26.5,
+            30
+          ],
+          [
+            30.5,
+            33
+          ],
+          [
+            34.5,
+            35
+          ],
+          [
+            36.5,
+            39
+          ],
+          [
+            40,
+            42
+          ],
+          [
+            46.5,
+            47
+          ],
+          [
+            48.5,
+            56
+          ],
+          [
+            64,
+            68
+          ],
+          [
+            69.5,
+            71
+          ]
+        ],
+        "unanswered": []
+      },
+      {
+        "level": "standard",
+        "step": 0.5,
+        "firstEventAt": 0.5,
+        "samples": 144,
+        "covered": 100,
+        "coveredOld": 65.3,
+        "futureFacts": 0,
+        "unansweredOld": [
+          [
+            12.5,
+            15
+          ],
+          [
+            26.5,
+            30
+          ],
+          [
+            30.5,
+            33
+          ],
+          [
+            34.5,
+            35
+          ],
+          [
+            37.5,
+            39
+          ],
+          [
+            40,
+            42
+          ],
+          [
+            46.5,
+            47
+          ],
+          [
+            49,
+            56
+          ],
+          [
+            64.5,
+            68
+          ],
+          [
+            69.5,
+            71
+          ]
+        ],
+        "unanswered": []
+      },
+      {
+        "level": "rich",
+        "step": 0.5,
+        "firstEventAt": 0.5,
+        "samples": 144,
+        "covered": 100,
+        "coveredOld": 68.1,
+        "futureFacts": 0,
+        "unansweredOld": [
+          [
+            12.5,
+            15
+          ],
+          [
+            26.5,
+            30
+          ],
+          [
+            30.5,
+            33
+          ],
+          [
+            34.5,
+            35
+          ],
+          [
+            38,
+            39
+          ],
+          [
+            40,
+            42
+          ],
+          [
+            46.5,
+            47
+          ],
+          [
+            50.5,
+            56
+          ],
+          [
+            64.5,
+            68
+          ],
+          [
+            69.5,
+            71
+          ]
+        ],
+        "unanswered": []
+      }
+    ]
+  },
+  {
+    "id": "tears-of-steel",
+    "shots": 14,
+    "events": 13,
+    "unplaced": [],
+    "levels": [
+      {
+        "level": "essential",
+        "step": 0.5,
+        "firstEventAt": 1.5,
+        "samples": 142,
+        "covered": 100,
+        "coveredOld": 76.8,
+        "futureFacts": 0,
+        "unansweredOld": [
+          [
+            9,
+            9.5
+          ],
+          [
+            13.5,
+            20
+          ],
+          [
+            40.5,
+            44
+          ],
+          [
+            51.5,
+            55
+          ],
+          [
+            57,
+            58
+          ],
+          [
+            64.5,
+            66
+          ]
+        ],
+        "unanswered": []
+      },
+      {
+        "level": "standard",
+        "step": 0.5,
+        "firstEventAt": 1.5,
+        "samples": 142,
+        "covered": 100,
+        "coveredOld": 76.8,
+        "futureFacts": 0,
+        "unansweredOld": [
+          [
+            9,
+            9.5
+          ],
+          [
+            13.5,
+            20
+          ],
+          [
+            40.5,
+            44
+          ],
+          [
+            51.5,
+            55
+          ],
+          [
+            57,
+            58
+          ],
+          [
+            64.5,
+            66
+          ]
+        ],
+        "unanswered": []
+      },
+      {
+        "level": "rich",
+        "step": 0.5,
+        "firstEventAt": 1.5,
+        "samples": 142,
+        "covered": 100,
+        "coveredOld": 76.8,
+        "futureFacts": 0,
+        "unansweredOld": [
+          [
+            9,
+            9.5
+          ],
+          [
+            13.5,
+            20
+          ],
+          [
+            40.5,
+            44
+          ],
+          [
+            51.5,
+            55
+          ],
+          [
+            57,
+            58
+          ],
+          [
+            64.5,
+            66
+          ]
+        ],
+        "unanswered": []
+      }
+    ]
+  }
+]

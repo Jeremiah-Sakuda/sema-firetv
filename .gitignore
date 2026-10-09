@@ -20,3 +20,21 @@ __pycache__/
 
 # Static player for remote sessions (npm run site); publish deliberately
 site/
+
+# Generated review app shell; portable open-film media snapshot is retained.
+preview/src/
+preview/pipeline/
+preview/index.html
+preview/style.css
+preview/media/prompts/
+
+# Local submission drafts, planning, account notes and historical diagnostics
+.local/
+.aws/
+.codex/
+.agents/
+
+# Generated evidence and bundled entry scripts (rebuild from source)
+artifacts/
+src/bundle.js
+src/data.js

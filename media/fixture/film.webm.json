@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "sourceSha256": "aa20a1b6b91a4bd73564cf73f8b4cc22cc0cc2033ff70b4d50a5b15bea7f43b9",
-  "renditionSha256": "87d98a4f2aa8679246a90648b73723c4218478967faca29002e39560f4461d6b",
+  "sourceSha256": "a7833895ecf005c35c23c7d00e173fd9a3da742f6416ba231a1796960cde3097",
+  "renditionSha256": "e6ee0582d65c8ae3f0f037585297fc06316b82dbae452ff19d913435ec24590d",
   "encoder": "ffmpeg libvpx VP8 / libopus",
-  "generatedAt": "2026-10-04T17:58:57.644Z"
+  "generatedAt": "2026-10-07T14:47:37.789Z"
 }

@@ -1,0 +1,129 @@
+{
+  "date": "2026-10-04",
+  "generatedAt": "2026-10-04T15:58:54Z",
+  "region": "us-east-1",
+  "humanNarrationApproval": false,
+  "hardwareVoiceView": "not tested",
+  "viewerSessions": 0,
+  "films": [
+    {
+      "asset": "sintel-dragon",
+      "filmSeconds": 72.0,
+      "latestAutomatedStageSeconds": 96.837,
+      "sumRecordedAttemptSeconds": 231.895,
+      "cumulativeEstimatedUSD": 0.3808,
+      "unpriced": [],
+      "draftCues": 11,
+      "fit": {
+        "variants": 33,
+        "fitFirstTry": 32,
+        "fitAfterRegeneration": 1,
+        "unresolved": 0,
+        "regenerations": 1,
+        "minHeadroom": 0.002,
+        "recoveries": 12
+      },
+      "modelInput": "frames",
+      "modelObserve": "us.amazon.nova-pro-v1:0",
+      "modelScript": "us.amazon.nova-2-lite-v1:0",
+      "aiEditorialPreparation": true,
+      "humanReview": {
+        "reviewer": null,
+        "method": null,
+        "completed": false,
+        "reviewMinutes": null,
+        "reviewMinutesPerFinishedMinute": null,
+        "edits": 0,
+        "drops": 0,
+        "downgrades": 0,
+        "attachments": 0,
+        "blockers": []
+      }
+    },
+    {
+      "asset": "tears-of-steel",
+      "filmSeconds": 72.0,
+      "latestAutomatedStageSeconds": 86.416,
+      "sumRecordedAttemptSeconds": 179.745,
+      "cumulativeEstimatedUSD": 0.3217,
+      "unpriced": [],
+      "draftCues": 8,
+      "fit": {
+        "variants": 24,
+        "fitFirstTry": 22,
+        "fitAfterRegeneration": 2,
+        "unresolved": 0,
+        "regenerations": 2,
+        "minHeadroom": 0.053,
+        "recoveries": 13
+      },
+      "modelInput": "frames",
+      "modelObserve": "us.amazon.nova-pro-v1:0",
+      "modelScript": "us.amazon.nova-2-lite-v1:0",
+      "aiEditorialPreparation": true,
+      "humanReview": {
+        "reviewer": null,
+        "method": null,
+        "completed": false,
+        "reviewMinutes": null,
+        "reviewMinutesPerFinishedMinute": null,
+        "edits": 0,
+        "drops": 0,
+        "downgrades": 0,
+        "attachments": 0,
+        "blockers": []
+      }
+    }
+  ],
+  "scope": "Live authoring and draft file checks. AI editorial preparation is not human approval. No new real-film app playback evidence.",
+  "guidance": {
+    "count": 61,
+    "characters": 3096,
+    "mode": "live",
+    "voice": {
+      "voiceId": "Joanna",
+      "engine": "neural",
+      "sampleRate": "24000",
+      "outputFormat": "mp3"
+    },
+    "estimatedCost": {
+      "totalUSD": 0.0495,
+      "lines": [
+        {
+          "service": "polly",
+          "item": "neural",
+          "quantity": "3096 characters",
+          "usd": 0.049536
+        }
+      ],
+      "unpriced": [],
+      "priceTableAsOf": "2026-10-04 (Nova Pro/2 Lite, neural Polly, batch Transcribe and S3 Standard verified via AWS Price List API; other rates unverified)",
+      "label": "ESTIMATE at list prices; not a bill. Excludes free tier/credits, tax, S3 requests, data transfer."
+    }
+  },
+  "totalCumulativeEstimatedUSD": 0.752,
+  "draftNarrationVariants": 57,
+  "draftRecoveries": 25,
+  "reviewPlayer": "http://127.0.0.1:4174/",
+  "simulator": {
+    "build": "Debug aarch64 completed",
+    "vpkgBytes": 2042505,
+    "install": "Vega CLI reported installed and launched",
+    "guidanceClipsBundled": 61,
+    "catalog": "fixture only; human-reviewed real films not packaged",
+    "audibleVerification": "pending",
+    "capture": "Host screenshot failed; no screen/audio recording from this new build",
+    "softwarePromptPlayback": {
+      "completedPromptIds": [
+        "film_red_envelope_fixture",
+        "level_standard",
+        "onboarding",
+        "paused_recover",
+        "ready",
+        "recovery_complete"
+      ],
+      "errorOrWatchdogEvents": 0,
+      "evidence": "VVD-GUIDANCE-2026-10-04.json"
+    }
+  }
+}

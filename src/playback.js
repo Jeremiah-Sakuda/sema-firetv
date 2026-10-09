@@ -2,8 +2,8 @@ import { LEVELS, validatePackage } from './package.js';
 
 /** Pure media-clock state machine. Audio/UI side effects belong to the adapter. */
 export class Playback {
-  constructor(asset, { allowFixture = false } = {}) {
-    const errors = validatePackage(asset, { allowFixture });
+  constructor(asset, { allowFixture = false, allowDraft = false } = {}) {
+    const errors = validatePackage(asset, { allowFixture, allowDraft });
     if (errors.length) throw new Error(errors.join('\n'));
     this.asset = asset; this.level = 'standard'; this.mode = 'catalog';
     this.position = 0; this.epoch = 0; this.active = null;
@@ -140,10 +140,13 @@ export class Playback {
    * shots, not story scenes, so recovery is not limited to the current shot;
    * nothing that becomes available after the current position is eligible.
    */
-  recover() {
+  recover(eventId) {
+    const available = this.asset.events.filter(e => e.availableAt <= this.position);
+    const selected = eventId ? available.find(e => e.id === eventId) : null;
+    if (eventId && !selected) { this.record('recovery-unavailable', { event: eventId }); return null; }
     this.controls('recovery');
-    const latest = this.asset.events.filter(e => e.availableAt <= this.position).sort((a,b) => b.availableAt-a.availableAt)[0];
-    const event = this.pending()[0] ?? latest;
+    const latest = available.sort((a,b) => b.availableAt-a.availableAt)[0];
+    const event = selected ?? this.pending()[0] ?? latest;
     if (!event) { this.record('recovery-unavailable'); return null; }
     this.active = { ...event.recovery, kind: 'recovery', events: [event.id], token: ++this.epoch };
     this.mode = 'recovering';

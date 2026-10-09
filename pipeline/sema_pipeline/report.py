@@ -222,7 +222,7 @@ def _md(report: dict) -> str:
     L += ["", "## Caveats", "",
           "- Costs are estimates from a parameterized price table (`prices` in config); verify current pricing.",
           "- Model video sampling can miss brief actions; human review is mandatory before publication.",
-          "- Pilot facts and speech received AI editorial preparation; this is separate from human approval. See content/editorial/ for the change ledger.", ""]
+          "- Pilot facts and speech received AI editorial preparation; this is separate from human approval. Retain change ledgers with local authoring records.", ""]
     return "\n".join(L)
 
 

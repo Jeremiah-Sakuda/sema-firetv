@@ -10,7 +10,10 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: npm }
       - run: npm ci
+      - run: npm run repo:check
       - run: npm test
+      - run: npm run preview:build
+      - run: npm run content:check
       - run: node tools/validate.js media/fixture/package.json --fixture
       # Release readiness is separately enforced by npm run release:check.
       # The engineering fixture is intentionally not a release catalog.

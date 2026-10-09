@@ -1,0 +1,484 @@
+{
+  "id": "tears-of-steel",
+  "version": "review-ca1464a1d882",
+  "title": "Tears of Steel — The Bridge",
+  "synopsis": "Two people meet on a bridge.",
+  "credits": "(CC) Blender Foundation | mango.blender.org | CC BY 3.0",
+  "rights": "Work: Tears of Steel (2012), Blender Foundation / Mango Open Movie Project.\nLicense: Creative Commons Attribution 3.0 (CC BY 3.0), https://creativecommons.org/licenses/by/3.0/\nRequired attribution: (CC) Blender Foundation | mango.blender.org\nSource: https://download.blender.org/demo/movies/ToS/tears_of_steel_720p.mov (official Blender mirror)\nExcerpt used: 00:00:00-00:01:12, re-encoded to H.264/AAC by tools/fetch-content.sh.\nChanges: excerpted and re-encoded; separate audio description narration added by Sema. No endorsement by the Blender Foundation is implied.",
+  "reviewStatus": "draft",
+  "duration": 72.0,
+  "video": "media/tears-of-steel/film.mp4",
+  "scenes": [
+    {
+      "id": "s01",
+      "start": 0,
+      "end": 8.917
+    },
+    {
+      "id": "s02",
+      "start": 8.917,
+      "end": 13.458
+    },
+    {
+      "id": "s03",
+      "start": 13.458,
+      "end": 18.417
+    },
+    {
+      "id": "s04",
+      "start": 18.417,
+      "end": 25.0
+    },
+    {
+      "id": "s05",
+      "start": 25.0,
+      "end": 40.25
+    },
+    {
+      "id": "s06",
+      "start": 40.25,
+      "end": 42.083
+    },
+    {
+      "id": "s07",
+      "start": 42.083,
+      "end": 45.625
+    },
+    {
+      "id": "s08",
+      "start": 45.625,
+      "end": 49.792
+    },
+    {
+      "id": "s09",
+      "start": 49.792,
+      "end": 51.125
+    },
+    {
+      "id": "s10",
+      "start": 51.125,
+      "end": 53.667
+    },
+    {
+      "id": "s11",
+      "start": 53.667,
+      "end": 56.667
+    },
+    {
+      "id": "s12",
+      "start": 56.667,
+      "end": 64.458
+    },
+    {
+      "id": "s13",
+      "start": 64.458,
+      "end": 69.917
+    },
+    {
+      "id": "s14",
+      "start": 69.917,
+      "end": 72.0
+    }
+  ],
+  "dialogue": [
+    {
+      "start": 2.28,
+      "end": 3.11
+    },
+    {
+      "start": 4.61,
+      "end": 10.1
+    },
+    {
+      "start": 10.5,
+      "end": 10.71
+    },
+    {
+      "start": 23.05,
+      "end": 36.26
+    },
+    {
+      "start": 37.47,
+      "end": 43.44
+    },
+    {
+      "start": 44.19,
+      "end": 45.22
+    },
+    {
+      "start": 49.92,
+      "end": 53.88
+    },
+    {
+      "start": 60.8,
+      "end": 62.46
+    }
+  ],
+  "cues": [
+    {
+      "id": "c02",
+      "events": [
+        "rocket-engines"
+      ],
+      "start": 10.71,
+      "end": 13.458,
+      "margin": 0.2,
+      "variants": {
+        "essential": {
+          "text": "Engines blaze.",
+          "duration": 1.176,
+          "audio": "media/tears-of-steel/audio/c02-essential.mp3"
+        },
+        "standard": {
+          "text": "Rocket engines blaze.",
+          "duration": 1.584,
+          "audio": "media/tears-of-steel/audio/c02-standard.mp3"
+        },
+        "rich": {
+          "text": "Rocket engines blaze.",
+          "duration": 1.584,
+          "audio": "media/tears-of-steel/audio/c02-rich.mp3"
+        }
+      }
+    },
+    {
+      "id": "c03",
+      "events": [
+        "rocket-over-city"
+      ],
+      "start": 20.0,
+      "end": 23.05,
+      "margin": 0.2,
+      "variants": {
+        "essential": {
+          "text": "A rocket rises.",
+          "duration": 1.344,
+          "audio": "media/tears-of-steel/audio/c03-essential.mp3"
+        },
+        "standard": {
+          "text": "A rocket rises above the city.",
+          "duration": 1.968,
+          "audio": "media/tears-of-steel/audio/c03-standard.mp3"
+        },
+        "rich": {
+          "text": "A rocket rises above the city.",
+          "duration": 1.968,
+          "audio": "media/tears-of-steel/audio/c03-rich.mp3"
+        }
+      }
+    },
+    {
+      "id": "c04",
+      "events": [
+        "forty-years-later"
+      ],
+      "start": 45.22,
+      "end": 49.92,
+      "margin": 0.2,
+      "variants": {
+        "essential": {
+          "text": "Forty years later.",
+          "duration": 1.248,
+          "audio": "media/tears-of-steel/audio/c04-essential.mp3"
+        },
+        "standard": {
+          "text": "Text: forty years later.",
+          "duration": 1.968,
+          "audio": "media/tears-of-steel/audio/c04-standard.mp3"
+        },
+        "rich": {
+          "text": "Above dark machinery: forty years later.",
+          "duration": 2.76,
+          "audio": "media/tears-of-steel/audio/c04-rich.mp3"
+        }
+      }
+    },
+    {
+      "id": "c05",
+      "events": [
+        "control-panel"
+      ],
+      "start": 53.88,
+      "end": 56.667,
+      "margin": 0.2,
+      "variants": {
+        "essential": {
+          "text": "A knob turns.",
+          "duration": 1.224,
+          "audio": "media/tears-of-steel/audio/c05-essential.mp3"
+        },
+        "standard": {
+          "text": "A hand turns a knob.",
+          "duration": 1.368,
+          "audio": "media/tears-of-steel/audio/c05-standard.mp3"
+        },
+        "rich": {
+          "text": "A hand turns a control knob.",
+          "duration": 1.752,
+          "audio": "media/tears-of-steel/audio/c05-rich.mp3"
+        }
+      }
+    },
+    {
+      "id": "c06",
+      "events": [
+        "workers-at-machine",
+        "brain-on-platform"
+      ],
+      "start": 58.0,
+      "end": 60.8,
+      "margin": 0.2,
+      "variants": {
+        "essential": {
+          "text": "An exposed brain.",
+          "duration": 1.32,
+          "audio": "media/tears-of-steel/audio/c06-essential.mp3"
+        },
+        "standard": {
+          "text": "An exposed brain on a platform.",
+          "duration": 2.016,
+          "audio": "media/tears-of-steel/audio/c06-standard.mp3"
+        },
+        "rich": {
+          "text": "An exposed brain on a platform.",
+          "duration": 2.016,
+          "audio": "media/tears-of-steel/audio/c06-rich.mp3"
+        }
+      }
+    },
+    {
+      "id": "c07",
+      "events": [
+        "eye-device"
+      ],
+      "start": 62.46,
+      "end": 64.458,
+      "margin": 0.2,
+      "variants": {
+        "essential": {
+          "text": "Mechanical eye.",
+          "duration": 1.248,
+          "audio": "media/tears-of-steel/audio/c07-essential.mp3"
+        },
+        "standard": {
+          "text": "Mechanical eye.",
+          "duration": 1.248,
+          "audio": "media/tears-of-steel/audio/c07-standard.mp3"
+        },
+        "rich": {
+          "text": "Mechanical eye.",
+          "duration": 1.248,
+          "audio": "media/tears-of-steel/audio/c07-rich.mp3"
+        }
+      }
+    },
+    {
+      "id": "c08",
+      "events": [
+        "film-title"
+      ],
+      "start": 66.0,
+      "end": 69.917,
+      "margin": 0.2,
+      "variants": {
+        "essential": {
+          "text": "Tears of Steel.",
+          "duration": 1.2,
+          "audio": "media/tears-of-steel/audio/c08-essential.mp3"
+        },
+        "standard": {
+          "text": "Title: Tears of Steel.",
+          "duration": 1.608,
+          "audio": "media/tears-of-steel/audio/c08-standard.mp3"
+        },
+        "rich": {
+          "text": "White title: Tears of Steel.",
+          "duration": 1.944,
+          "audio": "media/tears-of-steel/audio/c08-rich.mp3"
+        }
+      }
+    },
+    {
+      "id": "c09",
+      "events": [
+        "dark-city"
+      ],
+      "start": 70.0,
+      "end": 72.0,
+      "margin": 0.2,
+      "variants": {
+        "essential": {
+          "text": "Smoky city.",
+          "duration": 1.176,
+          "audio": "media/tears-of-steel/audio/c09-essential.mp3"
+        },
+        "standard": {
+          "text": "Smoke over the city.",
+          "duration": 1.344,
+          "audio": "media/tears-of-steel/audio/c09-standard.mp3"
+        },
+        "rich": {
+          "text": "Smoke over the city.",
+          "duration": 1.344,
+          "audio": "media/tears-of-steel/audio/c09-rich.mp3"
+        }
+      }
+    }
+  ],
+  "events": [
+    {
+      "id": "blender-credit",
+      "scene": "s01",
+      "availableAt": 1.5,
+      "critical": false,
+      "recovery": {
+        "text": "White text reads: Blender Foundation Presents.",
+        "duration": 2.928,
+        "audio": "media/tears-of-steel/audio/recover-blender-credit.mp3"
+      }
+    },
+    {
+      "id": "rocket-engines",
+      "scene": "s02",
+      "availableAt": 9.5,
+      "critical": false,
+      "recovery": {
+        "text": "Rocket engines blaze above a red metal structure.",
+        "duration": 2.976,
+        "audio": "media/tears-of-steel/audio/recover-rocket-engines.mp3"
+      }
+    },
+    {
+      "id": "rocket-over-city",
+      "scene": "s04",
+      "availableAt": 20.0,
+      "critical": false,
+      "recovery": {
+        "text": "A rocket rises above a city skyline.",
+        "duration": 2.52,
+        "audio": "media/tears-of-steel/audio/recover-rocket-over-city.mp3"
+      }
+    },
+    {
+      "id": "pair-on-bridge",
+      "scene": "s05",
+      "availableAt": 25.0,
+      "critical": false,
+      "recovery": {
+        "text": "A man and a woman stand beside a canal on a metal bridge.",
+        "duration": 3.264,
+        "audio": "media/tears-of-steel/audio/recover-pair-on-bridge.mp3"
+      }
+    },
+    {
+      "id": "mechanical-hand",
+      "scene": "s05",
+      "availableAt": 33.0,
+      "critical": false,
+      "recovery": {
+        "text": "The woman raises her mechanical right hand toward the man.",
+        "duration": 2.952,
+        "audio": "media/tears-of-steel/audio/recover-mechanical-hand.mp3"
+      }
+    },
+    {
+      "id": "forty-years-later",
+      "scene": "s07",
+      "availableAt": 44.0,
+      "critical": true,
+      "recovery": {
+        "text": "White text over a dark industrial interior reads: 40 years later.",
+        "duration": 4.344,
+        "audio": "media/tears-of-steel/audio/recover-forty-years-later.mp3"
+      }
+    },
+    {
+      "id": "wireframe-figures",
+      "scene": "s08",
+      "availableAt": 47.0,
+      "critical": false,
+      "recovery": {
+        "text": "Orange and blue wireframe figures stand among machinery and floating colored lines.",
+        "duration": 4.728,
+        "audio": "media/tears-of-steel/audio/recover-wireframe-figures.mp3"
+      }
+    },
+    {
+      "id": "control-panel",
+      "scene": "s09",
+      "availableAt": 50.0,
+      "critical": false,
+      "recovery": {
+        "text": "A hand turns a knob on a control panel beneath colored digital displays.",
+        "duration": 4.032,
+        "audio": "media/tears-of-steel/audio/recover-control-panel.mp3"
+      }
+    },
+    {
+      "id": "workers-at-machine",
+      "scene": "s11",
+      "availableAt": 55.0,
+      "critical": false,
+      "recovery": {
+        "text": "Several people stand around machinery behind translucent colored displays.",
+        "duration": 4.2,
+        "audio": "media/tears-of-steel/audio/recover-workers-at-machine.mp3"
+      }
+    },
+    {
+      "id": "brain-on-platform",
+      "scene": "s12",
+      "availableAt": 58.0,
+      "critical": true,
+      "recovery": {
+        "text": "A brain sits exposed on a round illuminated platform, surrounded by fine wires and needles.",
+        "duration": 5.472,
+        "audio": "media/tears-of-steel/audio/recover-brain-on-platform.mp3"
+      }
+    },
+    {
+      "id": "eye-device",
+      "scene": "s12",
+      "availableAt": 62.0,
+      "critical": false,
+      "recovery": {
+        "text": "A man peers over the brain with a circular mechanical device over one eye.",
+        "duration": 4.032,
+        "audio": "media/tears-of-steel/audio/recover-eye-device.mp3"
+      }
+    },
+    {
+      "id": "film-title",
+      "scene": "s13",
+      "availableAt": 66.0,
+      "critical": false,
+      "recovery": {
+        "text": "The scene cuts to a black title card. White text reads: Tears of Steel.",
+        "duration": 4.92,
+        "audio": "media/tears-of-steel/audio/recover-film-title.mp3"
+      }
+    },
+    {
+      "id": "dark-city",
+      "scene": "s14",
+      "availableAt": 70.0,
+      "critical": false,
+      "recovery": {
+        "text": "Smoke hangs over a dark city as a large platform hovers beside a tower.",
+        "duration": 4.344,
+        "audio": "media/tears-of-steel/audio/recover-dark-city.mp3"
+      }
+    }
+  ],
+  "pipeline": {
+    "mode": "live",
+    "sourceSha256": "26658527ff461bf6a99ff516f81cd528afbeddc861c09991998f89cec7b62978",
+    "voice": {
+      "voiceId": "Joanna",
+      "engine": "neural",
+      "sampleRate": "24000",
+      "outputFormat": "mp3"
+    },
+    "editorialPreparation": "AI preparation; human approval pending"
+  }
+}

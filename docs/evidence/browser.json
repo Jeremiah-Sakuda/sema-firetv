@@ -1,0 +1,1914 @@
+{
+  "at": "2026-10-07T22:47:07.442Z",
+  "scope": "Real browser decoding and media events; audio output muted, not a human listening test.",
+  "runs": [
+    {
+      "state": "ended",
+      "position": 72,
+      "duration": 72.008,
+      "source": "http://127.0.0.1:4173/media/sintel-dragon/film.webm",
+      "expectedCues": 11,
+      "log": [
+        {
+          "type": "open",
+          "position": 0
+        },
+        {
+          "type": "resume",
+          "position": 0
+        },
+        {
+          "type": "audio-request",
+          "position": 1.236674,
+          "token": 2,
+          "cue": "c01",
+          "level": "essential"
+        },
+        {
+          "type": "audio-start",
+          "position": 1.236674,
+          "token": 2,
+          "mediaPosition": 1.237534,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 2.43498,
+          "token": 2
+        },
+        {
+          "type": "audio-request",
+          "position": 6.215238,
+          "token": 3,
+          "cue": "c02",
+          "level": "essential"
+        },
+        {
+          "type": "audio-start",
+          "position": 6.215238,
+          "token": 3,
+          "mediaPosition": 6.216006,
+          "preloaded": true,
+          "onsetMs": 1
+        },
+        {
+          "type": "audio-complete",
+          "position": 7.416351,
+          "token": 3
+        },
+        {
+          "type": "audio-request",
+          "position": 15.216301,
+          "token": 4,
+          "cue": "c03",
+          "level": "essential"
+        },
+        {
+          "type": "audio-start",
+          "position": 15.216301,
+          "token": 4,
+          "mediaPosition": 15.216536,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 16.475412,
+          "token": 4
+        },
+        {
+          "type": "audio-request",
+          "position": 24.216466,
+          "token": 5,
+          "cue": "c04",
+          "level": "essential"
+        },
+        {
+          "type": "audio-start",
+          "position": 24.216466,
+          "token": 5,
+          "mediaPosition": 24.217211,
+          "preloaded": true,
+          "onsetMs": 1
+        },
+        {
+          "type": "audio-complete",
+          "position": 25.504836,
+          "token": 5
+        },
+        {
+          "type": "audio-request",
+          "position": 30.3051,
+          "token": 6,
+          "cue": "c05",
+          "level": "essential"
+        },
+        {
+          "type": "audio-start",
+          "position": 30.3051,
+          "token": 6,
+          "mediaPosition": 30.305974,
+          "preloaded": true,
+          "onsetMs": 1
+        },
+        {
+          "type": "audio-complete",
+          "position": 31.35474,
+          "token": 6
+        },
+        {
+          "type": "audio-request",
+          "position": 34.595271,
+          "token": 7,
+          "cue": "c06",
+          "level": "essential"
+        },
+        {
+          "type": "audio-start",
+          "position": 34.595271,
+          "token": 7,
+          "mediaPosition": 34.59559,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 36.215017,
+          "token": 7
+        },
+        {
+          "type": "audio-request",
+          "position": 39.996614,
+          "token": 8,
+          "cue": "c07",
+          "level": "essential"
+        },
+        {
+          "type": "audio-start",
+          "position": 39.996614,
+          "token": 8,
+          "mediaPosition": 39.997525,
+          "preloaded": true,
+          "onsetMs": 1
+        },
+        {
+          "type": "audio-complete",
+          "position": 41.105316,
+          "token": 8
+        },
+        {
+          "type": "audio-request",
+          "position": 42.216358,
+          "token": 9,
+          "cue": "c08",
+          "level": "essential"
+        },
+        {
+          "type": "audio-start",
+          "position": 42.216358,
+          "token": 9,
+          "mediaPosition": 42.216883,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 43.235412,
+          "token": 9
+        },
+        {
+          "type": "audio-request",
+          "position": 46.62615,
+          "token": 10,
+          "cue": "c09",
+          "level": "essential"
+        },
+        {
+          "type": "audio-start",
+          "position": 46.62615,
+          "token": 10,
+          "mediaPosition": 46.62637,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 48.485566,
+          "token": 10
+        },
+        {
+          "type": "audio-request",
+          "position": 61.655864,
+          "token": 11,
+          "cue": "c10",
+          "level": "essential"
+        },
+        {
+          "type": "audio-start",
+          "position": 61.655864,
+          "token": 11,
+          "mediaPosition": 61.656486,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 63.666515,
+          "token": 11
+        },
+        {
+          "type": "audio-request",
+          "position": 69.667248,
+          "token": 12,
+          "cue": "c11",
+          "level": "essential"
+        },
+        {
+          "type": "audio-start",
+          "position": 69.667248,
+          "token": 12,
+          "mediaPosition": 69.667639,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 70.866832,
+          "token": 12
+        }
+      ],
+      "media": {},
+      "film": "sintel-dragon",
+      "level": "essential",
+      "codec": "vp8",
+      "wallSeconds": 72.145
+    },
+    {
+      "state": "ended",
+      "position": 72,
+      "duration": 72.008,
+      "source": "http://127.0.0.1:4173/media/tears-of-steel/film.webm",
+      "expectedCues": 8,
+      "log": [
+        {
+          "type": "open",
+          "position": 0
+        },
+        {
+          "type": "resume",
+          "position": 0
+        },
+        {
+          "type": "audio-request",
+          "position": 10.931944,
+          "token": 2,
+          "cue": "c02",
+          "level": "essential"
+        },
+        {
+          "type": "audio-start",
+          "position": 10.931944,
+          "token": 2,
+          "mediaPosition": 10.932901,
+          "preloaded": true,
+          "onsetMs": 1
+        },
+        {
+          "type": "audio-complete",
+          "position": 12.131884,
+          "token": 2
+        },
+        {
+          "type": "audio-request",
+          "position": 20.202585,
+          "token": 3,
+          "cue": "c03",
+          "level": "essential"
+        },
+        {
+          "type": "audio-start",
+          "position": 20.202585,
+          "token": 3,
+          "mediaPosition": 20.202895,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 21.581294,
+          "token": 3
+        },
+        {
+          "type": "audio-request",
+          "position": 45.431243,
+          "token": 4,
+          "cue": "c04",
+          "level": "essential"
+        },
+        {
+          "type": "audio-start",
+          "position": 45.431243,
+          "token": 4,
+          "mediaPosition": 45.431562,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 46.691434,
+          "token": 4
+        },
+        {
+          "type": "audio-request",
+          "position": 54.102268,
+          "token": 5,
+          "cue": "c05",
+          "level": "essential"
+        },
+        {
+          "type": "audio-start",
+          "position": 54.102268,
+          "token": 5,
+          "mediaPosition": 54.103137,
+          "preloaded": true,
+          "onsetMs": 1
+        },
+        {
+          "type": "audio-complete",
+          "position": 55.362072,
+          "token": 5
+        },
+        {
+          "type": "audio-request",
+          "position": 58.212724,
+          "token": 6,
+          "cue": "c06",
+          "level": "essential"
+        },
+        {
+          "type": "audio-start",
+          "position": 58.212724,
+          "token": 6,
+          "mediaPosition": 58.213137,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 59.562655,
+          "token": 6
+        },
+        {
+          "type": "audio-request",
+          "position": 62.681132,
+          "token": 7,
+          "cue": "c07",
+          "level": "essential"
+        },
+        {
+          "type": "audio-start",
+          "position": 62.681132,
+          "token": 7,
+          "mediaPosition": 62.681545,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 63.882097,
+          "token": 7
+        },
+        {
+          "type": "audio-request",
+          "position": 66.220325,
+          "token": 8,
+          "cue": "c08",
+          "level": "essential"
+        },
+        {
+          "type": "audio-start",
+          "position": 66.220325,
+          "token": 8,
+          "mediaPosition": 66.222187,
+          "preloaded": true,
+          "onsetMs": 1
+        },
+        {
+          "type": "audio-complete",
+          "position": 67.452159,
+          "token": 8
+        },
+        {
+          "type": "audio-request",
+          "position": 70.212249,
+          "token": 9,
+          "cue": "c09",
+          "level": "essential"
+        },
+        {
+          "type": "audio-start",
+          "position": 70.212249,
+          "token": 9,
+          "mediaPosition": 70.212475,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 71.441907,
+          "token": 9
+        }
+      ],
+      "media": {},
+      "film": "tears-of-steel",
+      "level": "essential",
+      "codec": "vp8",
+      "wallSeconds": 72.149
+    },
+    {
+      "state": "ended",
+      "position": 72,
+      "duration": 72,
+      "source": "http://127.0.0.1:4173/media/tears-of-steel/film.mp4",
+      "expectedCues": 8,
+      "log": [
+        {
+          "type": "open",
+          "position": 0
+        },
+        {
+          "type": "resume",
+          "position": 0
+        },
+        {
+          "type": "audio-request",
+          "position": 10.932565,
+          "token": 2,
+          "cue": "c02",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 10.932565,
+          "token": 2,
+          "mediaPosition": 10.93339,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 12.556082,
+          "token": 2
+        },
+        {
+          "type": "audio-request",
+          "position": 20.207856,
+          "token": 3,
+          "cue": "c03",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 20.207856,
+          "token": 3,
+          "mediaPosition": 20.208255,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 22.210423,
+          "token": 3
+        },
+        {
+          "type": "audio-request",
+          "position": 45.428331,
+          "token": 4,
+          "cue": "c04",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 45.428331,
+          "token": 4,
+          "mediaPosition": 45.428915,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 47.442171,
+          "token": 4
+        },
+        {
+          "type": "audio-request",
+          "position": 54.098643,
+          "token": 5,
+          "cue": "c05",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 54.098643,
+          "token": 5,
+          "mediaPosition": 54.099018,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 55.507628,
+          "token": 5
+        },
+        {
+          "type": "audio-request",
+          "position": 58.214886,
+          "token": 6,
+          "cue": "c06",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 58.214886,
+          "token": 6,
+          "mediaPosition": 58.215272,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 60.2492,
+          "token": 6
+        },
+        {
+          "type": "audio-request",
+          "position": 62.68351,
+          "token": 7,
+          "cue": "c07",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 62.68351,
+          "token": 7,
+          "mediaPosition": 62.683915,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 63.97266,
+          "token": 7
+        },
+        {
+          "type": "audio-request",
+          "position": 66.221568,
+          "token": 8,
+          "cue": "c08",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 66.221568,
+          "token": 8,
+          "mediaPosition": 66.224057,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 67.868989,
+          "token": 8
+        },
+        {
+          "type": "audio-request",
+          "position": 70.208498,
+          "token": 9,
+          "cue": "c09",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 70.208498,
+          "token": 9,
+          "mediaPosition": 70.208855,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 71.593297,
+          "token": 9
+        }
+      ],
+      "media": {},
+      "film": "tears-of-steel",
+      "level": "standard",
+      "codec": "h264",
+      "wallSeconds": 72.062
+    },
+    {
+      "state": "ended",
+      "position": 72,
+      "duration": 72,
+      "source": "http://127.0.0.1:4173/media/sintel-dragon/film.mp4",
+      "expectedCues": 11,
+      "log": [
+        {
+          "type": "open",
+          "position": 0
+        },
+        {
+          "type": "resume",
+          "position": 0
+        },
+        {
+          "type": "audio-request",
+          "position": 1.228939,
+          "token": 2,
+          "cue": "c01",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 1.228939,
+          "token": 2,
+          "mediaPosition": 1.22951,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 2.638708,
+          "token": 2
+        },
+        {
+          "type": "audio-request",
+          "position": 6.207851,
+          "token": 3,
+          "cue": "c02",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 6.207851,
+          "token": 3,
+          "mediaPosition": 6.208333,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 8.487609,
+          "token": 3
+        },
+        {
+          "type": "audio-request",
+          "position": 15.208585,
+          "token": 4,
+          "cue": "c03",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 15.208585,
+          "token": 4,
+          "mediaPosition": 15.209266,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 17.638837,
+          "token": 4
+        },
+        {
+          "type": "audio-request",
+          "position": 24.208959,
+          "token": 5,
+          "cue": "c04",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 24.208959,
+          "token": 5,
+          "mediaPosition": 24.209174,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 25.827879,
+          "token": 5
+        },
+        {
+          "type": "audio-request",
+          "position": 30.296585,
+          "token": 6,
+          "cue": "c05",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 30.296585,
+          "token": 6,
+          "mediaPosition": 30.296958,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 31.438131,
+          "token": 6
+        },
+        {
+          "type": "audio-request",
+          "position": 34.587922,
+          "token": 7,
+          "cue": "c06",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 34.587922,
+          "token": 7,
+          "mediaPosition": 34.588209,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 37.258493,
+          "token": 7
+        },
+        {
+          "type": "audio-request",
+          "position": 40.018121,
+          "token": 8,
+          "cue": "c07",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 40.018121,
+          "token": 8,
+          "mediaPosition": 40.018377,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 41.158351,
+          "token": 8
+        },
+        {
+          "type": "audio-request",
+          "position": 42.208067,
+          "token": 9,
+          "cue": "c08",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 42.208067,
+          "token": 9,
+          "mediaPosition": 42.208435,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 43.647001,
+          "token": 9
+        },
+        {
+          "type": "audio-request",
+          "position": 46.646855,
+          "token": 10,
+          "cue": "c09",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 46.646855,
+          "token": 10,
+          "mediaPosition": 46.647205,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 49.0184,
+          "token": 10
+        },
+        {
+          "type": "audio-request",
+          "position": 61.678989,
+          "token": 11,
+          "cue": "c10",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 61.678989,
+          "token": 11,
+          "mediaPosition": 61.679543,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 64.167517,
+          "token": 11
+        },
+        {
+          "type": "audio-request",
+          "position": 69.659361,
+          "token": 12,
+          "cue": "c11",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 69.659361,
+          "token": 12,
+          "mediaPosition": 69.659963,
+          "preloaded": true,
+          "onsetMs": 1
+        },
+        {
+          "type": "audio-complete",
+          "position": 71.038682,
+          "token": 12
+        }
+      ],
+      "media": {},
+      "film": "sintel-dragon",
+      "level": "standard",
+      "codec": "h264",
+      "wallSeconds": 72.083
+    },
+    {
+      "state": "ended",
+      "position": 72,
+      "duration": 72.008,
+      "source": "http://127.0.0.1:4173/media/sintel-dragon/film.webm",
+      "expectedCues": 11,
+      "log": [
+        {
+          "type": "open",
+          "position": 0
+        },
+        {
+          "type": "resume",
+          "position": 0
+        },
+        {
+          "type": "audio-request",
+          "position": 1.223835,
+          "token": 2,
+          "cue": "c01",
+          "level": "rich"
+        },
+        {
+          "type": "audio-start",
+          "position": 1.223835,
+          "token": 2,
+          "mediaPosition": 1.224525,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 2.632993,
+          "token": 2
+        },
+        {
+          "type": "audio-request",
+          "position": 6.203436,
+          "token": 3,
+          "cue": "c02",
+          "level": "rich"
+        },
+        {
+          "type": "audio-start",
+          "position": 6.203436,
+          "token": 3,
+          "mediaPosition": 6.203933,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 9.803261,
+          "token": 3
+        },
+        {
+          "type": "audio-request",
+          "position": 15.203066,
+          "token": 4,
+          "cue": "c03",
+          "level": "rich"
+        },
+        {
+          "type": "audio-start",
+          "position": 15.203066,
+          "token": 4,
+          "mediaPosition": 15.20364,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 19.342213,
+          "token": 4
+        },
+        {
+          "type": "audio-request",
+          "position": 24.203161,
+          "token": 5,
+          "cue": "c04",
+          "level": "rich"
+        },
+        {
+          "type": "audio-start",
+          "position": 24.203161,
+          "token": 5,
+          "mediaPosition": 24.203632,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 25.82372,
+          "token": 5
+        },
+        {
+          "type": "audio-request",
+          "position": 30.292188,
+          "token": 6,
+          "cue": "c05",
+          "level": "rich"
+        },
+        {
+          "type": "audio-start",
+          "position": 30.292188,
+          "token": 6,
+          "mediaPosition": 30.292424,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 31.433098,
+          "token": 6
+        },
+        {
+          "type": "audio-request",
+          "position": 34.583228,
+          "token": 7,
+          "cue": "c06",
+          "level": "rich"
+        },
+        {
+          "type": "audio-start",
+          "position": 34.583228,
+          "token": 7,
+          "mediaPosition": 34.583687,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 37.942249,
+          "token": 7
+        },
+        {
+          "type": "audio-request",
+          "position": 40.012739,
+          "token": 8,
+          "cue": "c07",
+          "level": "rich"
+        },
+        {
+          "type": "audio-start",
+          "position": 40.012739,
+          "token": 8,
+          "mediaPosition": 40.013179,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 41.392175,
+          "token": 8
+        },
+        {
+          "type": "audio-request",
+          "position": 42.203141,
+          "token": 9,
+          "cue": "c08",
+          "level": "rich"
+        },
+        {
+          "type": "audio-start",
+          "position": 42.203141,
+          "token": 9,
+          "mediaPosition": 42.203496,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 44.004038,
+          "token": 9
+        },
+        {
+          "type": "audio-request",
+          "position": 46.642093,
+          "token": 10,
+          "cue": "c09",
+          "level": "rich"
+        },
+        {
+          "type": "audio-start",
+          "position": 46.642093,
+          "token": 10,
+          "mediaPosition": 46.642373,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 50.542447,
+          "token": 10
+        },
+        {
+          "type": "audio-request",
+          "position": 61.673258,
+          "token": 11,
+          "cue": "c10",
+          "level": "rich"
+        },
+        {
+          "type": "audio-start",
+          "position": 61.673258,
+          "token": 11,
+          "mediaPosition": 61.673749,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 64.252901,
+          "token": 11
+        },
+        {
+          "type": "audio-request",
+          "position": 69.683398,
+          "token": 12,
+          "cue": "c11",
+          "level": "rich"
+        },
+        {
+          "type": "audio-start",
+          "position": 69.683398,
+          "token": 12,
+          "mediaPosition": 69.683737,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 71.062921,
+          "token": 12
+        }
+      ],
+      "media": {},
+      "film": "sintel-dragon",
+      "level": "rich",
+      "codec": "vp8",
+      "wallSeconds": 72.15
+    },
+    {
+      "state": "ended",
+      "position": 72,
+      "duration": 72.008,
+      "source": "http://127.0.0.1:4173/media/tears-of-steel/film.webm",
+      "expectedCues": 8,
+      "log": [
+        {
+          "type": "open",
+          "position": 0
+        },
+        {
+          "type": "resume",
+          "position": 0
+        },
+        {
+          "type": "audio-request",
+          "position": 10.931797,
+          "token": 2,
+          "cue": "c02",
+          "level": "rich"
+        },
+        {
+          "type": "audio-start",
+          "position": 10.931797,
+          "token": 2,
+          "mediaPosition": 10.932371,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 12.941109,
+          "token": 2
+        },
+        {
+          "type": "audio-request",
+          "position": 20.200242,
+          "token": 3,
+          "cue": "c03",
+          "level": "rich"
+        },
+        {
+          "type": "audio-start",
+          "position": 20.200242,
+          "token": 3,
+          "mediaPosition": 20.200567,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 22.210196,
+          "token": 3
+        },
+        {
+          "type": "audio-request",
+          "position": 45.430041,
+          "token": 4,
+          "cue": "c04",
+          "level": "rich"
+        },
+        {
+          "type": "audio-start",
+          "position": 45.430041,
+          "token": 4,
+          "mediaPosition": 45.430673,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 48.222497,
+          "token": 4
+        },
+        {
+          "type": "audio-request",
+          "position": 54.101026,
+          "token": 5,
+          "cue": "c05",
+          "level": "rich"
+        },
+        {
+          "type": "audio-start",
+          "position": 54.101026,
+          "token": 5,
+          "mediaPosition": 54.10163,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 55.902389,
+          "token": 5
+        },
+        {
+          "type": "audio-request",
+          "position": 58.211155,
+          "token": 6,
+          "cue": "c06",
+          "level": "rich"
+        },
+        {
+          "type": "audio-start",
+          "position": 58.211155,
+          "token": 6,
+          "mediaPosition": 58.211526,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 60.252214,
+          "token": 6
+        },
+        {
+          "type": "audio-request",
+          "position": 62.680588,
+          "token": 7,
+          "cue": "c07",
+          "level": "rich"
+        },
+        {
+          "type": "audio-start",
+          "position": 62.680588,
+          "token": 7,
+          "mediaPosition": 62.68095,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 63.790347,
+          "token": 7
+        },
+        {
+          "type": "audio-request",
+          "position": 66.222327,
+          "token": 8,
+          "cue": "c08",
+          "level": "rich"
+        },
+        {
+          "type": "audio-start",
+          "position": 66.222327,
+          "token": 8,
+          "mediaPosition": 66.222715,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 68.201294,
+          "token": 8
+        },
+        {
+          "type": "audio-request",
+          "position": 70.211375,
+          "token": 9,
+          "cue": "c09",
+          "level": "rich"
+        },
+        {
+          "type": "audio-start",
+          "position": 70.211375,
+          "token": 9,
+          "mediaPosition": 70.211812,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 71.59018,
+          "token": 9
+        }
+      ],
+      "media": {},
+      "film": "tears-of-steel",
+      "level": "rich",
+      "codec": "vp8",
+      "wallSeconds": 72.16
+    },
+    {
+      "state": "ended",
+      "position": 72,
+      "duration": 72.008,
+      "source": "http://127.0.0.1:4173/media/sintel-dragon/standard.webm",
+      "expectedCues": 11,
+      "log": [
+        {
+          "type": "open",
+          "position": 0
+        },
+        {
+          "type": "resume",
+          "position": 0
+        }
+      ],
+      "media": {},
+      "film": "sintel-dragon",
+      "level": "fixed-standard",
+      "codec": "vp8",
+      "wallSeconds": 72.152
+    },
+    {
+      "state": "ended",
+      "position": 72,
+      "duration": 72.008,
+      "source": "http://127.0.0.1:4173/media/tears-of-steel/standard.webm",
+      "expectedCues": 8,
+      "log": [
+        {
+          "type": "open",
+          "position": 0
+        },
+        {
+          "type": "resume",
+          "position": 0
+        }
+      ],
+      "media": {},
+      "film": "tears-of-steel",
+      "level": "fixed-standard",
+      "codec": "vp8",
+      "wallSeconds": 72.163
+    }
+  ],
+  "interactions": [
+    {
+      "film": "sintel-dragon",
+      "paused": 34.62975,
+      "current": 34.62975,
+      "logs": [
+        {
+          "type": "open",
+          "position": 0
+        },
+        {
+          "type": "resume",
+          "position": 0
+        },
+        {
+          "type": "audio-request",
+          "position": 1.212558,
+          "token": 2,
+          "cue": "c01",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 1.212558,
+          "token": 2,
+          "mediaPosition": 1.215522,
+          "preloaded": true,
+          "onsetMs": 3
+        },
+        {
+          "type": "audio-complete",
+          "position": 2.624111,
+          "token": 2
+        },
+        {
+          "type": "audio-request",
+          "position": 6.223483,
+          "token": 3,
+          "cue": "c02",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 6.223483,
+          "token": 3,
+          "mediaPosition": 6.223782,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 8.473403,
+          "token": 3
+        },
+        {
+          "type": "audio-request",
+          "position": 15.223967,
+          "token": 4,
+          "cue": "c03",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 15.223967,
+          "token": 4,
+          "mediaPosition": 15.224345,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 17.652724,
+          "token": 4
+        },
+        {
+          "type": "audio-request",
+          "position": 24.223809,
+          "token": 5,
+          "cue": "c04",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 24.223809,
+          "token": 5,
+          "mediaPosition": 24.224194,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 25.842593,
+          "token": 5
+        },
+        {
+          "type": "audio-request",
+          "position": 30.314099,
+          "token": 6,
+          "cue": "c05",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 30.314099,
+          "token": 6,
+          "mediaPosition": 30.314382,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 31.453299,
+          "token": 6
+        },
+        {
+          "type": "audio-request",
+          "position": 34.603452,
+          "token": 7,
+          "cue": "c06",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 34.603452,
+          "token": 7,
+          "mediaPosition": 34.603848,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-cancel",
+          "position": 34.62975,
+          "reason": "select",
+          "token": 7
+        },
+        {
+          "type": "pause",
+          "position": 34.62975,
+          "reason": "select"
+        },
+        {
+          "type": "pause",
+          "position": 34.62975,
+          "reason": "level"
+        },
+        {
+          "type": "level",
+          "position": 34.62975,
+          "level": "rich"
+        },
+        {
+          "type": "pause",
+          "position": 34.62975,
+          "reason": "recovery"
+        },
+        {
+          "type": "recovery",
+          "position": 34.62975,
+          "event": "injured-dragon",
+          "pending": true,
+          "otherShot": true
+        },
+        {
+          "type": "audio-start",
+          "position": 34.62975,
+          "token": 11,
+          "mediaPosition": 34.62975,
+          "preloaded": false,
+          "onsetMs": 18
+        },
+        {
+          "type": "audio-cancel",
+          "position": 34.62975,
+          "reason": "cancel-recovery",
+          "token": 11
+        },
+        {
+          "type": "pause",
+          "position": 34.62975,
+          "reason": "cancel-recovery"
+        },
+        {
+          "type": "pause",
+          "position": 34.62975,
+          "reason": "recovery"
+        },
+        {
+          "type": "recovery",
+          "position": 34.62975,
+          "event": "injured-dragon",
+          "pending": true,
+          "otherShot": true
+        },
+        {
+          "type": "audio-start",
+          "position": 34.62975,
+          "token": 14,
+          "mediaPosition": 34.62975,
+          "preloaded": false,
+          "onsetMs": 17
+        },
+        {
+          "type": "audio-complete",
+          "position": 34.62975,
+          "token": 14
+        },
+        {
+          "type": "pause",
+          "position": 34.62975,
+          "reason": "recovery"
+        },
+        {
+          "type": "recovery",
+          "position": 34.62975,
+          "event": "woman-climbs-roof",
+          "pending": false,
+          "otherShot": true
+        },
+        {
+          "type": "audio-start",
+          "position": 34.62975,
+          "token": 16,
+          "mediaPosition": 34.62975,
+          "preloaded": false,
+          "onsetMs": 17
+        },
+        {
+          "type": "audio-complete",
+          "position": 34.62975,
+          "token": 16
+        }
+      ],
+      "spoken": [
+        {
+          "sema": "guidance",
+          "type": "clip-requested",
+          "id": "preview_notice",
+          "duration": 5.496
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-playing",
+          "id": "preview_notice",
+          "duration": 5.496
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-requested",
+          "id": "onboarding",
+          "duration": 19.776
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-requested",
+          "id": "level_standard",
+          "duration": 2.904
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-playing",
+          "id": "level_standard",
+          "duration": 2.904
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-requested",
+          "id": "paused",
+          "duration": 0.792
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-playing",
+          "id": "paused",
+          "duration": 0.792
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-requested",
+          "id": "level_rich",
+          "duration": 2.856
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-playing",
+          "id": "level_rich",
+          "duration": 2.856
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-requested",
+          "id": "recovery_stopped",
+          "duration": 1.32
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-playing",
+          "id": "recovery_stopped",
+          "duration": 1.32
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-requested",
+          "id": "recovery_complete",
+          "duration": 1.416
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-playing",
+          "id": "recovery_complete",
+          "duration": 1.416
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-requested",
+          "id": "recovery_complete",
+          "duration": 1.416
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-playing",
+          "id": "recovery_complete",
+          "duration": 1.416
+        }
+      ]
+    },
+    {
+      "film": "tears-of-steel",
+      "paused": 45.429462,
+      "current": 45.429462,
+      "logs": [
+        {
+          "type": "open",
+          "position": 0
+        },
+        {
+          "type": "resume",
+          "position": 0
+        },
+        {
+          "type": "audio-request",
+          "position": 10.925626,
+          "token": 2,
+          "cue": "c02",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 10.925626,
+          "token": 2,
+          "mediaPosition": 10.926872,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 12.544221,
+          "token": 2
+        },
+        {
+          "type": "audio-request",
+          "position": 20.224111,
+          "token": 3,
+          "cue": "c03",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 20.224111,
+          "token": 3,
+          "mediaPosition": 20.22456,
+          "preloaded": true,
+          "onsetMs": 0
+        },
+        {
+          "type": "audio-complete",
+          "position": 22.23581,
+          "token": 3
+        },
+        {
+          "type": "audio-request",
+          "position": 45.426383,
+          "token": 4,
+          "cue": "c04",
+          "level": "standard"
+        },
+        {
+          "type": "audio-start",
+          "position": 45.426383,
+          "token": 4,
+          "mediaPosition": 45.427201,
+          "preloaded": true,
+          "onsetMs": 1
+        },
+        {
+          "type": "audio-cancel",
+          "position": 45.429462,
+          "reason": "select",
+          "token": 4
+        },
+        {
+          "type": "pause",
+          "position": 45.429462,
+          "reason": "select"
+        },
+        {
+          "type": "pause",
+          "position": 45.429462,
+          "reason": "level"
+        },
+        {
+          "type": "level",
+          "position": 45.429462,
+          "level": "rich"
+        },
+        {
+          "type": "pause",
+          "position": 45.429462,
+          "reason": "recovery"
+        },
+        {
+          "type": "recovery",
+          "position": 45.429462,
+          "event": "forty-years-later",
+          "pending": true,
+          "otherShot": false
+        },
+        {
+          "type": "audio-start",
+          "position": 45.429462,
+          "token": 8,
+          "mediaPosition": 45.429462,
+          "preloaded": false,
+          "onsetMs": 18
+        },
+        {
+          "type": "audio-cancel",
+          "position": 45.429462,
+          "reason": "cancel-recovery",
+          "token": 8
+        },
+        {
+          "type": "pause",
+          "position": 45.429462,
+          "reason": "cancel-recovery"
+        },
+        {
+          "type": "pause",
+          "position": 45.429462,
+          "reason": "recovery"
+        },
+        {
+          "type": "recovery",
+          "position": 45.429462,
+          "event": "forty-years-later",
+          "pending": true,
+          "otherShot": false
+        },
+        {
+          "type": "audio-start",
+          "position": 45.429462,
+          "token": 11,
+          "mediaPosition": 45.429462,
+          "preloaded": false,
+          "onsetMs": 17
+        },
+        {
+          "type": "audio-complete",
+          "position": 45.429462,
+          "token": 11
+        },
+        {
+          "type": "pause",
+          "position": 45.429462,
+          "reason": "recovery"
+        },
+        {
+          "type": "recovery",
+          "position": 45.429462,
+          "event": "mechanical-hand",
+          "pending": false,
+          "otherShot": true
+        },
+        {
+          "type": "audio-start",
+          "position": 45.429462,
+          "token": 13,
+          "mediaPosition": 45.429462,
+          "preloaded": false,
+          "onsetMs": 26
+        },
+        {
+          "type": "audio-complete",
+          "position": 45.429462,
+          "token": 13
+        }
+      ],
+      "spoken": [
+        {
+          "sema": "guidance",
+          "type": "clip-requested",
+          "id": "preview_notice",
+          "duration": 5.496
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-playing",
+          "id": "preview_notice",
+          "duration": 5.496
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-requested",
+          "id": "onboarding",
+          "duration": 19.776
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-requested",
+          "id": "level_standard",
+          "duration": 2.904
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-playing",
+          "id": "level_standard",
+          "duration": 2.904
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-requested",
+          "id": "paused",
+          "duration": 0.792
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-playing",
+          "id": "paused",
+          "duration": 0.792
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-requested",
+          "id": "level_rich",
+          "duration": 2.856
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-playing",
+          "id": "level_rich",
+          "duration": 2.856
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-requested",
+          "id": "recovery_stopped",
+          "duration": 1.32
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-playing",
+          "id": "recovery_stopped",
+          "duration": 1.32
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-requested",
+          "id": "recovery_complete",
+          "duration": 1.416
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-playing",
+          "id": "recovery_complete",
+          "duration": 1.416
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-requested",
+          "id": "recovery_complete",
+          "duration": 1.416
+        },
+        {
+          "sema": "guidance",
+          "type": "clip-playing",
+          "id": "recovery_complete",
+          "duration": 1.416
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

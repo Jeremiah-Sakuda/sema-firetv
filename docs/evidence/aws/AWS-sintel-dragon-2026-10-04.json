@@ -1,0 +1,757 @@
+{
+  "asset": "sintel-dragon",
+  "title": "Sintel \u2014 The Rooftop",
+  "generatedAt": "2026-10-04T15:58:54Z",
+  "runMode": "live",
+  "filmSeconds": 72.0,
+  "timings": {
+    "ingest": {
+      "seconds": 3.556,
+      "status": "done",
+      "mode": "live"
+    },
+    "analyze": {
+      "seconds": 16.853,
+      "status": "done",
+      "mode": "live"
+    },
+    "observe": {
+      "seconds": 55.173,
+      "status": "done",
+      "mode": "live"
+    },
+    "script": {
+      "seconds": 14.437,
+      "status": "done",
+      "mode": "live"
+    },
+    "render": {
+      "seconds": 6.818,
+      "status": "done",
+      "mode": "live"
+    },
+    "report": {
+      "seconds": 0.004,
+      "status": "done",
+      "mode": "local"
+    }
+  },
+  "totalPipelineSeconds": 96.837,
+  "timingBasis": "Latest attempt per stage; cumulative paid usage includes rejected attempts and reruns.",
+  "usage": {
+    "transcribe": {
+      "jobs": 1,
+      "seconds": 72.0,
+      "billedSeconds": 72.0
+    },
+    "bedrock": {
+      "us.amazon.nova-pro-v1:0": {
+        "requests": 83,
+        "inputTokens": 178869,
+        "outputTokens": 7838
+      },
+      "us.amazon.nova-2-lite-v1:0": {
+        "requests": 56,
+        "inputTokens": 25554,
+        "outputTokens": 2863
+      }
+    },
+    "polly": {
+      "neural": {
+        "requests": 253,
+        "characters": 11792
+      }
+    },
+    "s3": {
+      "bytes": 20089561,
+      "requests": 1
+    },
+    "modes": [
+      "live"
+    ]
+  },
+  "estimatedCost": {
+    "totalUSD": 0.3808,
+    "lines": [
+      {
+        "service": "transcribe",
+        "item": "sema-sintel-dragon-20261004150943",
+        "quantity": "72.0 s",
+        "usd": 0.0072
+      },
+      {
+        "service": "bedrock",
+        "item": "us.amazon.nova-pro-v1:0",
+        "quantity": "178869 in / 7838 out tokens",
+        "usd": 0.168177
+      },
+      {
+        "service": "bedrock",
+        "item": "us.amazon.nova-2-lite-v1:0",
+        "quantity": "25554 in / 2863 out tokens",
+        "usd": 0.016306
+      },
+      {
+        "service": "polly",
+        "item": "neural",
+        "quantity": "11792 characters",
+        "usd": 0.188672
+      },
+      {
+        "service": "s3",
+        "item": "storage (1 month)",
+        "quantity": "0.0201 GB",
+        "usd": 0.000462
+      }
+    ],
+    "unpriced": [],
+    "priceTableAsOf": "2026-10-04 (Nova Pro/2 Lite, neural Polly, batch Transcribe and S3 Standard verified via AWS Price List API; other rates unverified)",
+    "label": "ESTIMATE at list prices; not a bill. Excludes free tier/credits, tax, S3 requests, data transfer."
+  },
+  "models": {
+    "observe": "us.amazon.nova-pro-v1:0",
+    "script": "us.amazon.nova-2-lite-v1:0",
+    "agent": null,
+    "region": "us-east-1"
+  },
+  "voice": {
+    "voiceId": "Joanna",
+    "engine": "neural",
+    "sampleRate": "24000",
+    "outputFormat": "mp3"
+  },
+  "editorialTextPreparation": {
+    "preparedBy": "Codex (AI)",
+    "preparedAt": "2026-10-04T15:44:00Z",
+    "kind": "Draft editing, not human approval",
+    "humanReviewRequired": true
+  },
+  "observations": {
+    "events": 12,
+    "critical": 3,
+    "characters": 2,
+    "repairs": 0,
+    "source": "frames",
+    "editorialPrecheck": {
+      "preparedAt": "2026-10-04T15:27:58Z",
+      "preparedBy": "Codex (AI)",
+      "kind": "AI editorial precheck, not human approval",
+      "originalObservationsSha256": "2072f89743507e43ad8aa9f0f7e57f18f1ea168f296ec6af388cbbf2d4ee8b60",
+      "rawDraft": "attempts/2026-10-04-frame-draft-precheck/observations.json",
+      "proposals": [
+        {
+          "id": "city-view",
+          "time": 0.5,
+          "frame": "pipeline/work/sintel-dragon/frames/frame_00002.jpg",
+          "reason": "Establishing view; city does not visibly rise from darkness.",
+          "frameSourceTime": 0.5
+        },
+        {
+          "id": "woman-in-alley",
+          "time": 6,
+          "frame": "pipeline/work/sintel-dragon/frames/frame_00013.jpg",
+          "reason": "Retain the visible alley action; use one stable character ref.",
+          "frameSourceTime": 6.0
+        },
+        {
+          "id": "woman-lifts-lid",
+          "time": 15,
+          "frame": "pipeline/work/sintel-dragon/frames/frame_00031.jpg",
+          "reason": "Frames 12-18 show a lid; no ladder climb.",
+          "frameSourceTime": 15.0
+        },
+        {
+          "id": "woman-holds-food",
+          "time": 24,
+          "frame": "pipeline/work/sintel-dragon/frames/frame_00049.jpg",
+          "reason": "No visible evidence that the object is a pineapple.",
+          "frameSourceTime": 24.0
+        },
+        {
+          "id": "woman-climbs-roof",
+          "time": 30,
+          "frame": "pipeline/work/sintel-dragon/frames/frame_00061.jpg",
+          "reason": "Visible climbing; no attack or combat.",
+          "frameSourceTime": 30.0
+        },
+        {
+          "id": "injured-dragon",
+          "time": 33,
+          "frame": "pipeline/work/sintel-dragon/frames/frame_00067.jpg",
+          "reason": "The creature is alive and injured; no bat death or killing is shown.",
+          "frameSourceTime": 33.0
+        },
+        {
+          "id": "torn-wing",
+          "time": 39,
+          "frame": "pipeline/work/sintel-dragon/frames/frame_00077.jpg",
+          "reason": "Visible torn membrane; the woman does not disintegrate.",
+          "frameSourceTime": 38.75
+        },
+        {
+          "id": "woman-kneels",
+          "time": 42,
+          "frame": "pipeline/work/sintel-dragon/frames/frame_00083.jpg",
+          "reason": "Visible kneeling beside the dragon.",
+          "frameSourceTime": 41.75
+        },
+        {
+          "id": "offered-hand",
+          "time": 45,
+          "frame": "pipeline/work/sintel-dragon/frames/frame_00089.jpg",
+          "reason": "An offered hand is shown, not feeding.",
+          "frameSourceTime": 44.75
+        },
+        {
+          "id": "dragon-in-lap",
+          "time": 56,
+          "frame": "pipeline/work/sintel-dragon/frames/frame_00111.jpg",
+          "reason": "The scene changes indoors; care of the injured wing is visible.",
+          "frameSourceTime": 55.75
+        },
+        {
+          "id": "woman-and-dragon",
+          "time": 68,
+          "frame": "pipeline/work/sintel-dragon/frames/frame_00135.jpg",
+          "reason": "Visible expression; no guess about intent.",
+          "frameSourceTime": 67.75
+        },
+        {
+          "id": "bowl-down",
+          "time": 71,
+          "frame": "pipeline/work/sintel-dragon/frames/frame_00141.jpg",
+          "reason": "Retain the final visible action; may remain optional/unplaced.",
+          "frameSourceTime": 70.75
+        },
+        {
+          "id": "dragon-in-lap",
+          "time": 63,
+          "frame": "pipeline/work/sintel-dragon/frames/frame_00125.jpg",
+          "reason": "Use tends rather than wraps/bandages; the close-up supports care of the wound, not a clearly completed bandage.",
+          "frameSourceTime": 62.75
+        }
+      ],
+      "humanReviewRequired": true,
+      "frameTimestampBasis": "Source-frame PTS; each referenced evidence frame is at or before the proposed available time. Original model samples retained separately."
+    }
+  },
+  "cues": 11,
+  "windows": 16,
+  "fit": {
+    "summary": {
+      "variants": 33,
+      "fitFirstTry": 32,
+      "fitAfterRegeneration": 1,
+      "unresolved": 0,
+      "regenerations": 1,
+      "minHeadroom": 0.002,
+      "recoveries": 12
+    },
+    "fitMode": "deterministic",
+    "rows": [
+      {
+        "cue": "c01",
+        "level": "essential",
+        "window": 1.92,
+        "available": 1.37,
+        "duration": 1.152,
+        "headroom": 0.218,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c01",
+        "level": "standard",
+        "window": 1.92,
+        "available": 1.37,
+        "duration": 1.368,
+        "headroom": 0.002,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c01",
+        "level": "rich",
+        "window": 1.92,
+        "available": 1.37,
+        "duration": 1.368,
+        "headroom": 0.002,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c02",
+        "level": "essential",
+        "window": 6.083,
+        "available": 5.533,
+        "duration": 1.176,
+        "headroom": 4.357,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c02",
+        "level": "standard",
+        "window": 6.083,
+        "available": 5.533,
+        "duration": 1.848,
+        "headroom": 3.685,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c02",
+        "level": "rich",
+        "window": 6.083,
+        "available": 5.533,
+        "duration": 3.264,
+        "headroom": 2.269,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c03",
+        "level": "essential",
+        "window": 8.65,
+        "available": 8.1,
+        "duration": 1.224,
+        "headroom": 6.876,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c03",
+        "level": "standard",
+        "window": 8.65,
+        "available": 8.1,
+        "duration": 2.4,
+        "headroom": 5.7,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c03",
+        "level": "rich",
+        "window": 8.65,
+        "available": 8.1,
+        "duration": 4.128,
+        "headroom": 3.972,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c04",
+        "level": "essential",
+        "window": 2.417,
+        "available": 1.867,
+        "duration": 1.248,
+        "headroom": 0.619,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c04",
+        "level": "standard",
+        "window": 2.417,
+        "available": 1.867,
+        "duration": 1.584,
+        "headroom": 0.283,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c04",
+        "level": "rich",
+        "window": 2.417,
+        "available": 1.867,
+        "duration": 1.344,
+        "headroom": 0.523,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c05",
+        "level": "essential",
+        "window": 1.917,
+        "available": 1.367,
+        "duration": 1.032,
+        "headroom": 0.335,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c05",
+        "level": "standard",
+        "window": 1.917,
+        "available": 1.367,
+        "duration": 1.104,
+        "headroom": 0.263,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c05",
+        "level": "rich",
+        "window": 1.917,
+        "available": 1.367,
+        "duration": 1.104,
+        "headroom": 0.263,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c06",
+        "level": "essential",
+        "window": 5.417,
+        "available": 4.867,
+        "duration": 1.68,
+        "headroom": 3.187,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c06",
+        "level": "standard",
+        "window": 5.417,
+        "available": 4.867,
+        "duration": 2.64,
+        "headroom": 2.227,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c06",
+        "level": "rich",
+        "window": 5.417,
+        "available": 4.867,
+        "duration": 3.312,
+        "headroom": 1.555,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c07",
+        "level": "essential",
+        "window": 2.083,
+        "available": 1.533,
+        "duration": 1.056,
+        "headroom": 0.477,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c07",
+        "level": "standard",
+        "window": 2.083,
+        "available": 1.533,
+        "duration": 1.104,
+        "headroom": 0.429,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c07",
+        "level": "rich",
+        "window": 2.083,
+        "available": 1.533,
+        "duration": 1.344,
+        "headroom": 0.189,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c08",
+        "level": "essential",
+        "window": 2.625,
+        "available": 2.075,
+        "duration": 0.984,
+        "headroom": 1.091,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c08",
+        "level": "standard",
+        "window": 2.625,
+        "available": 2.075,
+        "duration": 1.416,
+        "headroom": 0.659,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c08",
+        "level": "rich",
+        "window": 2.625,
+        "available": 2.075,
+        "duration": 1.776,
+        "headroom": 0.299,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c09",
+        "level": "essential",
+        "window": 6.708,
+        "available": 6.158,
+        "duration": 1.824,
+        "headroom": 4.334,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c09",
+        "level": "standard",
+        "window": 6.708,
+        "available": 6.158,
+        "duration": 2.352,
+        "headroom": 3.806,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c09",
+        "level": "rich",
+        "window": 6.708,
+        "available": 6.158,
+        "duration": 3.864,
+        "headroom": 2.294,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c10",
+        "level": "essential",
+        "window": 3.467,
+        "available": 2.917,
+        "duration": 1.248,
+        "headroom": 1.669,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c10",
+        "level": "standard",
+        "window": 3.467,
+        "available": 2.917,
+        "duration": 1.68,
+        "headroom": 1.237,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c10",
+        "level": "rich",
+        "window": 3.467,
+        "available": 2.917,
+        "duration": 2.112,
+        "headroom": 0.805,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c11",
+        "level": "essential",
+        "window": 2.542,
+        "available": 1.992,
+        "duration": 1.176,
+        "headroom": 0.816,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c11",
+        "level": "standard",
+        "window": 2.542,
+        "available": 1.992,
+        "duration": 1.344,
+        "headroom": 0.648,
+        "status": "fit",
+        "regenerations": 0,
+        "firstTry": true
+      },
+      {
+        "cue": "c11",
+        "level": "rich",
+        "window": 2.542,
+        "available": 1.992,
+        "duration": 1.176,
+        "headroom": 0.816,
+        "status": "fit",
+        "regenerations": 1,
+        "firstTry": false
+      }
+    ],
+    "agent": null
+  },
+  "review": {
+    "reviewer": null,
+    "method": null,
+    "completed": false,
+    "reviewMinutes": null,
+    "reviewMinutesPerFinishedMinute": null,
+    "edits": 0,
+    "drops": 0,
+    "downgrades": 0,
+    "attachments": 0,
+    "blockers": []
+  },
+  "regenerations": {
+    "fitLoop": 1,
+    "reviewEdits": 0,
+    "droppedCues": 0
+  },
+  "issues": [
+    {
+      "type": "optional-unplaced",
+      "severity": "info",
+      "event": "bowl-down",
+      "availableAt": 71.0,
+      "message": "No narration window of >= 1.5 s starts after 71.00 s for 'She lowers a dark bowl onto a surface.'. It stays available through 'What did I miss?' recovery.",
+      "stage": "script"
+    }
+  ],
+  "package": {},
+  "recordedStageAttempts": {
+    "count": 13,
+    "sumElapsedSeconds": 231.895,
+    "attempts": [
+      {
+        "stage": "ingest",
+        "startedAt": "2026-10-04T15:09:40Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 3.556,
+        "endedAt": "2026-10-04T15:09:43Z"
+      },
+      {
+        "stage": "analyze",
+        "startedAt": "2026-10-04T15:09:43Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 16.853,
+        "endedAt": "2026-10-04T15:10:00Z"
+      },
+      {
+        "stage": "observe",
+        "startedAt": "2026-10-04T15:10:00Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 37.367,
+        "endedAt": "2026-10-04T15:10:37Z"
+      },
+      {
+        "stage": "script",
+        "startedAt": "2026-10-04T15:10:37Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 21.843,
+        "endedAt": "2026-10-04T15:10:59Z"
+      },
+      {
+        "stage": "render",
+        "startedAt": "2026-10-04T15:10:59Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 15.133,
+        "endedAt": "2026-10-04T15:11:14Z"
+      },
+      {
+        "stage": "observe",
+        "startedAt": "2026-10-04T15:19:39Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 55.173,
+        "endedAt": "2026-10-04T15:20:34Z"
+      },
+      {
+        "stage": "script",
+        "startedAt": "2026-10-04T15:27:58Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 16.544,
+        "endedAt": "2026-10-04T15:28:15Z"
+      },
+      {
+        "stage": "render",
+        "startedAt": "2026-10-04T15:28:15Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 11.016,
+        "endedAt": "2026-10-04T15:28:26Z"
+      },
+      {
+        "stage": "script",
+        "startedAt": "2026-10-04T15:35:44Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 12.284,
+        "endedAt": "2026-10-04T15:35:56Z"
+      },
+      {
+        "stage": "render",
+        "startedAt": "2026-10-04T15:35:56Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 8.798,
+        "endedAt": "2026-10-04T15:36:05Z"
+      },
+      {
+        "stage": "script",
+        "startedAt": "2026-10-04T15:38:08Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 14.437,
+        "endedAt": "2026-10-04T15:38:22Z"
+      },
+      {
+        "stage": "render",
+        "startedAt": "2026-10-04T15:38:23Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 12.073,
+        "endedAt": "2026-10-04T15:38:35Z"
+      },
+      {
+        "stage": "render",
+        "startedAt": "2026-10-04T15:44:01Z",
+        "mode": "live",
+        "status": "done",
+        "seconds": 6.818,
+        "endedAt": "2026-10-04T15:44:08Z"
+      }
+    ],
+    "scope": "Unique completed/failed stage entries from current log and retained attempt logs. Excludes AI editorial preparation, unlogged quality probes, human review and packaging. Sum of attempt elapsed times, not end-to-end wall time."
+  }
+}

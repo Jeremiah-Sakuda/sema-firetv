@@ -1,6 +1,6 @@
 # Friction log
 
-Real problems we hit while building Sema between 2026-09-27 and 2026-10-01. Each entry gives:
+Real problems we hit while building Sema between 2026-09-27 and 2026-10-05. Each entry gives:
 - the task
 - exact steps
 - expected vs. actual result, with verbatim error text
@@ -9,6 +9,10 @@ Real problems we hit while building Sema between 2026-09-27 and 2026-10-01. Each
 - an actionable suggestion
 
 **Environment:** Vega SDK 0.24.12112; the Vega Virtual Device (VVD, aarch64) on macOS / Apple silicon; `@amazon-devices/webview` 4.0.2 (Chromium 144); Node 22.
+
+**SDK version:** 0.24.12112 was the newest SDK installed when the log was last checked (2026-10-08). The Vega entries have not been re-run on a later SDK.
+
+**AWS entries:** entries 24–26 come from the live authoring pilot (2026-10-04, us-east-1). Measured usage is in [evidence/aws/](evidence/aws/LIVE-PILOT-2026-10-04.json).
 
 **Evidence:** [vega/PLATFORM-FINDINGS.md](vega/PLATFORM-FINDINGS.md), `vega/logs/evidence-excerpts.txt` and `vega/screenshots/`.
 
@@ -43,6 +47,9 @@ Real problems we hit while building Sema between 2026-09-27 and 2026-10-01. Each
 | 21 | Turning on VoiceView warns that it "can only speak during video playback if Dolby audio is disabled" | High (for audio-description apps) |
 | 22 | `useKeplerBackHandler` takes Back away from the WebView; the generic `BackHandler.exitApp()` does nothing | High (for WebView apps) |
 | 23 | VVD media playback slows to a crawl after repeated reinstalls; restarting the VVD restores it | Medium |
+| 24 | Signing in to the AWS console does not authenticate the local SDK | Medium |
+| 25 | Nova visual observations echoed the example or misidentified story-critical objects | High (for description authoring) |
+| 26 | A line shortened to fit its gap can lose its meaning | Medium |
 
 ---
 
@@ -187,7 +194,9 @@ Real problems we hit while building Sema between 2026-09-27 and 2026-10-01. Each
 
 ## 12. Template leftovers. Low
 
-* **Task:** start from `vega project generate --template vegaWebview` (`@amazon-devices/ks-app@2.83.1`).
+* **Task:** start a web app from the official template.
+* **Steps:** `vega project generate --template vegaWebview` (`@amazon-devices/ks-app@2.83.1`), then `npm install` and `npm run build:debug`.
+* **Expected:** a clean starting project: no stray diff markers, no comments about files that don't exist, a project-specific title, and an icon.
 * **Actual:**
   * `metro.config.js` lines 4–7 contain literal diff `+` markers inside the comment (` + * Metro configuration`). They come from the upstream template tarball.
   * `src/App.tsx` says *"the splash screen images are bundled in this app (assets/raw/ folder)"*, but the template ships no `assets/raw/`. The only file there is the build-generated `keplerscript-app-config.json`, inside the package.
@@ -274,16 +283,27 @@ Real problems we hit while building Sema between 2026-09-27 and 2026-10-01. Each
 
 * **Task:** check or enable VoiceView from the CLI.
 * **Steps:** `vda shell 'a11y-tv-util settings list'` and `… settings get voiceview`.
+* **Expected:** the current VoiceView state, and a scriptable way to toggle it for automated accessibility tests.
 * **Actual:** `error obtaining user profile object`, and `ERROR: setting key [voiceview] not found or is unset`. There's no way to list the valid keys.
-* **Workaround:** inject the Back + Menu chord (item 14).
+* **Workaround:** inject the Back + Menu chord as two overlapping holds in one shell call:
+
+  ```sh
+  vda shell 'inputd-cli button_press KEY_BACK --holdDuration 3500 & sleep 0.1; inputd-cli button_press KEY_MENU --holdDuration 3300 & wait'
+  ```
+
+  Re-checked on 2026-10-08: same `a11y-tv-util` errors. The chord toggled VoiceView both ways, and React Native's `AccessibilityInfo` `screenReaderChanged` event reached the running app each time (log excerpts, October 8 section). Apps can detect VoiceView; test scripts just can't set it directly.
 * **Suggestion:** make `settings list` work without a signed-in profile, and document the VoiceView key.
 
 ## 19. Small CLI and log papercuts. Low
 
-* `vega run-app …` prints `Installed vega-app/build/vpkg/sema_aarch64.vpkg on ` with an empty device name.
-* `vda shell journalctl` prints `WARNING: journalctl is not supported in developer mode shell. Please use loggingctl instead.` The hint is good. However, `loggingctl log -S "-5min"` fails with `error: unexpected argument '-5' found`; relative times need a different form.
-* After the Mac's display slept, the VVD clock was exactly 23 minutes behind the host (host `22:09:44`, device `21:46:44`). Device-log timestamps no longer lined up with host-side events.
-* In Debug builds, each WebView subresource failure is reported through the host `onError`. The template logs it with `console.error`, which also produces `W Volta:Reporting exception:` stack traces: noisy for an expected condition.
+Each papercut below is separately reproducible on SDK 0.24.12112 and the VVD.
+
+| Task | Steps | Expected | Actual (verbatim) | Workaround | Suggestion |
+|---|---|---|---|---|---|
+| Install a package | `vega run-app vega-app/build/vpkg/sema_aarch64.vpkg com.sema.viewer.main` | The target device is named | `Installed vega-app/build/vpkg/sema_aarch64.vpkg on ` (empty device name) | Check `vega device list` separately | Print the device serial or name |
+| Read recent device logs | `vda shell 'loggingctl log -S "-5min"'` | The last five minutes of logs | `error: unexpected argument '-5' found` | Use `loggingctl log -f` while reproducing | Accept relative times, or document the accepted format next to the `journalctl` hint |
+| Correlate host and device events | Let the Mac display sleep, wake it, compare log timestamps | VVD clock matches the host | Device clock 23 minutes behind (host `22:09:44`, device `21:46:44`) | Restart the VVD before timing-sensitive tests | Resync the VVD clock on wake |
+| Debug expected missing subresources | Request a missing optional file in a Debug build | One informational log line | The host `onError` plus `W Volta:Reporting exception:` stack traces for every failure | Ignore during debugging | Log expected subresource misses at info level in the template |
 
 ## 20. Deleted assets keep shipping: the build never prunes `build/private/vega/<arch>/<type>/assets/`. High
 
@@ -330,4 +350,50 @@ Real problems we hit while building Sema between 2026-09-27 and 2026-10-01. Each
   - After `vega virtual-device stop` and `start`, the identical build played in real time again (0:05, then 0:09).
 - **Workaround:** restart the VVD before any timing-sensitive test or demo recording.
 - **Suggestion:** investigate media-pipeline resource leaks across app reinstalls on the VVD, and document the restart.
+
+## 24. Signing in to the AWS console does not authenticate the local SDK. Medium
+
+* **Task:** run the authoring pipeline (boto3) against a freshly created AWS account profile.
+* **Steps:** sign in to the AWS console in a browser, then run `python -m sema_pipeline preflight --profile sema`.
+* **Expected:** the developer sign-in is usable by the SDK, or the SDK error says exactly which command and dependency to use.
+* **Actual:** the SDK had no usable credentials until `aws login --profile sema --region us-east-1` (AWS CLI 2.37.9) was run with `botocore[crt]` installed. Later calls failed with `LoginRefreshRequired: Your session has expired or credentials have changed. Please reauthenticate using 'aws login'.` when the temporary session expired.
+* **Workaround:** a `preflight` command that checks identity, region, bucket and model access before any paid call, and the `aws login` step documented in `pipeline/README.md`.
+* **Suggestion:** in the SDK error, name the missing `botocore[crt]` dependency, and say how long developer-login sessions last.
+
+## 25. Nova visual observations echoed the example or misidentified story-critical objects. High (for description authoring)
+
+* **Task:** extract timestamped visual events from a 72 s film excerpt with Amazon Nova Pro (Bedrock Converse).
+* **Steps:** `observe --live` with video input. Then `observe --live --frames 2` (timestamped image batches, 2 frames per second).
+* **Expected:** grounded events: the actual objects and actions on screen, at the right times.
+* **Actual:**
+  * **Video input:** some requests echoed the JSON example from the prompt or invented actions.
+  * **Frame batches:** these described an injured baby dragon as "a defeated enemy" and a visible mechanical hand as "a glove".
+  * Two excerpts are a small sample, not an accuracy benchmark.
+* **Workaround:**
+  * Use frame input with timestamps.
+  * Keep a per-film editorial ledger (`content/editorial/`) recording every correction.
+  * Gate publication on human review.
+* **Suggestion:** document Nova's video sampling limits for brief actions. Provide grounding diagnostics, such as which frames support each claim, so authors can check story-critical objects.
+
+## 26. A line shortened to fit its gap can lose its meaning. Medium
+
+* **Task:** shorten a description until the rendered Polly audio fits the gap between dialogue lines.
+* **Steps:** run the fit loop: render with Polly, measure with ffprobe, and if the line is too long, ask Bedrock for a shorter line.
+* **Expected:** a shorter line that keeps the fact.
+* **Actual:** the line fitted the measured gap but lost its content, e.g. "40 years later" became "Text".
+* **Workaround:** protect required concepts per event (`content/description-contracts.json`, checked by `npm run content:check`), and keep human review mandatory.
+* **Suggestion:** publish authoring examples that judge rendered duration and preservation of facts together, not duration alone.
+
+## Feature requests
+
+| Request | Why it matters to Sema | Priority |
+|---|---|---|
+| A TTS service and audible VoiceView on the Vega Virtual Device (entry 16) | We could not hear or automate a single screen-reader announcement for an accessibility app without hardware | Critical |
+| Reliable H.264/VP9 decode and `seeked` on the VVD, or a published codec matrix (entry 15) | Media apps cannot be demoed or tested end to end on the simulator without VP8 renditions | Critical |
+| An API reporting whether VoiceView can speak during playback, given Dolby settings (entry 21) | An AD app must know when the screen reader can be heard over the film | Important |
+| A documented Back-ownership contract between the React Native host and `@amazon-devices/webview` (entry 22) | Pausing on Back and exiting at the root needed an `injectJavaScript` bridge | Important |
+| A documented WebView remote-key table, and a way to receive Menu (entry 13) | Remote-first web apps need every button | Important |
+| Documented `file://` asset loading for `vegaWebview`: fetch/XHR, or a supported alternative (entry 6) | Every data-driven web app hits this first | Important |
+| Forward WebView `console` output to the device log in Debug builds (entry 8) | Basic debuggability | Nice-to-have |
+| A `vega device screenshot` command (entry 11) | Documentation, QA and friction reporting | Nice-to-have |
 

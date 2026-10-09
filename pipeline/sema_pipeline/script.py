@@ -55,6 +55,8 @@ def cue_prompt(cue: dict, cue_events: list[dict], context: list[dict], character
         f"People known so far:\n{_characters(characters, cue['start'])}\n\n"
         f"Required spoken concepts in EVERY version: {[e.get('requiredTerms', []) for e in cue_events if e['critical']]}.\n"
         "Write three versions of ONE narration line. A listener hears only one version, so each must stand alone.\n"
+        "Preserve the identifying objects and core action as detail increases. Rich must not replace a precise "
+        "object with a vague one. If more detail cannot fit, reuse Standard instead of losing its key fact.\n"
         f"- essential: only the [critical] facts, at most {b['essential']} words. If nothing is critical, the "
         "shortest useful phrase.\n"
         f"- standard: essential plus where things are and what people do, at most {b['standard']} words.\n"

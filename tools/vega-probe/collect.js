@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 // Collector for tools/vega-probe/probe.html running inside the Vega WebView.
-// Appends one JSON line per probe message to docs/vega/probe-results.jsonl.
+// Appends one JSON line per probe message to artifacts/vega/probe-results.jsonl.
 //
 //   node tools/vega-probe/collect.js                    # HTTP: POST /probe on 127.0.0.1:8765
 //   node tools/vega-probe/collect.js --device-log       # also follow the device log over vda
-//   node tools/vega-probe/collect.js --device-log --raw docs/vega/logs/device.log
+//   node tools/vega-probe/collect.js --device-log --raw artifacts/vega/device.log
 //
 // Two transports, because the Vega WebView blocks plain http:// from the page
 // (net::ERR_CLEARTEXT_NOT_PERMITTED, observed on VVD with SDK 0.24.12112):
@@ -25,7 +25,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const argv = process.argv.slice(2);
 const opt = name => { const i = argv.indexOf(name); return i >= 0 ? argv[i + 1] : undefined; };
-const out = process.env.OUT ?? path.join(root, 'docs', 'vega', 'probe-results.jsonl');
+const out = process.env.OUT ?? path.join(root, 'artifacts', 'vega', 'probe-results.jsonl');
 const rawLog = opt('--raw');
 const port = Number(process.env.PORT ?? 8765);
 const bind = process.env.BIND ?? '127.0.0.1';
@@ -83,10 +83,16 @@ function resolveVda() {
 const MARK = '[WebViewMessage] ';
 const partial = new Map(); // chunk id -> {n, parts[]}
 // The RN host's console.info shows up twice in loggingctl output (observed), so drop repeats.
-const recent = []; const RECENT_MAX = 400;
+const recent = new Map(); const RECENT_MAX = 400;
 function handleMessage(msg, deviceTime) {
-  if (recent.includes(msg)) return;
-  recent.push(msg); if (recent.length > RECENT_MAX) recent.shift();
+  // Suppress only the near-simultaneous duplicate emitted by the native logger.
+  // The same prompt/event occurring later is meaningful evidence, not a duplicate.
+  const stamp = Date.parse(`2000 ${deviceTime} UTC`);
+  const at = Number.isFinite(stamp) ? stamp : Date.now();
+  const previous = recent.get(msg);
+  if (previous !== undefined && at >= previous && at - previous < 100) return;
+  recent.set(msg, at);
+  if (recent.size > RECENT_MAX) recent.delete(recent.keys().next().value);
   if (msg.startsWith('SEMA_PROBE_CHUNK ')) {
     const m = /^SEMA_PROBE_CHUNK (\S+) (\d+)\/(\d+) ([\s\S]*)$/.exec(msg);
     if (!m) return;

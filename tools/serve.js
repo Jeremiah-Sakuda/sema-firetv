@@ -2,8 +2,9 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.mp4':'video/mp4','.mp3':'audio/mpeg','.svg':'image/svg+xml'};
+const projectRoot=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const root=process.argv.includes('--preview') ? path.join(projectRoot,'preview') : projectRoot;
+const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.mp4':'video/mp4','.webm':'video/webm','.mp3':'audio/mpeg','.jpg':'image/jpeg','.png':'image/png','.svg':'image/svg+xml'};
 const allowed=p => p==='index.html' || p==='style.css' || /^(src|media)\//.test(p);
 const server=http.createServer((req,res)=>{
   try {

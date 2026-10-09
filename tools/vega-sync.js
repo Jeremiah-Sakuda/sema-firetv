@@ -17,18 +17,21 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const assets = path.join(root, 'vega-app', 'assets');
+const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const assets = path.join(projectRoot, 'vega-app', 'assets');
 const args = new Set(process.argv.slice(2));
+const preview = args.has('--preview');
+const root = preview ? path.join(projectRoot, 'preview') : projectRoot;
 const probe = args.has('--probe');
 const dryRun = args.has('--dry-run');
 
 if (args.has('-h') || args.has('--help')) {
-  console.log('Usage: node tools/vega-sync.js [--probe] [--dry-run]');
+  console.log('Usage: node tools/vega-sync.js [--probe | --preview] [--dry-run]');
   process.exit(0);
 }
-const unknown = [...args].filter(a => !['--probe', '--dry-run'].includes(a));
+const unknown = [...args].filter(a => !['--probe', '--preview', '--dry-run'].includes(a));
 if (unknown.length) { console.error(`Unknown option(s): ${unknown.join(' ')}`); process.exit(2); }
+if (probe && preview) throw new Error('Choose probe or review preview, not both');
 
 // Paths under vega-app/assets/ that this script owns and may delete.
 const OWNED = ['index.html', 'style.css', 'src', 'media', 'probe-script.js', 'probe-media', '.sema-sync.json'];
@@ -44,7 +47,7 @@ const isDir = p => { try { return fs.statSync(p).isDirectory(); } catch { return
 
 function fail(message) { console.error(`vega-sync: ${message}`); process.exit(1); }
 
-if (!isDir(path.join(root, 'vega-app'))) fail(`missing ${rel(path.join(root, 'vega-app'))}`);
+if (!isDir(path.join(projectRoot, 'vega-app'))) fail('missing vega-app');
 
 // Build the copy plan first so a missing required file aborts before anything is deleted.
 const plan = []; // [{from, to}]
@@ -104,7 +107,7 @@ for (const { from, to } of plan) {
 }
 
 const record = {
-  mode: probe ? 'probe' : 'app',
+  mode: probe ? 'probe' : preview ? 'review-preview' : 'app',
   syncedAt: new Date().toISOString(),
   files: plan.map(({ to }) => path.relative(assets, to).split(path.sep).join('/')),
   skipped,
@@ -113,4 +116,4 @@ if (!dryRun) fs.writeFileSync(path.join(assets, '.sema-sync.json'), JSON.stringi
 
 console.log(`vega-sync: ${dryRun ? 'would sync' : 'synced'} ${plan.length} files (${(bytes / 1024).toFixed(1)} KiB) into ${rel(assets)} [${record.mode} mode]`);
 if (skipped.length) console.log(`vega-sync: skipped ${skipped.length} media file(s) with other extensions: ${skipped.join(', ')}`);
-if (!dryRun) console.log('Next: cd vega-app && npm run build:debug   (see docs/vega/BUILD-AND-RUN.md)');
+if (!dryRun) console.log('Next: cd vega-app && npm run build:staged   (see docs/vega/BUILD-AND-RUN.md)');

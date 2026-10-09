@@ -95,3 +95,18 @@ test('a fact left pending by choice does not re-interrupt at a later optional cu
   const p=withOptional(); p.complete(p.tick(2.3).token); p.tick(9.5); p.controls(); assert.equal(p.pending()[0].id,'door');
   p.resume(); assert.equal(p.tick(14.5),null); assert.equal(p.mode,'playing','no pause for the earlier fact'); assert.equal(p.pending()[0].id,'door');
 });
+
+
+test('an explicit earlier recovery never reveals a future event or moves the film clock', () => {
+  const p=player(); p.seek(10); const r=p.recover('key');
+  assert.deepEqual(r.events,['key']); assert.equal(p.position,10); p.complete(r.token);
+  p.seek(3); assert.equal(p.recover('door'),null); assert.equal(p.position,3);
+  assert.equal(p.active,null); assert.equal(p.recover('missing'),null);
+});
+
+test('draft permission is explicit and never relaxes timing checks', () => {
+  const a=fixture(); a.reviewStatus='draft'; assert.ok(validatePackage(a).length);
+  assert.deepEqual(validatePackage(a,{allowDraft:true}),[]);
+  a.cues[0].variants.rich={...a.cues[0].variants.rich,duration:20};
+  assert.match(validatePackage(a,{allowDraft:true}).join(' '),/does not fit/);
+});

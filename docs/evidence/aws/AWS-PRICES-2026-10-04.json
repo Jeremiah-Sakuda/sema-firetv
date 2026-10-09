@@ -1,0 +1,335 @@
+{
+  "retrievedAt": "2026-10-04",
+  "region": "us-east-1",
+  "source": "AWS Price List Query API GetProducts",
+  "products": [
+    {
+      "product": {
+        "productFamily": "Amazon Bedrock",
+        "attributes": {
+          "regionCode": "us-east-1",
+          "inferenceType": "Input tokens",
+          "servicecode": "AmazonBedrock",
+          "feature": "On-demand Inference",
+          "usagetype": "USE1-NovaPro-input-tokens",
+          "locationType": "AWS Region",
+          "location": "US East (N. Virginia)",
+          "model": "Nova Pro",
+          "servicename": "Amazon Bedrock",
+          "operation": ""
+        },
+        "sku": "8X836UXRHN5Q5T2H"
+      },
+      "serviceCode": "AmazonBedrock",
+      "terms": {
+        "OnDemand": {
+          "8X836UXRHN5Q5T2H.JRTCKXETXF": {
+            "priceDimensions": {
+              "8X836UXRHN5Q5T2H.JRTCKXETXF.6YS6EN2CT7": {
+                "unit": "1K tokens",
+                "endRange": "Inf",
+                "description": "$ 0.0008 per 1K tokens for Nova Pro-input-tokens in us-east-1 (N. Virginia)",
+                "appliesTo": [],
+                "rateCode": "8X836UXRHN5Q5T2H.JRTCKXETXF.6YS6EN2CT7",
+                "beginRange": "0",
+                "pricePerUnit": {
+                  "USD": "0.0008000000"
+                }
+              }
+            },
+            "sku": "8X836UXRHN5Q5T2H",
+            "effectiveDate": "2026-10-01T00:00:00Z",
+            "offerTermCode": "JRTCKXETXF",
+            "termAttributes": {}
+          }
+        }
+      },
+      "version": "20261003001138",
+      "publicationDate": "2026-10-03T00:11:38Z"
+    },
+    {
+      "product": {
+        "productFamily": "Amazon Bedrock",
+        "attributes": {
+          "regionCode": "us-east-1",
+          "inferenceType": "Output tokens",
+          "servicecode": "AmazonBedrock",
+          "feature": "On-demand Inference",
+          "usagetype": "USE1-NovaPro-output-tokens",
+          "locationType": "AWS Region",
+          "location": "US East (N. Virginia)",
+          "model": "Nova Pro",
+          "servicename": "Amazon Bedrock",
+          "operation": ""
+        },
+        "sku": "ARFVY95XGU794VBG"
+      },
+      "serviceCode": "AmazonBedrock",
+      "terms": {
+        "OnDemand": {
+          "ARFVY95XGU794VBG.JRTCKXETXF": {
+            "priceDimensions": {
+              "ARFVY95XGU794VBG.JRTCKXETXF.6YS6EN2CT7": {
+                "unit": "1K tokens",
+                "endRange": "Inf",
+                "description": "$ 0.0032 per 1K tokens for Nova Pro-output-tokens in us-east-1 (N. Virginia)",
+                "appliesTo": [],
+                "rateCode": "ARFVY95XGU794VBG.JRTCKXETXF.6YS6EN2CT7",
+                "beginRange": "0",
+                "pricePerUnit": {
+                  "USD": "0.0032000000"
+                }
+              }
+            },
+            "sku": "ARFVY95XGU794VBG",
+            "effectiveDate": "2026-10-01T00:00:00Z",
+            "offerTermCode": "JRTCKXETXF",
+            "termAttributes": {}
+          }
+        }
+      },
+      "version": "20261003001138",
+      "publicationDate": "2026-10-03T00:11:38Z"
+    },
+    {
+      "product": {
+        "productFamily": "AmazonPolly",
+        "attributes": {
+          "regionCode": "us-east-1",
+          "servicecode": "AmazonPolly",
+          "engine": "Neural",
+          "usagetype": "USE1-SynthesizeSpeechNeural-Characters",
+          "locationType": "AWS Region",
+          "location": "US East (N. Virginia)",
+          "servicename": "Amazon Polly",
+          "operation": ""
+        },
+        "sku": "RCV3WGXXBMMZTDSA"
+      },
+      "serviceCode": "AmazonPolly",
+      "terms": {
+        "OnDemand": {
+          "RCV3WGXXBMMZTDSA.JRTCKXETXF": {
+            "priceDimensions": {
+              "RCV3WGXXBMMZTDSA.JRTCKXETXF.6YS6EN2CT7": {
+                "unit": "Characters",
+                "endRange": "Inf",
+                "description": "$16 per million characters for SynthesizeSpeechNeural-Characters in US East (N. Virginia)",
+                "appliesTo": [],
+                "rateCode": "RCV3WGXXBMMZTDSA.JRTCKXETXF.6YS6EN2CT7",
+                "beginRange": "0",
+                "pricePerUnit": {
+                  "USD": "0.0000160000"
+                }
+              }
+            },
+            "sku": "RCV3WGXXBMMZTDSA",
+            "effectiveDate": "2026-05-01T00:00:00Z",
+            "offerTermCode": "JRTCKXETXF",
+            "termAttributes": {}
+          }
+        }
+      },
+      "version": "20260911124459",
+      "publicationDate": "2026-09-11T12:44:59Z"
+    },
+    {
+      "product": {
+        "productFamily": "Transcription Job",
+        "attributes": {
+          "regionCode": "us-east-1",
+          "servicecode": "transcribe",
+          "usagetype": "USE1-TranscribeAudio",
+          "locationType": "AWS Region",
+          "location": "US East (N. Virginia)",
+          "servicename": "Amazon Transcribe",
+          "supportedModes": "Audio to Text",
+          "operation": "TranscribeAudio"
+        },
+        "sku": "XG5JYDUXJ2JRGBD9"
+      },
+      "serviceCode": "transcribe",
+      "terms": {
+        "OnDemand": {
+          "XG5JYDUXJ2JRGBD9.JRTCKXETXF": {
+            "priceDimensions": {
+              "XG5JYDUXJ2JRGBD9.JRTCKXETXF.6YS6EN2CT7": {
+                "unit": "second",
+                "endRange": "Inf",
+                "description": "$0.0001 per second for TranscribeAudio in US East (N. Virginia)",
+                "appliesTo": [],
+                "rateCode": "XG5JYDUXJ2JRGBD9.JRTCKXETXF.6YS6EN2CT7",
+                "beginRange": "0",
+                "pricePerUnit": {
+                  "USD": "0.0001000000"
+                }
+              }
+            },
+            "sku": "XG5JYDUXJ2JRGBD9",
+            "effectiveDate": "2026-06-01T00:00:00Z",
+            "offerTermCode": "JRTCKXETXF",
+            "termAttributes": {}
+          }
+        }
+      },
+      "version": "20260911124646",
+      "publicationDate": "2026-09-11T12:46:46Z"
+    },
+    {
+      "product": {
+        "productFamily": "Storage",
+        "attributes": {
+          "volumeType": "Standard",
+          "storageClass": "General Purpose",
+          "regionCode": "us-east-1",
+          "servicecode": "AmazonS3",
+          "durability": "99.999999999%",
+          "usagetype": "TimedStorage-ByteHrs",
+          "locationType": "AWS Region",
+          "location": "US East (N. Virginia)",
+          "servicename": "Amazon Simple Storage Service",
+          "availability": "99.99%",
+          "operation": ""
+        },
+        "sku": "WP9ANXZGBYYSGJEA"
+      },
+      "serviceCode": "AmazonS3",
+      "terms": {
+        "OnDemand": {
+          "WP9ANXZGBYYSGJEA.JRTCKXETXF": {
+            "priceDimensions": {
+              "WP9ANXZGBYYSGJEA.JRTCKXETXF.D42MF2PVJS": {
+                "unit": "GB-Mo",
+                "endRange": "512000",
+                "description": "$0.022 per GB - next 450 TB / month of storage used",
+                "appliesTo": [],
+                "rateCode": "WP9ANXZGBYYSGJEA.JRTCKXETXF.D42MF2PVJS",
+                "beginRange": "51200",
+                "pricePerUnit": {
+                  "USD": "0.0220000000"
+                }
+              },
+              "WP9ANXZGBYYSGJEA.JRTCKXETXF.PXJDJ3YRG3": {
+                "unit": "GB-Mo",
+                "endRange": "Inf",
+                "description": "$0.021 per GB - storage used / month over 500 TB",
+                "appliesTo": [],
+                "rateCode": "WP9ANXZGBYYSGJEA.JRTCKXETXF.PXJDJ3YRG3",
+                "beginRange": "512000",
+                "pricePerUnit": {
+                  "USD": "0.0210000000"
+                }
+              },
+              "WP9ANXZGBYYSGJEA.JRTCKXETXF.PGHJ3S3EYE": {
+                "unit": "GB-Mo",
+                "endRange": "51200",
+                "description": "$0.023 per GB - first 50 TB / month of storage used",
+                "appliesTo": [],
+                "rateCode": "WP9ANXZGBYYSGJEA.JRTCKXETXF.PGHJ3S3EYE",
+                "beginRange": "0",
+                "pricePerUnit": {
+                  "USD": "0.0230000000"
+                }
+              }
+            },
+            "sku": "WP9ANXZGBYYSGJEA",
+            "effectiveDate": "2026-09-01T00:00:00Z",
+            "offerTermCode": "JRTCKXETXF",
+            "termAttributes": {}
+          }
+        }
+      },
+      "version": "20260928230416",
+      "publicationDate": "2026-09-28T23:04:16Z"
+    },
+    {
+      "product": {
+        "productFamily": "Amazon Bedrock",
+        "attributes": {
+          "regionCode": "us-east-1",
+          "inferenceType": "Output tokens",
+          "servicecode": "AmazonBedrock",
+          "feature": "On-demand Inference",
+          "usagetype": "USE1-Nova2.0Lite-output-tokens",
+          "locationType": "AWS Region",
+          "location": "US East (N. Virginia)",
+          "model": "Nova 2.0 Lite",
+          "servicename": "Amazon Bedrock",
+          "operation": ""
+        },
+        "sku": "DY69Q8C3F88CHA2Q"
+      },
+      "serviceCode": "AmazonBedrock",
+      "terms": {
+        "OnDemand": {
+          "DY69Q8C3F88CHA2Q.JRTCKXETXF": {
+            "priceDimensions": {
+              "DY69Q8C3F88CHA2Q.JRTCKXETXF.6YS6EN2CT7": {
+                "unit": "1K tokens",
+                "endRange": "Inf",
+                "description": "$0.00275 per 1K tokens for USE1-Nova2.0Lite-output-tokens in US East (N. Virginia)",
+                "appliesTo": [],
+                "rateCode": "DY69Q8C3F88CHA2Q.JRTCKXETXF.6YS6EN2CT7",
+                "beginRange": "0",
+                "pricePerUnit": {
+                  "USD": "0.0027500000"
+                }
+              }
+            },
+            "sku": "DY69Q8C3F88CHA2Q",
+            "effectiveDate": "2026-10-01T00:00:00Z",
+            "offerTermCode": "JRTCKXETXF",
+            "termAttributes": {}
+          }
+        }
+      },
+      "version": "20261003001138",
+      "publicationDate": "2026-10-03T00:11:38Z"
+    },
+    {
+      "product": {
+        "productFamily": "Amazon Bedrock",
+        "attributes": {
+          "regionCode": "us-east-1",
+          "inferenceType": "Input tokens",
+          "servicecode": "AmazonBedrock",
+          "feature": "On-demand Inference",
+          "usagetype": "USE1-Nova2.0Lite-input-tokens",
+          "locationType": "AWS Region",
+          "location": "US East (N. Virginia)",
+          "model": "Nova 2.0 Lite",
+          "servicename": "Amazon Bedrock",
+          "operation": ""
+        },
+        "sku": "FY8T82UUN7VZR55K"
+      },
+      "serviceCode": "AmazonBedrock",
+      "terms": {
+        "OnDemand": {
+          "FY8T82UUN7VZR55K.JRTCKXETXF": {
+            "priceDimensions": {
+              "FY8T82UUN7VZR55K.JRTCKXETXF.6YS6EN2CT7": {
+                "unit": "1K tokens",
+                "endRange": "Inf",
+                "description": "$0.00033 per 1K tokens for USE1-Nova2.0Lite-input-tokens in US East (N. Virginia)",
+                "appliesTo": [],
+                "rateCode": "FY8T82UUN7VZR55K.JRTCKXETXF.6YS6EN2CT7",
+                "beginRange": "0",
+                "pricePerUnit": {
+                  "USD": "0.0003300000"
+                }
+              }
+            },
+            "sku": "FY8T82UUN7VZR55K",
+            "effectiveDate": "2026-10-01T00:00:00Z",
+            "offerTermCode": "JRTCKXETXF",
+            "termAttributes": {}
+          }
+        }
+      },
+      "version": "20261003001138",
+      "publicationDate": "2026-10-03T00:11:38Z"
+    }
+  ],
+  "caveats": "List prices, not an invoice. Excludes taxes, credits, request and transfer fees. S3 estimate assumes one month."
+}

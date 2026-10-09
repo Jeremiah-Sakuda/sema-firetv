@@ -1,0 +1,179 @@
+{
+  "sintel-dragon": {
+    "c01": {
+      "all": [
+        [
+          "sunlit"
+        ]
+      ]
+    },
+    "c02": {
+      "all": [
+        [
+          "woman"
+        ]
+      ],
+      "standardRich": [
+        [
+          "alley"
+        ]
+      ]
+    },
+    "c03": {
+      "all": [
+        [
+          "lid"
+        ]
+      ]
+    },
+    "c04": {
+      "all": [
+        [
+          "food"
+        ]
+      ]
+    },
+    "c05": {
+      "all": [
+        [
+          "climbs"
+        ]
+      ]
+    },
+    "c06": {
+      "all": [
+        [
+          "dragon"
+        ],
+        [
+          "wing"
+        ],
+        [
+          "torn"
+        ]
+      ]
+    },
+    "c07": {
+      "all": [
+        [
+          "blood"
+        ]
+      ]
+    },
+    "c08": {
+      "all": [
+        [
+          "kneels"
+        ]
+      ]
+    },
+    "c09": {
+      "all": [
+        [
+          "hand"
+        ],
+        [
+          "dragon"
+        ]
+      ]
+    },
+    "c10": {
+      "all": [
+        [
+          "indoors"
+        ],
+        [
+          "wing"
+        ]
+      ]
+    },
+    "c11": {
+      "all": [
+        [
+          "smiles"
+        ]
+      ]
+    }
+  },
+  "tears-of-steel": {
+    "c02": {
+      "all": [
+        [
+          "engines"
+        ],
+        [
+          "blaze"
+        ]
+      ],
+      "standardRich": [
+        [
+          "rocket"
+        ]
+      ]
+    },
+    "c03": {
+      "all": [
+        [
+          "rocket"
+        ],
+        [
+          "rises"
+        ]
+      ]
+    },
+    "c04": {
+      "all": [
+        [
+          "forty years later",
+          "40 years later"
+        ]
+      ]
+    },
+    "c05": {
+      "all": [
+        [
+          "knob"
+        ]
+      ]
+    },
+    "c06": {
+      "all": [
+        [
+          "exposed"
+        ],
+        [
+          "brain"
+        ]
+      ]
+    },
+    "c07": {
+      "all": [
+        [
+          "mechanical"
+        ],
+        [
+          "eye",
+          "eyepiece"
+        ]
+      ]
+    },
+    "c08": {
+      "all": [
+        [
+          "Tears of Steel"
+        ]
+      ]
+    },
+    "c09": {
+      "all": [
+        [
+          "smoke",
+          "smoky"
+        ],
+        [
+          "city"
+        ]
+      ]
+    }
+  }
+}

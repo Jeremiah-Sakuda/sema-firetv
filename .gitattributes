@@ -1,0 +1,10 @@
+# Keep byte-verified JSON manifests stable across checkout platforms.
+* text=auto eol=lf
+*.mp3 binary
+*.mp4 binary
+*.webm binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.vpkg binary

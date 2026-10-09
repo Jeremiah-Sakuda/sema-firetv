@@ -3,19 +3,28 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Sema — audio description, your way</title>
+  <title>Sema — audio description that waits for you</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <p id="review-banner" class="review-banner" hidden>Content review build · narration approval pending</p>
   <header>
     <span class="brand"><span class="mark" aria-hidden="true">s</span>sema<span class="tagline">Follow the story.</span></span>
     <span id="mode-badge" class="badge-muted" hidden>STUDY: FIXED STANDARD</span>
   </header>
   <main>
+    <section id="guidance-error" class="guidance-error" hidden role="alertdialog" aria-modal="true" aria-describedby="guidance-error-message" aria-labelledby="guidance-error-title">
+      <h2 id="guidance-error-title">Spoken guidance stopped</h2>
+      <p id="guidance-error-message" role="alert">The control announcement could not play. Try again, or return to the catalog. A screen reader can read these controls.</p>
+      <div class="actions">
+        <button id="guidance-retry" data-say="label_retry">Try again</button>
+        <button id="guidance-return" data-say="label_return">Return to catalog</button>
+      </div>
+    </section>
     <section id="catalog" aria-labelledby="catalog-title">
-      <p class="eyebrow">AUDIO DESCRIPTION, YOUR WAY</p>
-      <h1 id="catalog-title">Hear as much of the picture as you want.</h1>
-      <p class="intro">Choose how much description you hear. Missed something? Ask <em>What did I miss?</em> and Sema describes it without spoilers.</p>
+      <p class="eyebrow">AUDIO DESCRIPTION THAT WAITS FOR YOU</p>
+      <h1 id="catalog-title">Pause anytime. Hear what you missed.</h1>
+      <p class="intro">Press Select to pause and revisit a visual moment, described from what has already been on screen. Then continue from the same frame.</p>
       <div id="film-list" class="film-list"></div>
       <p id="catalog-note" class="fine-print"></p>
     </section>
@@ -23,15 +32,15 @@
     <section id="welcome" hidden aria-labelledby="welcome-title">
       <p class="eyebrow">BEFORE YOU START</p>
       <h1 id="welcome-title">How much do you want to hear?</h1>
-      <p class="intro">Sema describes what happens on screen in the pauses between dialogue. You can change the level at any time. During the film, press <kbd>Select</kbd> and choose <strong>What did I miss?</strong> to hear a recent moment again.</p>
+      <p class="intro">Choose Essential for key actions, Standard for story and context, or Rich for more visual detail where dialogue allows. Press <kbd>Select</kbd> during the film to change your level or revisit a moment.</p>
       <div class="levels" role="radiogroup" aria-label="Description detail">
-        <button role="radio" aria-checked="false" data-choose-level="essential" data-say="label_level_essential">Essential<span>Key story moments</span></button>
-        <button role="radio" aria-checked="false" data-choose-level="standard" data-say="label_level_standard_suggested">Standard<span>Story and context · Suggested</span></button>
-        <button role="radio" aria-checked="false" data-choose-level="rich" data-say="label_level_rich">Rich<span>More visual detail</span></button>
-        <button role="radio" aria-checked="false" data-choose-level="off" data-say="label_level_off">Off<span>No description</span></button>
+        <button role="radio" aria-checked="false" data-choose-level="essential" aria-label="Essential, key story moments" data-say="label_level_essential">Essential<span>Key story moments</span></button>
+        <button role="radio" aria-checked="false" data-choose-level="standard" aria-label="Standard, story and context, suggested" data-say="label_level_standard_suggested">Standard<span>Story and context · Suggested</span></button>
+        <button role="radio" aria-checked="false" data-choose-level="rich" aria-label="Rich, more visual detail" data-say="label_level_rich">Rich<span>More visual detail</span></button>
+        <button role="radio" aria-checked="false" data-choose-level="off" aria-label="Off, no description" data-say="label_level_off">Off<span>No description</span></button>
       </div>
       <div class="preferences"><button data-toggle="guidance"></button></div>
-      <p class="fine-print">Using VoiceView? Turn spoken guidance off so you hear each control once.</p>
+      <p class="fine-print">When VoiceView is on, Sema turns spoken guidance off so you hear each control once. You can change it here.</p>
     </section>
 
     <section id="player" hidden aria-labelledby="control-title">
@@ -44,15 +53,17 @@
           <span id="position" aria-hidden="true"></span>
         </div>
         <p id="status"></p>
+        <p id="moment-context" class="fine-print" hidden></p>
         <div id="level-group" class="levels" role="radiogroup" aria-label="Description detail">
-          <button role="radio" aria-checked="false" data-level="essential">Essential<span>Key story moments</span></button>
-          <button role="radio" aria-checked="false" data-level="standard">Standard<span>Story and context</span></button>
-          <button role="radio" aria-checked="false" data-level="rich">Rich<span>More visual detail</span></button>
-          <button role="radio" aria-checked="false" data-level="off">Off<span>No description</span></button>
+          <button role="radio" aria-checked="false" data-level="essential" aria-label="Essential, key story moments">Essential<span>Key story moments</span></button>
+          <button role="radio" aria-checked="false" data-level="standard" aria-label="Standard, story and context">Standard<span>Story and context</span></button>
+          <button role="radio" aria-checked="false" data-level="rich" aria-label="Rich, more visual detail">Rich<span>More visual detail</span></button>
+          <button role="radio" aria-checked="false" data-level="off" aria-label="Off, no description">Off<span>No description</span></button>
         </div>
         <div class="actions">
           <button id="resume" class="primary">Play film</button>
-          <button id="recover">What did I miss?</button>
+          <button id="recover">Revisit latest moment</button>
+          <button id="earlier" data-say="label_earlier">Earlier moment</button>
           <button id="retry" hidden data-say="label_retry">Try again</button>
           <button id="restart" data-say="label_start_over">Start over</button>
           <button id="return" data-say="label_return">Return to catalog</button>

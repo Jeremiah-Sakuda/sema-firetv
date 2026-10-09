@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-04T15:09:39Z",
+  "generatedAt": "2026-10-07T22:43:53Z",
   "mode": "live",
   "voice": {
     "voiceId": "Joanna",
@@ -7,17 +7,17 @@
     "sampleRate": "24000",
     "outputFormat": "mp3"
   },
-  "count": 61,
-  "characters": 3096,
+  "count": 65,
+  "characters": 2866,
   "output": "media/prompts/prompts.json",
   "estimatedCost": {
-    "totalUSD": 0.0495,
+    "totalUSD": 0.0459,
     "lines": [
       {
         "service": "polly",
         "item": "neural",
-        "quantity": "3096 characters",
-        "usd": 0.049536
+        "quantity": "2866 characters",
+        "usd": 0.045856
       }
     ],
     "unpriced": [],
