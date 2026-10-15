@@ -1,0 +1,11 @@
+{
+  "engine": "Piper",
+  "version": "1.8.0",
+  "voice": "en_US-ljspeech-high",
+  "modelSha256": "5d4f08ba6a2a48c44592eed3ce56bf85e9de3dd4e20df90541ae68a8310c029a",
+  "modelCard": "https://huggingface.co/rhasspy/piper-voices/blob/main/en/en_US/ljspeech/high/MODEL_CARD",
+  "dataset": "https://keithito.com/LJ-Speech-Dataset/",
+  "datasetLicense": "Public domain",
+  "scope": "Short moment identity recordings only; film narration and control prompts use Amazon Polly.",
+  "count": 25
+}

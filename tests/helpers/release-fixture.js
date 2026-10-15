@@ -40,7 +40,7 @@ export function setup(t) {
   });
   write('media/catalog.json', { films });
   write('pipeline/prompts.json', { welcome: 'Welcome.' });
-  write('media/prompts/prompts.json', { welcome: { text: 'Welcome.', audio: 'media/prompts/welcome.mp3', duration: 1 } });
+  write('media/prompts/prompts.json', { welcome: { text: 'Welcome.', audio: 'media/prompts/welcome.mp3', duration: 1, sha256: crypto.createHash('sha256').update('test bytes').digest('hex') } });
   write('media/prompts/provenance.json', { mode: 'live' }); media('media/prompts/welcome.mp3', 1);
   const probe = absolute => {
     const file = path.relative(root, absolute);

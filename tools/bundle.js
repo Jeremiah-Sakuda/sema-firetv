@@ -7,11 +7,12 @@
 // Tests import buildBundle()/buildData() and never write the tracked files.
 import fs from 'node:fs';
 import path from 'node:path';
+import { recordedClipIssues } from './playback-assets.js';
 import { fileURLToPath } from 'node:url';
 import { validatePackage } from '../src/package.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-export const MODULES = ['src/package.js', 'src/playback.js', 'src/format.js', 'src/keymap.js', 'src/voice.js', 'src/app.js'];
+export const MODULES = ['src/package.js', 'src/playback.js', 'src/format.js', 'src/keymap.js', 'src/voice.js', 'src/playback-session.js', 'src/app.js'];
 
 export function buildBundle(root = ROOT) {
   const code = MODULES.map(file => `// ${file}\n` + fs.readFileSync(path.join(root, file), 'utf8').replace(/^import .+;\n/gm, '').replace(/^export /gm, ''));
@@ -41,32 +42,44 @@ export function buildData(root = ROOT, warn = () => {}, { preview = false } = {}
   }
   // Until a reviewed film is packaged, show the engineering fixture rather than an empty catalog.
   if (!films.some(f => !f.dev)) for (const f of films) f.dev = false;
-  const promptTexts = JSON.parse(read('pipeline/prompts.json'));  // the current wording; fallback before clips are rendered
-  const rendered = exists('media/prompts/prompts.json') ? JSON.parse(read('media/prompts/prompts.json')) : {};
+  const supplemental = exists('content/interface-prompts.json') ? JSON.parse(read('content/interface-prompts.json')) : {};
+  const promptTexts = {...JSON.parse(read('pipeline/prompts.json')), ...supplemental};  // the current wording; fallback before clips are rendered
+  const rendered = {...(exists('media/prompts/prompts.json') ? JSON.parse(read('media/prompts/prompts.json')) : {}), ...(exists('media/interface/prompts.json') ? JSON.parse(read('media/interface/prompts.json')) : {})};
   // A recorded clip is used only while it says exactly the current text; a stale
   // recording must never contradict the screen. Re-render with `sema_pipeline prompts --live`.
   const prompts = {}, stale = [];
   for (const [id, clip] of Object.entries(rendered)) {
-    if (promptTexts[id] === clip.text && exists(clip.audio)) prompts[id] = clip; else if (promptTexts[id]) stale.push(id);
+    if (promptTexts[id] && !recordedClipIssues(root,id,promptTexts[id],clip,{directory:supplemental[id]?'media/interface':'media/prompts',maxDuration:supplemental[id]?5:Infinity}).length) prompts[id] = clip; else if (promptTexts[id]) stale.push(id);
   }
   const missing = Object.keys(promptTexts).filter(id => !prompts[id]);
   if (missing.length) warn(`spoken guidance: ${missing.length} prompt(s) need (re-)rendering and will use text fallback: ${missing.join(', ')}`);
-  const momentPrompts = {};
+  const labels = exists('content/moment-labels.json') ? JSON.parse(read('content/moment-labels.json')) : {};
+  const identities = exists('media/moment-labels/prompts.json') ? JSON.parse(read('media/moment-labels/prompts.json')) : {};
+  const momentPrompts = {}, missingMomentClips = [];
   for (const film of films) {
     if (validatePackage(film.package, {allowFixture: film.allowFixture, allowDraft: film.allowDraft}).length) continue;
     for (const event of film.package.events) {
-      // Preview a moment with its shortest timed description. A moment with no
-      // timed slot has no short form: previewing its recovery would speak the
-      // same description Select is about to play, so it gets no spoken preview.
+      // Prefer concise identity audio. A fixture may reuse a short timed clip,
+      // but the full recovery answer is never used as a focus announcement.
       const cue = film.package.cues.find(c => c.events.length === 1 && c.events[0] === event.id);
       const clip = cue?.variants.essential;
-      if (!clip || !exists(clip.audio)) continue;
+      // Identity is metadata, independent of whether this moment has a timed clip.
+      event.label = labels[film.package.id]?.[event.id] ?? clip?.text.replace(/[.!?]$/, '') ?? event.id.replace(/-/g, ' ');
       const id = `moment_${film.package.id}_${event.id}`.replace(/-/g, '_');
-      event.label = clip.text.replace(/[.!?]$/, ''); event.labelPrompt = id;
+      const identity = identities[id];
+      if (labels[film.package.id]?.[event.id]) {
+        if (recordedClipIssues(root,id,`${event.label}.`,identity,{directory:'media/moment-labels',maxDuration:5}).length) {
+          missingMomentClips.push(id); continue;
+        }
+        event.labelPrompt = id; momentPrompts[id] = identity; continue;
+      }
+      if (!clip || !exists(clip.audio)) continue;
+      event.labelPrompt = id;
       momentPrompts[id] = clip;
     }
   }
-  return { data: { films, prompts, momentPrompts, promptTexts, preview }, missingClips: missing, staleClips: stale };
+  if (missingMomentClips.length) warn(`Recorded moment identities need rendering: ${missingMomentClips.join(', ')}`);
+  return { data: { films, prompts, momentPrompts, promptTexts, preview }, missingClips: missing, staleClips: stale, missingMomentClips };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

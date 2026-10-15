@@ -1,6 +1,8 @@
 # Architecture
 
-Sema separates authoring from viewing. AWS produces timed narration assets; the television plays local files and responds immediately to remote input.
+Sema separates publisher authoring from viewer control. Its intended first adopter is an independent film publisher with a small licensed catalog and control of its Fire TV app. The publisher prepares descriptions before release; blind and low-vision viewers choose detail and revisit past visual moments through the remote.
+
+AWS produces narration assets. The television plays local files, so requesting a prepared description does not depend on a model or cloud-service response. The repository provides a reference player and CLI authoring workflow for a publisher to adapt; the current catalog contains two excerpts.
 
 ```mermaid
 flowchart LR
@@ -20,13 +22,19 @@ flowchart LR
 
 ## Viewing
 
-`src/playback.js` is a pure state machine driven by the film's media clock. `src/app.js` connects it to video, narration, remote keys and focus. `src/voice.js` sequences recorded guidance with timeout handling. The native host in `vega-app/` loads the same bundled player from local assets.
+`src/playback.js` is a pure state machine driven by the film's media clock. `src/playback-session.js` owns video-start attempts, narration resources, preload transfer, buffering watchdogs and volume ramps. `src/app.js` translates viewer input and settled session outcomes into focus, visible status and persistence. `src/voice.js` sequences recorded guidance with timeout handling. The native host in `vega-app/` loads the same bundled player from local assets.
 
-The scheduler checks whether a line fits both when requested and when audio starts. A late line can fall back to a shorter available variant. An interrupted critical description remains recoverable; optional detail can be skipped without stopping the film. Completion records audio delivery, not viewer understanding.
+Every video-start attempt has its own lifetime. Pause, seek, restart, film changes and leaving cancel outstanding attempts and their watchdogs. An old rejection or timeout cannot fail a newer attempt; current failures are reported inside the session guard rather than a later caller continuation. Session reset also releases preloaded audio and volume timers.
 
-Revisit selects an event whose `availableAt` is no later than the current film position. Earlier moment steps backward through those events. Its visible label and spoken preview identify the next available event using existing measured narration. After browsing, focus stays on Earlier moment while another past event is available; at the oldest event it returns to Resume. The film remains paused during narration, and Resume is explicit. Timestamp checks constrain event selection; factual and semantic correctness also depend on editorial work.
+The scheduler checks whether a line fits both when requested and when audio starts. A late line can fall back to a shorter available variant. An interrupted critical description remains recoverable; optional detail can be skipped without stopping the film. Only completed narration marks a fact as delivered.
 
-If recorded guidance and speech fallback both fail, the film pauses and a focused Retry / Return to catalog screen appears. Returning disables app guidance so a screen reader can own speech. If no audio engine works, the app cannot guarantee audible recovery.
+Revisit selects an event whose `availableAt` is no later than the current film position. Earlier moment steps backward through those events. Action buttons keep compact visible labels in fixed grid columns. Every event has a concise identity, including moments without timed narration. Screen-reader names include that identity and its timestamp; short recorded names identify all moments without repeating their full descriptions; the context distinguishes an in-progress or completed description from the next Earlier target. Completed status is recorded only after the matching audio completion; seeking resets that context. After browsing, focus stays on Earlier moment while another past event is available; at the oldest event it returns to Resume. The film remains paused during narration, and Resume is explicit. Timestamp checks constrain event selection; factual and semantic correctness also depend on editorial work.
+
+The pause panel puts Resume, Revisit and Earlier moment first, followed by description detail. More options discloses text, spoken guidance, help and Start over. It restores focus when closed; Back closes it before leaving the film. Opening options during a description cancels that audio and preserves any interrupted critical fact. A delayed native startup response never replaces the current interaction or moves its focus.
+
+If recorded guidance and speech fallback both fail, the film pauses and a focused Retry / Return to catalog screen appears. With VoiceView detected, Continue with VoiceView disables app guidance and restores the current controls, paused frame and pending facts. This action is hidden when no screen reader is detected. Returning to the catalog also disables app guidance.
+
+During established playback, a video `waiting` event cancels active independent narration immediately and pauses the player. Interrupted critical facts remain available for Revisit, and stale completion callbacks cannot mark them delivered. Between descriptions, waits shorter than 900 ms are tolerated before showing buffering controls.
 
 The native host waits up to 15 seconds for a player-ready message. Main-page loading errors and missing readiness display native Retry / Exit controls. Retry remounts the WebView and ignores callbacks from the previous attempt.
 
@@ -37,6 +45,8 @@ Guidance runs while the film is paused. Any action can interrupt it. Explicit he
 Packages contain film metadata, dialogue intervals, visual events, timed cues and measured audio variants. Validation checks timing, required coverage and safe asset paths. The prototype build also checks explicit identifying-fact requirements in `content/description-contracts.json`; these supplement timing checks and do not replace factual or listening review. Versioned resume state prevents a changed package from silently inheriting incompatible delivery state.
 
 `preview/media/` is a portable prototype snapshot. `npm run preview:build` verifies its hashes and rebuilds the shell without cloud credentials. Production uses separate approval fingerprints binding scripts, timing, source and audio bytes. Editing those bytes invalidates approval; the prototype builder does not create it.
+
+`tools/playback-assets.js` owns the required playback-file inventory and the common recorded-clip checks. Bundling and production checks apply the same text, path, duration and byte-fingerprint policy to Polly guidance, Piper options and moment names. The prototype and site builders use the inventory so independent moment-name audio cannot be omitted. The Polly prompt renderer writes fingerprints for future recordings; current audio was fingerprinted without re-rendering.
 
 Vega uses VP8 video and Opus audio. Its data arrives in a generated script because local WebView fetch/XHR was unreliable. Build output is disposable and generated from source.
 
@@ -58,4 +68,4 @@ Live authoring calls record usage and stage timing. The pilot required AI editor
 - `?study=fixed`: a single premixed Standard soundtrack, with conventional pause/rewind and no independent cue scheduling or revisit.
 - `?study=recovery`: Standard detail locked, with revisit available.
 
-Both comparison soundtracks use the same Standard narration assets. Dynamic volume fades and premix boundaries can differ slightly; perceptual comparisons require listening checks.
+Both comparison soundtracks use the same Standard narration assets. Dynamic volume fades and premix boundaries can differ slightly.

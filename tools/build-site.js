@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildBundle, buildData } from './bundle.js';
 import { checkRelease } from './release-check.js';
+import { requiredPlaybackAssets } from './playback-assets.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export function buildSite({ root = ROOT, out = path.join(root, 'site'), probe } = {}) {
@@ -21,19 +22,8 @@ export function buildSite({ root = ROOT, out = path.join(root, 'site'), probe } 
     release.issues.map(i => `${i.code}: ${i.file}: ${i.detail}`).join('\n'));
   const { data } = buildData(root);
   const shipped = data.films.filter(f => !f.dev && !f.allowFixture && f.package.reviewStatus === 'approved');
-  const files = new Set(['index.html', 'style.css']);
-  for (const film of shipped) {
-    const p = film.package;
-    files.add(p.video);
-    if (film.webm) files.add(film.webm);
-    if (film.standardMix) files.add(film.standardMix);
-    if (film.standardMixWebm) files.add(film.standardMixWebm);
-    if (film.poster) files.add(film.poster);
-    for (const c of p.cues) for (const v of Object.values(c.variants)) files.add(v.audio);
-    for (const e of p.events) files.add(e.recovery.audio);
-  }
-  for (const clip of Object.values(data.prompts)) files.add(clip.audio);
   const siteData = { ...data, films: shipped };
+  const files = new Set(['index.html','style.css',...requiredPlaybackAssets(siteData)]);
   fs.mkdirSync(path.dirname(out), { recursive: true });
   const stage = fs.mkdtempSync(path.join(path.dirname(out), '.sema-site-'));
   try {

@@ -42,7 +42,7 @@ function setup(t) {
   });
   write('media/catalog.json', { films });
   write('pipeline/prompts.json', { welcome: 'Welcome.' });
-  write('media/prompts/prompts.json', { welcome: { text: 'Welcome.', audio: 'media/prompts/welcome.mp3', duration: 1 } });
+  write('media/prompts/prompts.json', { welcome: { text: 'Welcome.', audio: 'media/prompts/welcome.mp3', duration: 1, sha256: crypto.createHash('sha256').update('test bytes').digest('hex') } });
   write('media/prompts/provenance.json', { mode: 'live' }); media('media/prompts/welcome.mp3', 1);
   const probe = absolute => {
     const file = path.relative(root, absolute);
@@ -121,4 +121,11 @@ test('one reviewed film is enough; a pending film is held back, not shipped', t 
   assert.deepEqual([...result.pendingFilms], ['later']);
   s.write('media/catalog.json', { films: [{ ...s.films[0], status: 'pending' }] });
   assert.ok(s.check().issues.some(i => i.code === 'CATALOG_INCOMPLETE'));
+});
+
+
+test('different Polly guidance bytes with unchanged text and duration cannot pass release', t => {
+  const s=setup(t);assert.equal(s.check().ready,true);
+  s.write('media/prompts/welcome.mp3','other recorded instructions');
+  assert.ok(s.check().issues.some(i=>i.code==='GUIDANCE_CHANGED'));
 });

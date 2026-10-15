@@ -9,8 +9,8 @@ const tracked=execFileSync('git',['ls-files','-z'],{cwd:root,encoding:'utf8'}).s
 const untracked=execFileSync('git',['ls-files','--others','--exclude-standard','-z'],{cwd:root,encoding:'utf8'}).split('\0').filter(Boolean);
 const files=[...new Set([...tracked,...untracked])].filter(f=>fs.existsSync(path.join(root,f)));
 const errors=[];
-const privatePath=/^(?:\.local|\.aws|\.codex|\.agents|artifacts|docs\/(?:panel|planning|submission|research))(?:\/|$)/;
-for(const f of tracked)if(privatePath.test(f))errors.push(`${f}: local-only material is tracked`);
+const privatePath=/^(?:\.local|\.aws|\.codex|\.agents|artifacts|docs\/(?:panel|planning|submission|research))(?:\/|$)|^docs\/PLAN-TO-SUBMISSION\.md$/;
+for(const f of new Set([...tracked,...files]))if(privatePath.test(f))errors.push(`${f}: local-only material is included in publishable source`);
 const generated=new Set(['src/bundle.js','src/data.js','vega-app/buildinfo.json']);
 for(const f of tracked)if(generated.has(f))errors.push(`${f}: generated output is tracked`);
 const approvedPackage=files.some(f=>{
@@ -25,6 +25,7 @@ for(const f of files){
   const text=fs.readFileSync(full,'utf8');
   if(/(?:AKIA|ASIA)[A-Z0-9]{16}\b/.test(text))errors.push(`${f}: possible AWS access key identifier`);
   if(/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/.test(text))errors.push(`${f}: private key material`);
+  if(/\.(?:md|json)$/.test(f) && (/(?:judge[- ]evaluation|panel[- ]feedback)/i.test(text) || /"(?:scoresByJudge|criterionMeans|equal_weight_mean|equal_weight_average)"\s*:/.test(text)))errors.push(`${f}: contains internal evaluation material`);
   if(!f.endsWith('.md'))continue;
   documents++;
   // Public docs may state plainly that narration is still a draft; they must

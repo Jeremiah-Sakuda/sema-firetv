@@ -29,7 +29,49 @@ Start `npm run preview` in one terminal. In another, install Playwright separate
 SEMA_URL=http://127.0.0.1:4173 npm run test:browser
 ```
 
-`SEMA_CHROME` can point to an existing Chrome executable; `SEMA_PLAYWRIGHT_MODULE` can point to an existing Playwright module. Results go to `artifacts/browser/`, or `SEMA_BROWSER_OUT` if provided. This harness decodes real media with output muted; it is not a listening test.
+`SEMA_CHROME` can point to an existing Chrome executable; `SEMA_PLAYWRIGHT_MODULE` can point to an existing Playwright module. Results go to `artifacts/browser/`, or `SEMA_BROWSER_OUT` if provided. This harness decodes real media with output muted.
+
+## October 15, 2026 submission checks
+
+- 133 JavaScript tests pass, including four source-export privacy regressions.
+- The focused real-media Chrome checks pass at 1920, 1280 and 375 pixels. A keyboard-only sequence completes Revisit, uses two Right presses to reach Earlier moment, revisits that moment, resumes, and checks each Back action and its hint.
+- Option disclosure, recorded option prompts and detected-VoiceView recovery pass. Browser output was muted.
+- Both film description contracts and repository/link checks pass.
+- The Debug aarch64 Vega SDK package builds with 200 playback assets verified against their source hashes. This package was not launched; no simulator was run for these checks.
+
+## October 14, 2026 playback-session checks
+
+The offline pipeline suite also passed 75 tests. The aarch64 Vega SDK package built with 200 matched assets; that package was not launched.
+
+- 129 JavaScript tests pass. New session tests cover superseded video rejection, stale watchdogs, immediate cancellation, real current failures, film changes, cancelled audio readiness, recovery timeouts, buffering cancellation and resource cleanup.
+- An app-level deferred-video regression covers pause, resume and seek: old failures are ignored, and the current failure retains focused Retry.
+- The playback session owns physical media lifetimes; scheduling, spoken-guidance policy and presentation keep their existing responsibilities.
+- Playback asset tests cover missing moment audio, changed Polly bytes, absent fingerprints and preservation of prior site output when verification fails. The prompt-renderer check binds each generated file to its fingerprint.
+- Eight full real-media browser runs and both interruption/recovery paths pass after the session extraction. Final package checks also decode the recorded labels and exercise the option and guidance flow. Browser output is muted; simulator execution remains deferred.
+
+## October 13, 2026 interface polish
+
+- 115 JavaScript tests pass, including option-panel focus and Back, interruption retention, detected-VoiceView recovery and supplemental recording integrity.
+- Primary viewing actions precede detail selection; text, guidance, help and Start over are disclosed under More options.
+- The real-media browser harness checks the disclosure at 1920, 1280 and 375 pixels, decodes four new option prompts and exercises detected-VoiceView recovery.
+- Source handoff checks exclude generated interface copies and enforce exact archive membership.
+
+## October 12–13, 2026 iteration checks
+
+- 109 JavaScript tests pass, covering predictable recovery focus and actual identity-clip routing for untimed scenes.
+- All 25 short moment-name recordings decode and complete in Chrome; both films pass interruption, revisit, earlier moment and resume checks.
+- The prototype build, all description contracts and repository checks pass.
+- `npm run submission:prepare` repeats those checks in an independent source copy and records hashes and test results in the local source kit.
+- The current changes use browser verification; the earlier Vega observations retain their dates.
+
+## October 9, 2026 changes and checks
+
+- 106 JavaScript tests and five native host tests pass.
+- Regression cases cover immediate narration cancellation on a film stall, critical-fact recovery without advancing the film, stale audio completion, and harmless waits between descriptions.
+- Remote action labels stay compact while screen-reader names retain moment details. The browser harness compares action columns and widths before and after browsing earlier moments.
+- Eight full real-media browser playback runs pass, plus both interruption/revisit/earlier/resume scenarios on a focused rerun. The guidance-failure and retry check also passes. Browser output was muted.
+- The prototype build, repository checks and all 19 description contracts pass.
+- Simulator execution is deferred for this iteration. The October 8 device observations below describe the earlier build.
 
 ## October 8, 2026 changes and checks
 
@@ -74,8 +116,6 @@ With Vega dependencies installed, run `npm run test:native`. Use `npm run conten
 | Integrity failure case | Altered narration bytes rejected by the prototype builder |
 
 Evidence: [browser events](evidence/browser.json), [Vega app events](evidence/vega.json). Repeated native log entries within 100 ms were deduplicated; later repeated events were preserved.
-
-These are engineering checks. They do not establish narration accuracy, audible synchronization, physical VoiceView/Dolby behavior, independent nonvisual use, listener preference or comprehension gains. Sema makes no participant-study claim.
 
 ## Release checks
 

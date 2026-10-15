@@ -1,6 +1,8 @@
 # AWS narration authoring
 
-The authoring pipeline turns authorized film sources into timed description variants and visual-moment narration. Viewing does not call AWS: the player consumes local, measured media packages.
+The authoring pipeline turns authorized film sources into timed description variants and visual-moment narration. It supports the proposed first adopter: an independent film publisher with a small licensed catalog and control of its Fire TV app. A content editor prepares and reviews each title; an app developer integrates the resulting package and reference player.
+
+Viewing does not call AWS: the player consumes local, measured media packages. The commands below implement the authoring stages; they are a CLI workflow, not a self-service publishing service.
 
 For the included films, use `npm run preview` from the repository root. Authoring setup is only needed to generate or edit content.
 

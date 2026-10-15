@@ -12,7 +12,6 @@
   "recovery_complete": "Description complete.",
   "recovery_more": "Description complete. Another missed description is waiting.",
   "recovery_stopped": "Description stopped.",
-  "suggest_rich": "You asked about this part twice. Rich adds more visual detail.",
   "no_moment": "No visual moment is available yet. Play a little further, then try again.",
   "film_ended": "The film has ended.",
   "film_ended_pending": "The film has ended. A missed description is waiting.",
@@ -62,6 +61,5 @@
   "label_start_over_confirm": "Press Select again to start over.",
   "label_earlier": "Earlier moment",
   "no_earlier": "There is no earlier moment to revisit yet.",
-  "preview_notice": "Content review build. Narration has been prepared with AI and still needs human approval.",
   "error_baseline": "The fixed Standard comparison soundtrack is not available for this film."
 }

@@ -1,7 +1,8 @@
 """UI prompt set: render every player prompt with the same Polly voice as the
-narration and write media/prompts/prompts.json = {id: {text, audio, duration}}."""
+narration and write media/prompts/prompts.json = {id: {text, audio, duration, sha256}}."""
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -41,7 +42,8 @@ def run_prompts(cfg: dict, services: Services, *, web_root: Path, prompts_file: 
     result = {}
     for pid, text in texts.items():
         out = narrator.synthesize(text, out_dir / f"{pid}.mp3")
-        result[pid] = {"text": text, "audio": f"media/prompts/{pid}.mp3", "duration": out["duration"]}
+        result[pid] = {"text": text, "audio": f"media/prompts/{pid}.mp3", "duration": out["duration"],
+                       "sha256": hashlib.sha256((out_dir / f"{pid}.mp3").read_bytes()).hexdigest()}
     (out_dir / "prompts.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n")
     meta = {"generatedAt": now_iso(), "mode": services.mode, "voice": narrator.voice, "count": len(result),
             "characters": sum(r["characters"] for r in rows), "output": "media/prompts/prompts.json",

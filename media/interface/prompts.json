@@ -1,0 +1,26 @@
+{
+  "label_more_options": {
+    "text": "More options",
+    "audio": "media/interface/label_more_options.mp3",
+    "duration": 1.057958,
+    "sha256": "a086b4cfbfe6c0cc7c1d228fc83447f604d50dc0ce60a99db50c3b6497e47c18"
+  },
+  "label_hide_options": {
+    "text": "Hide options",
+    "audio": "media/interface/label_hide_options.mp3",
+    "duration": 1.137792,
+    "sha256": "61a1ec850d8fcf8ce37a2182df5c6f480bc21a08c366e565ccc5127978ba7ce3"
+  },
+  "options_open": {
+    "text": "Viewing options opened.",
+    "audio": "media/interface/options_open.mp3",
+    "duration": 1.590583,
+    "sha256": "9824584957f37a29c55fe6fa5839304c859a7f9592feee1278168a073c7cb516"
+  },
+  "options_closed": {
+    "text": "Viewing options closed.",
+    "audio": "media/interface/options_closed.mp3",
+    "duration": 1.613792,
+    "sha256": "b03dd6d145af1f0a544f5f8aed41cb4ada970c5fcfbbd8ffea686536e372ad7a"
+  }
+}

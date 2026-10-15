@@ -24,11 +24,19 @@ site/
 # Generated review app shell; portable open-film media snapshot is retained.
 preview/src/
 preview/pipeline/
+preview/content/
 preview/index.html
 preview/style.css
 preview/media/prompts/
+preview/media/moment-labels/
+preview/media/interface/
 
 # Local submission drafts, planning, account notes and historical diagnostics
+docs/panel/
+docs/planning/
+docs/submission/
+docs/research/
+docs/PLAN-TO-SUBMISSION.md
 .local/
 .aws/
 .codex/

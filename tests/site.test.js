@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
+import crypto from 'node:crypto';
 import { buildSite } from '../tools/build-site.js';
 import { MODULES } from '../tools/bundle.js';
 import { setup } from './helpers/release-fixture.js';
@@ -51,4 +52,16 @@ test('session builder rejects missing films and source or unowned output directo
   fs.unlinkSync(path.join(s.root, s.films[0].package));
   assert.throws(s.build, /MISSING_FILE/);
   assert.equal(fs.existsSync(s.out), false);
+});
+
+
+test('site copies independent moment audio and rejects changed names without replacing prior output', t => {
+  const s=site(t),id='moment_alpha_envelope_hidden',audio=`media/moment-labels/${id}.mp3`;
+  s.write('content/moment-labels.json',{alpha:{'envelope-hidden':'Hidden envelope'}});
+  s.write(audio,'identity bytes');s.durations.set(audio,1);
+  s.write('media/moment-labels/prompts.json',{[id]:{text:'Hidden envelope.',audio,duration:1,sha256:crypto.createHash('sha256').update('identity bytes').digest('hex')}});
+  s.build();assert.equal(fs.readFileSync(path.join(s.out,audio),'utf8'),'identity bytes');
+  const before=fs.readFileSync(path.join(s.out,'src/data.js'),'utf8');
+  s.write(audio,'changed same-duration words');assert.throws(s.build,/GUIDANCE_CHANGED/);
+  assert.equal(fs.readFileSync(path.join(s.out,'src/data.js'),'utf8'),before);
 });

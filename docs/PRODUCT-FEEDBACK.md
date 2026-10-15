@@ -1,6 +1,6 @@
 # Developer product feedback
 
-Observed while building Sema. Setup times were not measured. Each entry records purpose, strengths, problems, onboarding and whether we would use the tool again.
+Observed while building Sema for viewer-controlled description on Fire TV. The intended first adopter is an independent film publisher with a small licensed catalog and control of its Fire TV app; authoring happens before release and playback uses local media. Setup times were not measured. Each entry records purpose, strengths, problems, onboarding and whether we would use the tool again.
 
 ## AWS services used (AWS Builder mini-challenge)
 
@@ -12,7 +12,7 @@ Sema's narration is authored offline by a multi-service AWS pipeline (`pipeline/
 | **Amazon Transcribe** | Word-level timestamps, which become the dialogue intervals that narration must never overlap. |
 | **Amazon Bedrock: Nova Pro** | Timestamped visual events from 2-fps frame batches, with stable character references. |
 | **Amazon Bedrock: Nova 2 Lite** | Writes the Essential, Standard and Rich lines plus a separate Revisit description for each moment. Shortens lines that don't fit their gap. |
-| **Amazon Polly (neural Joanna)** | Voices every narration line and the 65 spoken interface prompts. Each rendered line is measured with ffprobe against its gap. |
+| **Amazon Polly (neural Joanna)** | Voices every narration line and the 63 spoken interface prompts. Each rendered line is measured with ffprobe against its gap. |
 | **Strands Agents SDK** | Optional agent version of the fit loop. Implemented and tested offline only; not used in the live run. |
 
 **Measured in the live pilot** ([evidence](evidence/aws/LIVE-PILOT-2026-10-04.json)):
@@ -20,7 +20,7 @@ Sema's narration is authored offline by a multi-service AWS pipeline (`pipeline/
 - **Automated stage time:** about 97 s and 86 s.
 - **First-render fit:** 32 of 33 and 22 of 24 lines fit their gap on the first render.
 
-An AI editorial pass then corrected the drafts, as recorded in `content/editorial/`. Publication requires human review.
+An AI editorial pass then corrected the drafts, as recorded in `content/editorial/`. Production narration packaging requires editorial approval. The cost figures estimate recorded AWS usage; they exclude editorial and integration effort and are not total production costs.
 
 ## Vega SDK and CLI
 
@@ -72,9 +72,9 @@ An AI editorial pass then corrected the drafts, as recorded in `content/editoria
 
 ## Amazon Polly
 
-- Purpose: neural Joanna speech at 24 kHz MP3 for all narration, recovery and 65 UI prompts; measure each rendered file with ffprobe.
+- Purpose: neural Joanna speech at 24 kHz MP3 for all narration, recovery and 63 UI prompts; measure each rendered file with ffprobe.
 - Worked: actual speech files and measurable durations were produced, with consistent voice settings across the app.
-- Needs work: speech duration cannot be safely inferred from word count. Fit requires rendering and measuring; shortening can damage meaning. The measured durations do not establish listener-validated pronunciation, comfort or mixing.
+- Needs work: speech duration cannot be safely inferred from word count. Fit requires rendering and measuring; shortening can damage meaning.
 - Onboarding: SDK synthesis was straightforward after temporary credentials worked; integration added fit retries, provenance and prerecording because VVD TTS was unusable.
 - Build again: Yes, with measured fit, explicit factual checks and listening review.
 
@@ -101,10 +101,21 @@ An AI editorial pass then corrected the drafts, as recorded in `content/editoria
 | ffmpeg / ffprobe | Excerpts, source-frame PTS, codec renditions, review mixes, duration measurement | Produced usable local files and reproducible probe output | Correct sample timestamps and codec behavior require deliberate validation; duration is not audibility | Local command-line integration; no timed setup total | Yes, for media transforms and measurement |
 | JavaScript / Node.js / npm | Player, bundling, release tools and tests | A shared player runs in browser and Vega | Browser success cannot establish target media behavior | Locked dev dependencies and explicit build scripts | Yes, with target verification |
 | Python | Authoring, review and reports | Clear local stages and offline tests | Stage freshness and approval provenance need enforcement | Pinned environment; total setup time unmeasured | Yes |
-| jsdom / Node test runner / unittest | Deterministic state, focus, adapter and pipeline regressions | Caught real focus, speech-sequencing and integrity defects | Mocked media cannot verify heard speech or real decode | Local test harnesses and fixtures | Yes, alongside recordings and human sessions |
+| jsdom / Node test runner / unittest | Deterministic state, focus, adapter and pipeline regressions | Caught real focus, speech-sequencing and integrity defects | Mocked media cannot verify heard speech or real decode | Local test harnesses and fixtures | Yes, alongside browser and target-platform checks |
 | Git / GitHub | Source history, public OSS repository and CI | Existing public MIT repository and automated workflows | Public source delivery must include the media snapshot and locked setup instructions | Repository and workflow setup; total time unmeasured | Yes |
-| Codex | Implementation assistance, code review and editorial preparation | Found concrete defects and kept AI edits separate from human review | AI-assisted inspection does not establish audiovisual accuracy or viewer outcomes | Used in the shared local project | Yes, with verified tests and actual human evidence |
+| Codex | Implementation assistance, code review and editorial preparation | Found concrete defects and kept AI edits separate from human review | Suggested code and narration wording required corrections | Used in the shared local project | Yes, with code review and verified tests |
 
 ## Feedback evidence
 
-The [platform findings](vega/PLATFORM-FINDINGS.md) provide reproduction cases and actionable requests. [Engineering evidence](TESTING.md) distinguishes software tests from listening and participant claims. These observations describe a two-excerpt prototype, not a general service benchmark.
+The [platform findings](vega/PLATFORM-FINDINGS.md) provide reproduction cases and actionable requests. [Engineering evidence](TESTING.md) documents playback checks, reproduction commands and observed platform behavior. These observations describe a two-excerpt prototype, not a general service benchmark.
+
+
+## Piper local speech rendering
+
+- Purpose: render 25 short moment names for focus guidance and four viewing-options prompts. Moment names cover scenes that have no timed description slot.
+- Worked: the named MP3 files play through the same recorded-guidance channel, with durations measured by ffprobe. No runtime speech engine or cloud call is needed.
+- Friction: local authoring needs a separately downloaded voice model and ffmpeg. These short recordings use a different voice from Polly narration; text, byte hashes and measured durations are validated during bundling.
+- Onboarding: isolated Python environment, `piper-tts==1.8.0`, the `en_US-ljspeech-high` voice, and ffmpeg conversion to 24 kHz mono MP3.
+- Build again: Yes for short interface recordings; retain the existing AWS authoring pipeline for film narration.
+
+The [voice model card](https://huggingface.co/rhasspy/piper-voices/blob/main/en/en_US/ljspeech/high/MODEL_CARD) identifies the [LJ Speech dataset](https://keithito.com/LJ-Speech-Dataset/) as public domain. Engine/model files are authoring dependencies and are not bundled into the viewer.

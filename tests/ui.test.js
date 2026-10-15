@@ -12,18 +12,18 @@ const bundle = buildBundle();  // in memory: tests never rewrite tracked build f
 const fixture = JSON.parse(fs.readFileSync('media/fixture/package.json', 'utf8'));
 const flush = () => new Promise(resolve => setTimeout(resolve, 0));
 const CHOSEN = { level: 'standard', chosen: true, guidance: true };
-const promptTexts = JSON.parse(fs.readFileSync('pipeline/prompts.json', 'utf8'));
+const promptTexts = {...JSON.parse(fs.readFileSync('pipeline/prompts.json', 'utf8')), ...JSON.parse(fs.readFileSync('content/interface-prompts.json', 'utf8'))};
 const windows = [];
 afterEach(async () => { await flush(); await flush(); while (windows.length) windows.pop().close(); });
 
-function boot({ prefs, search = '', films, resume, prompts = {}, audioPlay, preview = false, speech = true, bridge = null } = {}) {
+function boot({ prefs, search = '', films, resume, prompts = {}, momentPrompts = {}, audioPlay, videoPlay, preview = false, speech = true, bridge = null } = {}) {
   const dom = new JSDOM(html, { url: `http://localhost/${search}`, pretendToBeVisual: true, runScripts: 'outside-only' });
   const w = dom.window, audios = [];
   windows.push(w);
   const proto = w.HTMLMediaElement.prototype;
   Object.defineProperty(proto, 'currentTime', { get() { return this._t ?? 0; }, set(v) { this._t = v; }, configurable: true });
-  Object.defineProperty(proto, 'readyState', { get() { return 4; }, configurable: true });
-  proto.play = function () { if (this.tagName === 'AUDIO' && audioPlay) return audioPlay(this); this._playing = true; setTimeout(() => this.dispatchEvent(new w.Event('playing'))); return Promise.resolve(); };
+  Object.defineProperty(proto, 'readyState', { get() { return this._readyState ?? 4; }, configurable: true });
+  proto.play = function () { if (this.tagName === 'VIDEO' && videoPlay) return videoPlay(this); if (this.tagName === 'AUDIO' && audioPlay) return audioPlay(this); this._playing = true; setTimeout(() => this.dispatchEvent(new w.Event('playing'))); return Promise.resolve(); };
   proto.pause = function () { this._playing = false; };
   proto.load = function () { if (this.tagName === 'AUDIO') setTimeout(() => this.dispatchEvent(new w.Event('canplay'))); };
   w.Audio = function (src) { const a = w.document.createElement('audio'); if (src) a.src = src; audios.push(a); return a; };
@@ -36,7 +36,7 @@ function boot({ prefs, search = '', films, resume, prompts = {}, audioPlay, prev
   }
   if (bridge) w.ReactNativeWebView = { postMessage: m => bridge.push(JSON.parse(m)) };
   w.SEMA_TEST = true;
-  w.SEMA_DATA = { films: films ?? [{ package: fixture, poster: null, dev: false, allowFixture: true, standardMix: "media/fixture/standard.mp4" }], prompts, promptTexts, preview };
+  w.SEMA_DATA = { films: films ?? [{ package: fixture, poster: null, dev: false, allowFixture: true, standardMix: "media/fixture/standard.mp4" }], prompts, momentPrompts, promptTexts, preview };
   w.eval(bundle);
   const $ = id => w.document.getElementById(id);
   const active = () => w.document.activeElement?.id || w.document.activeElement?.tagName;
@@ -154,11 +154,13 @@ test('end of film is announced and focused even when the clock reaches the end f
 test('Back pauses, Back again returns to the catalog with focus on the same film; reopening offers resume', async () => {
   const s = boot({ prefs: CHOSEN });
   await playing(s);
+  assert.match(s.$('transport-hint').textContent, /Back: pause$/);
   await s.at(1.5);
   s.w.document.activeElement.blur();
   s.key('Escape');
   assert.equal(s.app.player.mode, 'controls');
   assert.equal(s.active(), 'return');
+  assert.match(s.$('transport-hint').textContent, /Back: catalog$/);
   s.key('Escape');
   assert.equal(s.app.view, 'catalog');
   assert.equal(s.active(), `film-${fixture.id}`);
@@ -188,7 +190,7 @@ test('with guidance off, status is announced through a live region but recovery 
   assert.equal(s.$('announcer').textContent, '');
 });
 
-test('asking twice about one scene offers Rich once, while already paused', async () => {
+test('repeated Revisit keeps Resume focused and does not change the chosen detail', async () => {
   const s = boot({ prefs: CHOSEN });
   await playing(s);
   await s.at(2.6); await s.finishAudio();           // envelope cue delivered
@@ -198,8 +200,9 @@ test('asking twice about one scene offers Rich once, while already paused', asyn
     s.$('recover').click(); await s.finishAudio();
     if (i === 0) { assert.equal(s.active(), 'resume'); s.$('resume').click(); await flush(); }
   }
-  assert.equal(s.w.document.activeElement.dataset.level, 'rich');
-  assert.ok(s.app.player.log.some(e => e.type === 'suggestion-offered'));
+  assert.equal(s.active(), 'resume');
+  assert.equal(s.app.player.level, 'standard');
+  assert.ok(!s.app.player.log.some(e => e.type === 'suggestion-offered'));
 });
 
 test('a package that fails validation is listed as unavailable and cannot play', () => {
@@ -218,6 +221,7 @@ test('fixed Standard uses a mixed soundtrack and never schedules separate narrat
   await playing(s);
   assert.equal(s.app.player.level, 'standard');
   assert.equal(s.$('level-group').hidden, true);
+  assert.equal(s.$('detail-label').hidden, true);
   await s.at(2.6);
   s.w.document.activeElement.blur(); s.key('Enter');
   assert.equal(s.$('recover').hidden, true);
@@ -275,28 +279,29 @@ test('resuming at the end is refused with a spoken reason, not a silent no-op', 
   assert.match(s.$('status').textContent, /film has ended/);
 });
 
-test('D-pad moves within rows and between adjacent rows (layout measured on the Vega Virtual Device)', () => {
+test('D-pad follows the viewing, detail and utility rows', () => {
   const s = boot({ prefs: CHOSEN });
   s.$(`film-${fixture.id}`).click();
   // Button rectangles measured on the 1920x1080 Vega WebView, which exposed row-skipping.
+  s.$('more-options').click();
   const layout = {
-    '[data-level="essential"]': [106, 238, 727, 790], '[data-level="standard"]': [250, 397, 727, 790],
-    '[data-level="rich"]': [409, 543, 727, 790], '[data-level="off"]': [556, 690, 727, 790],
-    '#resume': [106, 356, 807, 852], '#recover': [368, 607, 807, 852], '#restart': [619, 733, 807, 852], '#return': [747, 914, 807, 852],
-    '#controls [data-toggle="text"]': [106, 268, 868, 910], '#controls [data-toggle="guidance"]': [280, 445, 868, 910], '#help': [457, 602, 868, 910],
+    '#resume': [106,356,600,680], '#recover': [368,607,600,680], '#earlier': [619,914,600,680],
+    '[data-level="essential"]': [106,240,720,780], '[data-level="standard"]': [258,392,720,780],
+    '[data-level="rich"]': [409,543,720,780], '[data-level="off"]': [556,690,720,780],
+    '#more-options': [106,268,820,875], '#return': [280,480,820,875],
+    '#controls [data-toggle="text"]': [106,268,910,965], '#controls [data-toggle="guidance"]': [280,445,910,965],
+    '#help': [457,602,910,965], '#restart': [619,760,910,965],
   };
-  for (const [selector, [left, right, top, bottom]] of Object.entries(layout)) {
-    s.w.document.querySelector(selector).getBoundingClientRect = () => ({ left, right, top, bottom, x: left, y: top, width: right - left, height: bottom - top });
-  }
-  const from = (selector, keyName) => { s.w.document.querySelector(selector).focus(); s.key(keyName); return s.w.document.activeElement; };
-  assert.equal(from('#resume', 'ArrowRight').id, 'recover', 'Right stays in the action row');
-  assert.equal(from('[data-level="essential"]', 'ArrowDown').id, 'resume', 'Down goes to the next row, not two rows');
-  assert.equal(from('[data-level="rich"]', 'ArrowDown').id, 'recover', 'Down picks the action-row button most directly below');
-  assert.equal(from('#resume', 'ArrowUp').dataset.level, 'essential', 'Up from Play lands on Essential, never Off');
-  assert.equal(from('#controls [data-toggle="guidance"]', 'ArrowUp').id, 'recover', 'Up does not skip the action row');
-  assert.equal(from('#controls [data-toggle="text"]', 'ArrowUp').id, 'resume');
-  assert.equal(from('#recover', 'ArrowUp').dataset.level, 'rich');
-  assert.equal(from('#return', 'ArrowRight').id, 'return', 'Right at the row end stays put');
+  for (const [selector,[left,right,top,bottom]] of Object.entries(layout)) s.w.document.querySelector(selector).getBoundingClientRect = () => ({left,right,top,bottom,x:left,y:top,width:right-left,height:bottom-top});
+  const from = (selector,keyName) => {s.w.document.querySelector(selector).focus();s.key(keyName);return s.w.document.activeElement;};
+  assert.equal(from('#resume','ArrowRight').id,'recover');
+  assert.equal(from('[data-level="essential"]','ArrowUp').id,'resume');
+  assert.equal(from('[data-level="rich"]','ArrowUp').id,'recover');
+  assert.equal(from('#resume','ArrowDown').dataset.level,'essential');
+  assert.equal(from('#controls [data-toggle="guidance"]','ArrowUp').id,'return');
+  assert.equal(from('#controls [data-toggle="text"]','ArrowUp').id,'more-options');
+  assert.equal(from('#more-options','ArrowUp').dataset.level,'essential');
+  assert.equal(from('#restart','ArrowRight').id,'restart');
 });
 
 for (const action of ['help', 'menu', 'text', 'guidance-off', 'guidance-on']) {
@@ -351,7 +356,7 @@ test('every state announcement ends with the control that actually has focus', a
   s.video.dispatchEvent(new s.w.Event('error')); spokenFocusMatches(s);                       // error + Try again
 });
 
-test('the Rich suggestion names Rich, and Down from it reaches the action row', async () => {
+test('completion speech names Resume after repeated latest-moment requests', async () => {
   const s = boot({ prefs: CHOSEN });
   await playing(s);
   await s.at(2.6); await s.finishAudio();
@@ -360,8 +365,8 @@ test('the Rich suggestion names Rich, and Down from it reaches the action row', 
     s.$('recover').click(); await s.finishAudio();
     if (i === 0) { s.$('resume').click(); await flush(); }
   }
-  assert.equal(s.w.document.activeElement.dataset.level, 'rich');
-  assert.deepEqual([...s.app.lastSpoken].slice(0, 2), ['recovery_complete', 'suggest_rich']);
+  assert.equal(s.active(), 'resume');
+  assert.deepEqual([...s.app.lastSpoken], ['recovery_complete', 'label_resume']);
   spokenFocusMatches(s);
   assert.ok(!s.app.lastSpoken.some(id => /move|selected/.test(s.w.SEMA_DATA.promptTexts[id] ?? '')), 'no directions or focus claims in prompt text');
 });
@@ -369,7 +374,7 @@ test('the Rich suggestion names Rich, and Down from it reaches the action row', 
 test('Start over needs a second Select; leaving the button cancels it', async () => {
   const s = boot({ prefs: CHOSEN });
   await playing(s); await s.at(4); s.w.document.activeElement.blur(); s.key('Enter');
-  s.$('restart').focus(); s.$('restart').click();
+  s.$('more-options').click(); s.$('restart').focus(); s.$('restart').click();
   assert.equal(s.app.player.position, 4, 'first Select only asks');
   assert.match(s.$('restart').textContent, /again/);
   assert.equal(s.app.lastSpoken[0], 'start_over_confirm');
@@ -455,6 +460,7 @@ test('Standard plus revisit comparison keeps recovery but locks detail', async (
   const s = boot({ prefs: { ...CHOSEN, level: 'rich' }, search: '?study=recovery' });
   await playing(s); await s.at(2.6); s.key('Enter');
   assert.equal(s.app.player.level, 'standard'); assert.equal(s.$('level-group').hidden, true);
+  assert.equal(s.$('detail-label').hidden, true);
   assert.equal(s.$('recover').hidden, false); s.$('recover').click();
   assert.equal(s.app.player.mode, 'recovering');
 });
@@ -503,7 +509,7 @@ test('earlier-moment browsing keeps focus on Earlier while another past moment e
   s.$('earlier').click();
   assert.equal(s.app.player.mode, 'recovering'); assert.equal(s.active(), 'earlier', 'focus is not pulled away while the moment plays');
   await s.finishAudio();
-  assert.equal(s.active(), 'earlier'); assert.match(s.$('moment-context').textContent, /Visual moment at/);
+  assert.equal(s.active(), 'earlier'); assert.match(s.$('moment-context').textContent, /Last described at/);
   s.$('earlier').click();
   assert.equal(s.active(), 'earlier', 'still on Earlier while the last earlier moment plays');
   await s.finishAudio();
@@ -568,4 +574,174 @@ test('Space resumes from the paused controls instead of pressing the focused but
 test('level buttons have separated accessible names', () => {
   const s = boot({ prefs: CHOSEN });
   for (const b of s.w.document.querySelectorAll('[data-level], [data-choose-level]')) assert.match(b.getAttribute('aria-label'), /^\w+, /);
+});
+
+
+test('a video stall immediately cancels description and preserves a critical fact for recovery', async () => {
+  const s = boot({prefs: CHOSEN});
+  await playing(s); await s.at(2.6);
+  const audio = s.app.narration;
+  assert.ok(audio && audio._playing);
+  s.video._readyState = 2;
+  s.video.dispatchEvent(new s.w.Event('waiting'));
+  assert.equal(audio._playing, false, 'description stops in the waiting event, without a 900ms drift');
+  assert.equal(s.app.narration, null);
+  assert.equal(s.app.player.mode, 'controls');
+  assert.equal(s.app.player.pending().length, 1);
+  assert.equal(s.active(), 'recover');
+  const position = s.video.currentTime;
+  audio.dispatchEvent(new s.w.Event('ended'));
+  assert.equal(s.app.player.pending().length, 1, 'late completion cannot mark interrupted speech heard');
+  s.$('recover').click(); await s.finishAudio();
+  assert.equal(s.app.player.pending().length, 0);
+  assert.equal(s.video.currentTime, position);
+});
+
+test('a brief wait between descriptions does not unnecessarily interrupt playback', async () => {
+  const s = boot({prefs: CHOSEN});
+  await playing(s); await s.at(1);
+  s.video._readyState = 2; s.video.dispatchEvent(new s.w.Event('waiting'));
+  assert.equal(s.app.player.mode, 'playing');
+  s.video._readyState = 4; s.video.dispatchEvent(new s.w.Event('playing'));
+  assert.equal(s.app.player.mode, 'playing');
+});
+
+test('moment content never expands the remote action labels', async () => {
+  const pkg = structuredClone(fixture);
+  for (const event of pkg.events) {
+    event.label = 'A deliberately long description of a visual moment with many details';
+    event.labelPrompt = 'test_moment';
+  }
+  const s = boot({prefs: CHOSEN, films:[{package:pkg,allowFixture:true}],
+    prompts:{test_moment:{text:pkg.events[0].label,audio:'moment.mp3',duration:1}}});
+  await playing(s); await s.at(2.6); await s.finishAudio(); s.key('Enter');
+  assert.equal(s.$('recover').textContent, 'Revisit latest moment');
+  assert.match(s.$('recover').getAttribute('aria-label'), /deliberately long/, 'screen readers keep moment orientation');
+  assert.equal(s.$('earlier').textContent, 'Earlier moment');
+  s.$('recover').click(); await s.finishAudio();
+  assert.match(s.$('moment-context').textContent, /deliberately long/);
+  assert.equal(s.$('recover').textContent, 'Revisit latest moment');
+});
+
+
+test('a moment without a timed clip has an identifying accessible name without replaying its answer on focus', async () => {
+  const pkg = structuredClone(fixture);
+  pkg.events[0].label = 'Mechanical hand';
+  const s = boot({prefs:CHOSEN,films:[{package:pkg,allowFixture:true}]});
+  await playing(s); await s.at(2.6); await s.finishAudio(); s.key('Enter');
+  assert.match(s.$('recover').getAttribute('aria-label'), /Mechanical hand.*At/);
+  assert.equal(s.$('recover').dataset.momentPrompt, undefined);
+  assert.equal(s.$('recover').textContent, 'Revisit latest moment');
+});
+
+
+test('guidance alone plays the recorded identity of an untimed bridge moment', async () => {
+  const pkg = JSON.parse(fs.readFileSync('preview/media/tears-of-steel/package.json'));
+  const momentPrompts = JSON.parse(fs.readFileSync('media/moment-labels/prompts.json'));
+  for (const event of pkg.events) {
+    const id = `moment_${pkg.id}_${event.id}`.replace(/-/g,'_');
+    event.label = momentPrompts[id].text.replace(/[.!?]$/,''); event.labelPrompt = id;
+  }
+  const data = {prompts:JSON.parse(fs.readFileSync('media/prompts/prompts.json')),momentPrompts};
+  const s = boot({prefs:CHOSEN,films:[{package:pkg,allowDraft:true}],prompts:data.prompts,momentPrompts,preview:true,speech:false});
+  s.$('film-tears-of-steel').click();
+  s.app.player.seek(35); s.video.currentTime=35;
+  s.w.document.querySelector('[data-level="standard"]').click();
+  s.$('recover').click(); await flush(); await flush();
+  s.app.narration.dispatchEvent(new s.w.Event('ended'));
+  s.$('earlier').focus(); await new Promise(r=>setTimeout(r,220));
+  const generic = s.audios.at(-1);
+  assert.match(generic.src,/label_earlier/);
+  generic.dispatchEvent(new s.w.Event('ended')); await flush();
+  const identity = data.momentPrompts.moment_tears_of_steel_pair_on_bridge;
+  assert.ok(s.audios.at(-1).src.endsWith(identity.audio));
+  assert.equal(identity.text,'People on the bridge.');
+  assert.equal(s.app.guidanceFailed,false);
+});
+
+
+test('moment context separates the completed answer from the next control and does not mislabel cancelled audio', async () => {
+  const pkg=structuredClone(fixture);
+  pkg.events[0].label='First moment';pkg.events[1].label='Second moment';
+  pkg.events.push({...pkg.events[0],id:'older',label:'Older moment',availableAt:0.5,critical:false});
+  const s=boot({prefs:CHOSEN,films:[{package:pkg,allowFixture:true}]});
+  await playing(s);await s.at(2.6);await s.finishAudio();await s.at(9.6);await s.finishAudio();
+  s.key('Enter');s.$('recover').click();await s.finishAudio();
+  assert.match(s.$('moment-context').textContent,/Last described.*Second moment[\s\S]*Next earlier.*First moment/);
+  s.$('earlier').click();await flush();
+  assert.match(s.$('moment-context').textContent,/Describing.*First moment/);
+  const stale=s.app.narration.onended;s.key('Escape');stale();
+  assert.match(s.$('moment-context').textContent,/Selected moment.*First moment/);
+  assert.doesNotMatch(s.$('moment-context').textContent,/Last described.*First moment/);
+  s.$('recover').click();await s.finishAudio();s.$('earlier').click();await s.finishAudio();
+  assert.match(s.$('moment-context').textContent,/Last described.*First moment[\s\S]*Next earlier.*Older moment/);
+  s.$('resume').click();await flush();s.key('Enter');
+  assert.match(s.$('moment-context').textContent,/Last described.*First moment/, 'resuming does not erase the last completed description');
+});
+
+
+test('More options preserves the paused frame, closes with Back and stays closed after resume', async () => {
+  const s=boot({prefs:CHOSEN});await playing(s);await s.at(1);s.key('Enter');
+  assert.equal(s.$('viewing-options').hidden,true);
+  s.$('more-options').click();
+  assert.equal(s.$('more-options').getAttribute('aria-expanded'),'true');
+  assert.equal(s.w.document.activeElement.dataset.toggle,'text');
+  assert.equal(s.app.lastSpoken[0],'options_open');
+  s.key('Escape');
+  assert.equal(s.app.view,'player');assert.equal(s.active(),'more-options');
+  assert.equal(s.$('viewing-options').hidden,true);assert.equal(s.video.currentTime,1);
+  assert.match(s.$('transport-hint').textContent,/Back: catalog$/);
+  s.$('more-options').click();s.$('resume').click();await flush();s.key('Enter');
+  assert.equal(s.$('viewing-options').hidden,true);assert.equal(s.active(),'recover');
+});
+
+test('opening options stops a recovery without delivering its critical fact', async () => {
+  const s=boot({prefs:CHOSEN});await playing(s);await s.at(2.6);s.key('Enter');s.$('recover').click();await flush();
+  const stale=s.app.narration.onended;s.$('more-options').click();stale();
+  assert.equal(s.app.player.mode,'controls');assert.equal(s.app.narration,null);
+  assert.equal(s.app.player.pending().length,1);assert.equal(s.$('viewing-options').hidden,false);
+  assert.equal(s.app.lastSpoken[0],'recovery_stopped');
+});
+
+test('guidance failure can continue with detected VoiceView without losing pending narration', async () => {
+  const s=boot({prefs:{...CHOSEN,guidance:false,guidanceChosen:true},speech:false,bridge:[]});
+  s.w.__semaScreenReader(true);await playing(s);await s.at(2.6);s.key('Enter');s.$('more-options').click();
+  s.w.document.querySelector('#controls [data-toggle="guidance"]').click();await flush();
+  assert.equal(s.app.guidanceFailed,true);assert.equal(s.$('guidance-continue').hidden,false);
+  const at=s.video.currentTime;s.$('guidance-continue').click();
+  assert.equal(s.app.guidanceFailed,false);assert.equal(s.app.prefs.guidance,false);
+  assert.equal(s.app.player.mode,'controls');assert.equal(s.app.player.pending().length,1);
+  assert.equal(s.video.currentTime,at);assert.equal(s.active(),'recover');
+  assert.equal(s.$('announcer').getAttribute('aria-live'),'polite');
+});
+
+test('a VoiceView continuation is never offered when no screen reader is detected', async () => {
+  const s=boot({prefs:{...CHOSEN,guidanceChosen:true},speech:false,bridge:[]});
+  s.w.__semaScreenReader(false);await flush();
+  assert.equal(s.app.guidanceFailed,true);assert.equal(s.$('guidance-continue').hidden,true);
+  s.$('guidance-continue').click();assert.equal(s.app.guidanceFailed,true);
+  s.w.__semaScreenReader(true);assert.equal(s.$('guidance-continue').hidden,false);
+  s.w.__semaScreenReader(false);assert.equal(s.$('guidance-continue').hidden,true);
+});
+
+
+test('a late native startup response cannot replace current option speech or move its focus', async () => {
+  const s=boot({prefs:CHOSEN,bridge:[]});s.$(`film-${fixture.id}`).click();s.$('more-options').click();
+  assert.equal(s.w.document.activeElement.dataset.toggle,'text');
+  const before=[...s.app.lastSpoken];s.w.__semaScreenReader(false);
+  assert.deepEqual([...s.app.lastSpoken],before);assert.equal(s.w.document.activeElement.dataset.toggle,'text');
+  assert.equal(s.$('viewing-options').hidden,false);
+});
+
+
+test('stale video failures across pause, resume and seek never fail the new playback attempt', async () => {
+  const requests=[];const s=boot({prefs:CHOSEN,videoPlay:()=>new Promise((resolve,reject)=>requests.push({resolve,reject}))});
+  s.$(`film-${fixture.id}`).click();s.$('resume').click();s.key('Enter');s.$('resume').click();
+  requests[0].reject(new Error('cancelled first play'));await flush();assert.equal(s.app.player.mode,'playing');
+  s.key('MediaFastForward');assert.equal(requests.length,3);
+  requests[1].reject(new Error('cancelled pre-seek play'));await flush();
+  assert.equal(s.app.player.mode,'playing');assert.equal(s.app.player.position,5);
+  requests[2].reject(new Error('current play genuinely failed'));await flush();
+  assert.equal(s.app.player.mode,'error');assert.equal(s.active(),'retry');
+  assert.equal(s.app.player.log.filter(e=>e.type==='error').length,1);
 });

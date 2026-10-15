@@ -1,6 +1,6 @@
 {
   "at": "2026-10-07T22:47:07.442Z",
-  "scope": "Real browser decoding and media events; audio output muted, not a human listening test.",
+  "scope": "Real browser decoding and media events; audio output muted.",
   "runs": [
     {
       "state": "ended",

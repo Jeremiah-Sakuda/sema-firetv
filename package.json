@@ -27,7 +27,8 @@
     "test:browser": "node tools/test-browser.mjs",
     "repo:check": "node tools/check-repo.js",
     "content:check": "node tools/check-description-levels.js",
-    "test:native": "npm --prefix vega-app test -- --runInBand --watchman=false"
+    "test:native": "npm --prefix vega-app test -- --runInBand --watchman=false",
+    "submission:prepare": "node tools/submission-kit.js --verify"
   },
   "devDependencies": {
     "jsdom": "^26.1.0"

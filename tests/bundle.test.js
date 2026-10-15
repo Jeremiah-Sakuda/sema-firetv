@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import { buildData } from '../tools/bundle.js';
 
 function root(t, { clips = {}, catalog = [] } = {}) {
@@ -10,6 +11,7 @@ function root(t, { clips = {}, catalog = [] } = {}) {
   const write = (f, v) => { fs.mkdirSync(path.dirname(path.join(dir, f)), { recursive: true }); fs.writeFileSync(path.join(dir, f), typeof v === 'string' ? v : JSON.stringify(v)); };
   write('media/catalog.json', { films: catalog });
   write('pipeline/prompts.json', { paused: 'Paused.', ready: 'Ready.' });
+  clips=Object.fromEntries(Object.entries(clips).map(([id,c])=>[id,{...c,sha256:crypto.createHash('sha256').update('mp3').digest('hex')}]));
   write('media/prompts/prompts.json', clips);
   for (const c of Object.values(clips)) write(c.audio, 'mp3');
   return dir;
@@ -35,9 +37,11 @@ test('build output is deterministic', t => {
   assert.equal(JSON.stringify(buildData(dir).data), JSON.stringify(buildData(dir).data));
 });
 
-test('moment orientation reuses existing measured speech and does not add required guidance clips', t => {
+test('all open-film moments have short recorded identities independent of timed narration', t => {
   const catalog = JSON.parse(fs.readFileSync('preview/media/catalog.json')).films;
   const dir = root(t, {catalog, clips: JSON.parse(fs.readFileSync('media/prompts/prompts.json'))});
+  fs.mkdirSync(path.join(dir,'content'),{recursive:true});
+  fs.copyFileSync('content/moment-labels.json',path.join(dir,'content/moment-labels.json'));
   fs.copyFileSync('pipeline/prompts.json', path.join(dir,'pipeline/prompts.json'));
   for (const entry of catalog) {
     const pkg = JSON.parse(fs.readFileSync(`preview/${entry.package}`));
@@ -48,18 +52,40 @@ test('moment orientation reuses existing measured speech and does not add requir
       fs.copyFileSync(`preview/${clip.audio}`,target);
     }
   }
-  const {data, missingClips} = buildData(dir, () => {}, {preview:true});
+  fs.cpSync('media/moment-labels',path.join(dir,'media/moment-labels'),{recursive:true});
+  const {data, missingClips, missingMomentClips} = buildData(dir, () => {}, {preview:true});
   assert.equal(missingClips.length, 0);
-  const timed = film => film.package.events.filter(e => film.package.cues.some(c => c.events.length === 1 && c.events[0] === e.id));
-  assert.equal(Object.keys(data.momentPrompts).length, data.films.reduce((n, f) => n + timed(f).length, 0));
+  assert.equal(missingMomentClips.length, 0);
+  assert.equal(Object.keys(data.momentPrompts).length, 25);
   for (const film of data.films) for (const event of film.package.events) {
-    if (!timed(film).includes(event)) {
-      // No short timed form: no spoken preview, so Select is not preceded by the same description.
-      assert.equal(event.labelPrompt, undefined); continue;
-    }
     const clip = data.momentPrompts[event.labelPrompt];
     assert.ok(clip && fs.existsSync(path.join(dir,clip.audio)));
-    assert.equal(event.label, clip.text.replace(/[.!?]$/, ''));
-    assert.notEqual(clip.text, event.recovery.text, 'preview differs from the description Select plays');
+    assert.equal(clip.text, `${event.label}.`);
+    assert.notEqual(clip.audio,event.recovery.audio);
+    assert.ok(clip.text.length < event.recovery.text.length, 'identity is shorter than the answer');
+    assert.ok(clip.duration > 0 && clip.duration < 5);
   }
+  const id = Object.keys(data.momentPrompts)[0];
+  fs.writeFileSync(path.join(dir,data.momentPrompts[id].audio),'changed recording');
+  assert.deepEqual(buildData(dir,()=>{}, {preview:true}).missingMomentClips,[id], 'changed identity bytes cannot masquerade as the recorded name');
+});
+
+
+test('supplemental option recordings require current text and intact bytes', t => {
+  const dir=root(t);fs.mkdirSync(path.join(dir,'content'),{recursive:true});
+  fs.copyFileSync('content/interface-prompts.json',path.join(dir,'content/interface-prompts.json'));
+  fs.cpSync('media/interface',path.join(dir,'media/interface'),{recursive:true});
+  const data=buildData(dir);assert.equal(Object.keys(data.data.prompts).length,4);
+  assert.equal(data.data.prompts.options_open.text,'Viewing options opened.');
+  fs.writeFileSync(path.join(dir,'media/interface/options_open.mp3'),'altered');
+  assert.ok(buildData(dir).missingClips.includes('options_open'));
+});
+
+
+test('altered Polly bytes and missing fingerprints cannot enter the bundle', t => {
+  const dir=root(t,{clips:{ready:{text:'Ready.',audio:'media/prompts/ready.mp3',duration:1}}});
+  assert.ok(buildData(dir).data.prompts.ready);fs.writeFileSync(path.join(dir,'media/prompts/ready.mp3'),'other bytes');
+  assert.equal(buildData(dir).data.prompts.ready,undefined);
+  const file=path.join(dir,'media/prompts/prompts.json'),rows=JSON.parse(fs.readFileSync(file));delete rows.ready.sha256;
+  fs.writeFileSync(file,JSON.stringify(rows));assert.ok(buildData(dir).missingClips.includes('ready'));
 });

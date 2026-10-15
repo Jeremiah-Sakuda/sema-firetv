@@ -1,74 +1,79 @@
 # Sema
 
-### Audio description that waits for you.
+### Audio description at your pace.
 
-**On Fire TV, press Select and the film pauses. Sema then describes the visual moment you just missed, using only what has already been on screen. Press Play to continue from the same frame.**
+**Sema gives blind and low-vision viewers control over the visual story on Fire TV: choose the amount of description, revisit a visual moment from the remote, then continue from the same frame.**
 
 Built for **Fire TV / Vega OS**, with an AWS authoring pipeline. Code: [MIT](LICENSE). Film excerpts: [CC BY 3.0](media/ATTRIBUTION.md).
 
 ## One scene
 
-In the bridge scene of *Tears of Steel*, two characters talk almost continuously from 23.05 s to 45.22 s. The only pauses in those 22 seconds last 1.21 s and 0.75 s. A conventional description track has no room there to say who is on the bridge, or that the woman raises a mechanical right hand toward the man.
+In the bridge scene of *Tears of Steel*, the recorded dialogue intervals span almost all of 23.05–45.22 s. The two gaps last 1.21 s and 0.75 s. The included fixed Standard soundtrack leaves two visual details undescribed: a man and woman standing beside a canal, and the woman raising a mechanical right hand toward the man. Sema makes both descriptions available while the film is paused.
 
-![Sema on the Vega Virtual Device, paused at 0:35 in the Tears of Steel bridge scene. The panel reads "Revisiting a visual moment", and the description text at the top reads "The woman raises her mechanical right hand toward the man."](docs/vega/screenshots/60-bridge-revisit-mechanical-hand.png)
+![Sema on the Vega Virtual Device, paused at 0:35 in the Tears of Steel bridge scene. The panel reads "Revisiting a visual moment", and the description text reads "The woman raises her mechanical right hand toward the man."](docs/vega/screenshots/60-bridge-revisit-mechanical-hand.png)
 
-Sema handles this from the remote:
+*Vega Virtual Device capture from October 8; the current controls have since been refined.*
 
 1. **Select** pauses the film and focuses **Revisit latest moment**.
 2. **Select** again: *"The woman raises her mechanical right hand toward the man."*
-3. **Right**, then **Select** on **Earlier moment**: *"A man and a woman stand beside a canal on a metal bridge."*
+3. After the description finishes, focus returns to Resume. Press **Right twice**, then **Select** on **Earlier moment**: *"A man and a woman stand beside a canal on a metal bridge."*
 4. **Play** continues from the paused frame.
 
-Four of the 13 described moments in that excerpt fit in no dialogue gap, so Revisit is the only way to hear them. Revisit never describes anything later than the current film position.
+Four of the excerpt's 13 described moments are available through Revisit without a timed cue in this package. This example shows additional visual information becoming available at the viewer's request. The included Standard mix uses Sema's own narration assets; it is not the film's official audio-description track.
+
+## Who it is for
+
+The viewer is a blind or low-vision person who wants to choose how much visual description to hear and when to pause for it. In [Describe Now](https://arxiv.org/abs/2411.11835), a study with 20 blind and low-vision participants found differing preferences for description frequency and detail across videos. That external research informs Sema's choice of controls.
+
+The intended first adopter is an **independent film publisher with a small licensed catalog and control of its Fire TV app**. That publisher can supply authorized films, assign an editor and integrate the player. A practical first deployment would be one short-film collection: prepare and review each title's description once, then offer detail selection and Revisit to viewers through the remote.
+
+For the publisher, the proposed value is an accessible viewing experience it can offer within its own app while retaining control of the scripts and release. Sema provides an MIT-licensed reference player and an authoring pipeline that a publisher can adapt. The proposed adoption path uses the publisher's own catalog and app; the current prototype contains two excerpts. It does not connect to Prime Video or other streaming services.
 
 ## What Sema does
 
 | Viewer action | Behavior |
 |---|---|
-| Revisit a moment | The film stays paused while Sema describes the latest visual moment. Earlier moment steps further back. Only moments at or before the current position are offered. |
-| Recover interrupted narration | If a critical description is cut off by seeking, a stall or a dialogue overlap, it stays available until heard or deliberately skipped. |
-| Timed description | Short descriptions play in the measured gaps between dialogue lines and never overlap speech. |
-| Detail level | Essential, Standard or Rich. Where a gap is very short, the levels share wording: Rich matches Standard in 9 of 19 windows. |
-| Spoken guidance or VoiceView | Recorded prompts announce controls and state changes. When VoiceView is on, Sema turns its own guidance off unless the viewer has chosen otherwise, so each control is spoken once. |
-| Resume and preferences | Detail level and film position persist; Start over requires confirmation. |
+| Choose the amount of description | Essential, Standard or Rich. Available dialogue gaps constrain length: Rich shares Standard wording in 9 of 19 windows. |
+| Revisit a moment | The film stays paused while Sema describes an available visual moment. Earlier moment steps further back. Only events timestamped at or before the current position are offered. |
+| Recover interrupted narration | An interrupted critical description is offered first and stays available until heard or deliberately skipped. |
+| Keep watching | Timed descriptions fit within the package's recorded dialogue gaps. Fit is checked again when narration starts; stalls and late starts have recovery paths. |
+| Use spoken guidance or VoiceView | Recorded prompts announce controls and state changes. VoiceView detection disables Sema's guidance by default; a viewer's explicit preference takes precedence. |
+| Resume and keep preferences | Detail level and film position persist. More options contains text, spoken guidance, help and confirmed Start over. Back closes these options first. |
 
-The catalog contains two **72-second** Blender open-film excerpts: *Sintel — The Rooftop* and *Tears of Steel — The Bridge*. They include 25 described moments, 57 timed narration variants and 65 recorded guidance prompts. All media needed to run the prototype is in the repository.
+The catalog contains two **72-second** Blender open-film excerpts: *Sintel — The Rooftop* and *Tears of Steel — The Bridge*. They include 25 described moments, 57 timed narration variants, 67 recorded control prompts and 25 concise recorded moment names. All playback media is in the repository. Film narration and 63 control prompts use Amazon Polly; moment names and four viewing-options prompts use local Piper speech. Watching uses local files and makes no model or cloud-service call.
 
-## How it differs
+## Publisher workflow
 
-- **Extended audio description.** WCAG names description that pauses the video *extended audio description*. Usually the author decides where the pauses go, and everyone gets them. In Sema, the viewer decides when to pause and what to hear again.
-- **Related research.** Customizable description has been studied ([CustomAD, ASSETS 2024](https://www.guoanhong.com/papers/ASSETS24-CustomAD.pdf)), and so has pairing it with conversational questions about a video ([ViDscribe, 2026](https://arxiv.org/abs/2603.14662)). Sema does not claim either idea. Its contribution is narrower: on-demand description that:
-  - works with a TV remote alone;
-  - is spoiler-safe by construction;
-  - tracks critical facts across interruptions;
-  - is prepared ahead of time, so no model call or network request happens while someone watches.
+1. **Supply an authorized film.** Amazon S3 holds the authoring input; Amazon Transcribe supplies dialogue timestamps.
+2. **Prepare descriptions.** Bedrock Nova Pro observes timestamped frames. Nova 2 Lite drafts three detail levels and a separate Revisit description for each moment.
+3. **Render and check.** Amazon Polly voices the lines. The pipeline measures each timed recording, retries lines that do not fit and checks required facts.
+4. **Edit and approve.** The production workflow requires editorial decisions bound to the exact source, timing and audio.
+5. **Package for the publisher's app.** The player uses prepared media locally, so the viewer can request a description without waiting for generation.
 
-## For publishers: AI-authored, human-gated
+The [pipeline guide](pipeline/README.md) documents the working CLI and release checks. Publisher integration is an adaptation of this reference implementation; a self-service publishing product and a full-length catalog have not been built.
 
-An app publisher on Vega would use Sema's [authoring pipeline](pipeline/README.md) to add this kind of description to its own catalog:
+Measured in the [October 4 live run](docs/evidence/aws/LIVE-PILOT-2026-10-04.json):
 
-1. **Amazon Transcribe** finds the dialogue intervals.
-2. **Amazon Bedrock (Nova Pro)** observes timestamped frames.
-3. **Nova 2 Lite** writes three levels plus a separate Revisit description for each moment.
-4. **Amazon Polly** voices them.
-5. Every rendered clip is measured against its gap, and lines that don't fit are shortened and rendered again.
-6. A human reviewer approves each line before release. The approval records are bound to the exact source, timing and audio.
-
-Measured in the [October 4 live run](docs/evidence/aws/LIVE-PILOT-2026-10-04.json) on the two 72-second excerpts:
-
-| | Sintel | Tears of Steel |
+| Authoring measurement, per 72-second excerpt | Sintel | Tears of Steel |
 |---|---:|---:|
-| Estimated AWS cost (list price, including reruns) | $0.38 | $0.32 |
-| Automated stage time | 97 s | 86 s |
-| Narration variants that fit on first render | 32 of 33 | 22 of 24 |
+| Estimated AWS list-price usage, including recorded reruns | $0.38 | $0.32 |
+| Latest automated stage total | 97 s | 86 s |
+| Sum of recorded attempt durations | 232 s | 180 s |
+| Timed variants fitting on first render | 32 of 33 | 22 of 24 |
 
-The machine drafts were not good enough on their own. An AI editorial pass outside the pipeline changed 78 of the 83 drafted lines; [`content/editorial/`](content/editorial/) records every before-and-after. Human review time has not been measured yet, and that number decides the real cost. [Recovery coverage](docs/evidence/recovery-coverage.md) on the drafts: at every half-second, Revisit has a moment to offer, and none comes from the future.
+These are pilot service estimates and recorded stage durations, not total production cost or end-to-end elapsed time. An AI editorial pass outside the pipeline changed 78 of 83 drafted lines; [`content/editorial/`](content/editorial/) retains the before-and-after record. Human editorial effort has not been measured. That work, publisher integration and distribution must be accounted for before estimating a commercial catalog's cost.
 
-## Status
+## What makes the interaction distinctive
 
-- **Narration:** the included narration is an AI-prepared draft and has **not** been approved by a human reviewer. The release gate (`npm run release:check`) refuses to package it as production content.
-- **Platform:** tested in the browser and in the Vega Virtual Device, including VoiceView detection. Not yet tested on physical Fire TV hardware. VoiceView speech is also untested, because the simulator has no speech engine.
-- **Viewers:** no sessions with blind or low-vision viewers yet. These results are engineering checks, not evidence of preference or comprehension.
+Sema combines detail choice, timestamp-bounded Revisit and interruption recovery in a remote-only Fire TV experience. The publisher prepares descriptions ahead of time; the viewer controls when to hear more.
+
+[Extended audio description](https://www.w3.org/WAI/WCAG22/Understanding/extended-audio-description-prerecorded.html) provides extra description by pausing video. Related work explores viewer-controlled timing and detail ([Describe Now](https://arxiv.org/abs/2411.11835)), customizable description ([CustomAD, ASSETS 2024](https://www.guoanhong.com/papers/ASSETS24-CustomAD.pdf)) and conversational video description ([ViDscribe, 2026](https://arxiv.org/abs/2603.14662)). Sema's contribution is the implemented television workflow: D-pad control, past-moment browsing, preserved interrupted facts and locally prepared playback.
+
+## Prototype scope
+
+- **Content:** two excerpts with AI-prepared narration. Production packaging requires separate editorial approval; the included prototype does not carry that approval.
+- **Platform:** the October 8 build ran in the Vega Virtual Device. The October 15 source passed browser checks and an aarch64 SDK build; that package has not been run in the simulator. Physical Fire TV and audible VoiceView remain unverified.
+- **Behavior:** timestamp checks exclude later events from Revisit selection. Description accuracy depends on the authored content; event selection alone is not a semantic spoiler guarantee.
 
 ## Try it
 
@@ -81,16 +86,17 @@ npm run preview
 
 Open **http://127.0.0.1:4173**. Use arrow keys as the D-pad, Enter as Select, Escape as Back and Space as Play/Pause. For the target platform, follow the [Vega build guide](docs/vega/BUILD-AND-RUN.md).
 
-To try the bridge scene, open *Tears of Steel* and play past 38 seconds. Then follow the steps under "One scene".
+For the bridge example, start *Tears of Steel* from the beginning and pause at about **38 seconds**, before the next event at 44 seconds. Then follow the four steps under "One scene".
+
+To hear detail choice, compare the *Sintel* alley cue at about 6 seconds in separate runs: Essential says *"A woman walks."* Rich says *"A red-haired woman carries a staff through a narrow sunlit alley."*
 
 ## Verified behavior
 
-On October 8, 2026, these suites passed:
-- 103 JavaScript tests;
-- 75 offline pipeline tests;
-- 5 native host tests.
+The October 14 checks passed 129 JavaScript tests, 75 offline pipeline tests, eight complete real-media browser runs and both films' interruption/revisit/resume paths. Final checks decoded all 25 moment names and four viewing-options prompts. Browser output was muted; these checks establish media events and interaction behavior, not heard-audio quality. The aarch64 Vega package built with 200 matched assets.
 
-Real-media browser runs covered both films at all three levels, plus both fixed Standard soundtracks. Interruption, retry, revisit and resume ran on both films in the browser and in the Vega Virtual Device. [Test commands, evidence and scope](docs/TESTING.md).
+October 15 checks passed 133 JavaScript tests, both description contracts, repository checks and the focused real-media keyboard flow through Revisit, two Right presses to Earlier moment, resume and each Back action. The updated aarch64 package built with 200 matched playback assets and was not launched.
+
+Earlier Vega runtime observations and five native host tests retain their October 8 date. [Test commands, evidence and scope](docs/TESTING.md) distinguish those observations from current browser and build checks.
 
 ```sh
 npm test
@@ -112,6 +118,10 @@ npm run content:check
 | `tests/`, `tools/` | Regression tests, bundling, media checks and platform diagnostics |
 | `docs/` | Setup, architecture, evidence, friction log and developer feedback |
 
-[Documentation index](docs/README.md) · [Architecture](docs/ARCHITECTURE.md) · [Friction log](docs/FRICTION-LOG.md) · [Product feedback](docs/PRODUCT-FEEDBACK.md) · [Contributing](CONTRIBUTING.md)
+[Documentation index](docs/README.md) · [Architecture](docs/ARCHITECTURE.md) · [Viewing language](GLOSSARY.md) · [Friction log](docs/FRICTION-LOG.md) · [Product feedback](docs/PRODUCT-FEEDBACK.md) · [Contributing](CONTRIBUTING.md)
 
-Sema operates its own small catalog. It does not connect to Prime Video or other streaming services. Film credits and adaptation details are in [media attribution](media/ATTRIBUTION.md).
+Film credits and adaptation details are in [media attribution](media/ATTRIBUTION.md).
+
+## Prepare the source handoff
+
+Run `npm run submission:prepare` after `npm ci`. It exports the current public source, verifies an independent copy with an offline dependency install, tests and prototype build, and produces a source archive plus per-file hashes. Private drafts and generated files are excluded. Outputs remain under `.local/submission/kit/`; the command does not publish anything.

@@ -1,0 +1,152 @@
+{
+  "moment_sintel_dragon_city_view": {
+    "text": "Sunlit city.",
+    "audio": "media/moment-labels/moment_sintel_dragon_city_view.mp3",
+    "duration": 0.986875,
+    "sha256": "2858531fdee0d724bbb4e49c7838e3cb9e116745e94d2452be2772787ef63650"
+  },
+  "moment_sintel_dragon_woman_in_alley": {
+    "text": "Woman in the alley.",
+    "audio": "media/moment-labels/moment_sintel_dragon_woman_in_alley.mp3",
+    "duration": 1.102958,
+    "sha256": "f89bac12d056fb53197efd979057a28dcd520f3985b075b18344c0e882799c08"
+  },
+  "moment_sintel_dragon_woman_lifts_lid": {
+    "text": "Opening the lid.",
+    "audio": "media/moment-labels/moment_sintel_dragon_woman_lifts_lid.mp3",
+    "duration": 0.97525,
+    "sha256": "e0b61f9db300122887d93435674b493ac6cc3fe875fbf104a54206e1a5791baf"
+  },
+  "moment_sintel_dragon_woman_holds_food": {
+    "text": "Food in her hand.",
+    "audio": "media/moment-labels/moment_sintel_dragon_woman_holds_food.mp3",
+    "duration": 1.172625,
+    "sha256": "e6dedfa3532efc8e39b8b9c004405417628a8131d97d4689e87998c77c33000d"
+  },
+  "moment_sintel_dragon_woman_climbs_roof": {
+    "text": "Climbing the roof.",
+    "audio": "media/moment-labels/moment_sintel_dragon_woman_climbs_roof.mp3",
+    "duration": 0.986875,
+    "sha256": "a7fdcfd38d668e8ee3d42addf2cc93624c36bbc915e064075dd046152f3811b1"
+  },
+  "moment_sintel_dragon_injured_dragon": {
+    "text": "Injured dragon.",
+    "audio": "media/moment-labels/moment_sintel_dragon_injured_dragon.mp3",
+    "duration": 0.986875,
+    "sha256": "91bbdaec823b2e2543b397dea00171c0d496915ad00c9d799a609246816f5faf"
+  },
+  "moment_sintel_dragon_torn_wing": {
+    "text": "Torn wing.",
+    "audio": "media/moment-labels/moment_sintel_dragon_torn_wing.mp3",
+    "duration": 0.673958,
+    "sha256": "2203613fad4bcec8d22ccea72aea633a40df63f7dfd1872b9d97a901e1980bd9"
+  },
+  "moment_sintel_dragon_woman_kneels": {
+    "text": "Kneeling beside the dragon.",
+    "audio": "media/moment-labels/moment_sintel_dragon_woman_kneels.mp3",
+    "duration": 1.520917,
+    "sha256": "b03d1f6a402ef73d643df7b38d4c8e01eb0cd878cbb937a892c6749cba39f829"
+  },
+  "moment_sintel_dragon_offered_hand": {
+    "text": "Offering a hand.",
+    "audio": "media/moment-labels/moment_sintel_dragon_offered_hand.mp3",
+    "duration": 1.044917,
+    "sha256": "70b255cb5c956d8f0188a5377d59c8473f59646cc0cb21ab5ff15da128d6b781"
+  },
+  "moment_sintel_dragon_dragon_in_lap": {
+    "text": "Dragon in her lap.",
+    "audio": "media/moment-labels/moment_sintel_dragon_dragon_in_lap.mp3",
+    "duration": 1.230667,
+    "sha256": "df6ca37461101d3069cfb1979dd924be6b1d6153f6cfaf5f9d23cb3a5b7f8078"
+  },
+  "moment_sintel_dragon_woman_and_dragon": {
+    "text": "Holding the dragon.",
+    "audio": "media/moment-labels/moment_sintel_dragon_woman_and_dragon.mp3",
+    "duration": 1.068125,
+    "sha256": "92c112c6ca3cf7495a64969876d673876f5a4aef1725ee7a02def7ec06d5b132"
+  },
+  "moment_sintel_dragon_bowl_down": {
+    "text": "Lowering a bowl.",
+    "audio": "media/moment-labels/moment_sintel_dragon_bowl_down.mp3",
+    "duration": 0.894,
+    "sha256": "2d515aa0bbda9a98e4fc041838d01854829cb951f5bf63ecbe40f8762f7aad8c"
+  },
+  "moment_tears_of_steel_blender_credit": {
+    "text": "Opening credit.",
+    "audio": "media/moment-labels/moment_tears_of_steel_blender_credit.mp3",
+    "duration": 1.010083,
+    "sha256": "b5304ee0bbbd1e8c88c457a1d8ff16e007fd910d2764c1af81b856535b47683b"
+  },
+  "moment_tears_of_steel_rocket_engines": {
+    "text": "Rocket engines.",
+    "audio": "media/moment-labels/moment_tears_of_steel_rocket_engines.mp3",
+    "duration": 1.126167,
+    "sha256": "471fcb34aeb1089ff926de2f88cfb6f0d88ee313f11829de8d92c77d97afd83e"
+  },
+  "moment_tears_of_steel_rocket_over_city": {
+    "text": "Rocket over the city.",
+    "audio": "media/moment-labels/moment_tears_of_steel_rocket_over_city.mp3",
+    "duration": 1.126167,
+    "sha256": "15c1d5ae27eb0853164e6969d5d1d47b333d1a73ce69fc1c8265f3567c26167a"
+  },
+  "moment_tears_of_steel_pair_on_bridge": {
+    "text": "People on the bridge.",
+    "audio": "media/moment-labels/moment_tears_of_steel_pair_on_bridge.mp3",
+    "duration": 1.2655,
+    "sha256": "09810de1717de354b9379a0bfea1d1d384efcc09d15f828beeb3671cec58e1c1"
+  },
+  "moment_tears_of_steel_mechanical_hand": {
+    "text": "Mechanical hand.",
+    "audio": "media/moment-labels/moment_tears_of_steel_mechanical_hand.mp3",
+    "duration": 1.253875,
+    "sha256": "a6b5be55cf7c7915eb8bc585ac4317ab16dd9edcd21c64597e82a6604ba254da"
+  },
+  "moment_tears_of_steel_forty_years_later": {
+    "text": "Forty years later.",
+    "audio": "media/moment-labels/moment_tears_of_steel_forty_years_later.mp3",
+    "duration": 1.161,
+    "sha256": "d42b989b40d29bc48bec784ba817f03facdacddfa96190d3c6734c5373184b05"
+  },
+  "moment_tears_of_steel_wireframe_figures": {
+    "text": "Wireframe figures.",
+    "audio": "media/moment-labels/moment_tears_of_steel_wireframe_figures.mp3",
+    "duration": 1.439667,
+    "sha256": "ed593c884ea44c477898b202b23fa87a0d35f9af24e6bd2ef3770f94d79efe08"
+  },
+  "moment_tears_of_steel_control_panel": {
+    "text": "Control knob.",
+    "audio": "media/moment-labels/moment_tears_of_steel_control_panel.mp3",
+    "duration": 0.894,
+    "sha256": "d8f8190879de7864630a505726d56a00d1c02ec0ed0003b47ae53583feb97041"
+  },
+  "moment_tears_of_steel_workers_at_machine": {
+    "text": "Workers at the machine.",
+    "audio": "media/moment-labels/moment_tears_of_steel_workers_at_machine.mp3",
+    "duration": 1.404833,
+    "sha256": "a4bee529e119b7aa6202842f33fc7227a460745e10ac1d1ff31c4efae6a2710b"
+  },
+  "moment_tears_of_steel_brain_on_platform": {
+    "text": "Brain on a platform.",
+    "audio": "media/moment-labels/moment_tears_of_steel_brain_on_platform.mp3",
+    "duration": 1.381583,
+    "sha256": "ba44add1539352216af4716dd390261f7b96456963a1c3cee84e518d39924c3a"
+  },
+  "moment_tears_of_steel_eye_device": {
+    "text": "Device over an eye.",
+    "audio": "media/moment-labels/moment_tears_of_steel_eye_device.mp3",
+    "duration": 1.439667,
+    "sha256": "cc8ad328006f0048742253f1660b52f1b5fd9de97d939c5d2f818ca806affd4f"
+  },
+  "moment_tears_of_steel_film_title": {
+    "text": "Film title.",
+    "audio": "media/moment-labels/moment_tears_of_steel_film_title.mp3",
+    "duration": 0.882375,
+    "sha256": "651669d9eec9b043256a6b76dbb831aa28ce776de54592c6486660309afa0597"
+  },
+  "moment_tears_of_steel_dark_city": {
+    "text": "Dark city.",
+    "audio": "media/moment-labels/moment_tears_of_steel_dark_city.mp3",
+    "duration": 0.812708,
+    "sha256": "8025893e539ac77d1fee99d3d7ed33fecaa8cb69931883da41c070af1bf01cc9"
+  }
+}

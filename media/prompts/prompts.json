@@ -2,326 +2,379 @@
   "welcome": {
     "text": "Welcome to Sema. Choose a film with the arrows, then press Select.",
     "audio": "media/prompts/welcome.mp3",
-    "duration": 4.344
+    "duration": 4.344,
+    "sha256": "54c9954a1b9a6331867fad321a60681a413a2a3aab9b8826310d5e47c12c057c"
   },
   "onboarding": {
     "text": "Choose Essential for key actions, Standard for story and context, or Rich for more visual detail where dialogue allows. Press Select during the film to change your level or revisit a moment. Earlier moment describes an older scene without rewinding. Using VoiceView? Turn spoken guidance off to avoid hearing controls twice.",
     "audio": "media/prompts/onboarding.mp3",
-    "duration": 19.776
+    "duration": 19.776,
+    "sha256": "67f0a909671da454575bfa03d7a721c513bf257de169a72ab9da99e699ac5940"
   },
   "choose_level": {
     "text": "Choose a description level, then select Play.",
     "audio": "media/prompts/choose_level.mp3",
-    "duration": 2.76
+    "duration": 2.76,
+    "sha256": "6471d65ed6b4890039dc4f4ba2c126d344b5ccc81754a200a922a45a3f9c2098"
   },
   "ready": {
     "text": "Ready. You can change the description level first, if you like.",
     "audio": "media/prompts/ready.mp3",
-    "duration": 4.152
+    "duration": 4.152,
+    "sha256": "bfb293f162d4a05385d2007164032945b8f1a7218c20f2f18265804d657e6964"
   },
   "resume_offer": {
     "text": "You stopped partway through this film. You can resume, or start over.",
     "audio": "media/prompts/resume_offer.mp3",
-    "duration": 4.416
+    "duration": 4.416,
+    "sha256": "0cebd8e441a3eccd5f0bf89d78859067d198af9dc02b72546006420d6b88b050"
   },
   "package_changed": {
     "text": "This film's description was updated since you last watched, so it starts from the beginning.",
     "audio": "media/prompts/package_changed.mp3",
-    "duration": 4.968
+    "duration": 4.968,
+    "sha256": "04101c09e7474a3d0591be09b02ffadbaf03e8d35b6eaaa7be41eac62a7f8336"
   },
   "paused": {
     "text": "Paused.",
     "audio": "media/prompts/paused.mp3",
-    "duration": 0.792
+    "duration": 0.792,
+    "sha256": "07706c5b3ece7269986dc7ab1ad952554e9089e44eb66d1921a5ec99831b0237"
   },
   "paused_return": {
     "text": "Paused. Press Back again to leave the film.",
     "audio": "media/prompts/paused_return.mp3",
-    "duration": 3.072
+    "duration": 3.072,
+    "sha256": "18bb6ca83d795e116eeff68202cb45db33bce2eb3f31b376233b4610398aa2a3"
   },
   "interrupted": {
     "text": "A description was interrupted.",
     "audio": "media/prompts/interrupted.mp3",
-    "duration": 1.68
+    "duration": 1.68,
+    "sha256": "267ca09430e9ca0e51bdcdee46ea7280a2899a52ef0b319a9ab512923081357d"
   },
   "delayed": {
     "text": "A description was delayed.",
     "audio": "media/prompts/delayed.mp3",
-    "duration": 1.584
+    "duration": 1.584,
+    "sha256": "647af15f8305f160d6bb1378ec98e4ae289a66bdcf39d0d51bfcf666cee1dae7"
   },
   "recovery_complete": {
     "text": "Description complete.",
     "audio": "media/prompts/recovery_complete.mp3",
-    "duration": 1.416
+    "duration": 1.416,
+    "sha256": "c6277065b42ba0cb3e7781a1ff7bece73335a68289713331000d47902deb5fc3"
   },
   "recovery_more": {
     "text": "Description complete. Another missed description is waiting.",
     "audio": "media/prompts/recovery_more.mp3",
-    "duration": 3.72
+    "duration": 3.72,
+    "sha256": "2e2efc5da3f1f8e68bf47d89c05f6407902fc4308c7d406714487a9d13218d04"
   },
   "recovery_stopped": {
     "text": "Description stopped.",
     "audio": "media/prompts/recovery_stopped.mp3",
-    "duration": 1.32
-  },
-  "suggest_rich": {
-    "text": "You asked about this part twice. Rich adds more visual detail.",
-    "audio": "media/prompts/suggest_rich.mp3",
-    "duration": 4.44
+    "duration": 1.32,
+    "sha256": "e4d67ac5b4ed410078b2743fce4b389a662c4d3cf70a9235b43c9563f0c3b99f"
   },
   "no_moment": {
     "text": "No visual moment is available yet. Play a little further, then try again.",
     "audio": "media/prompts/no_moment.mp3",
-    "duration": 5.064
+    "duration": 5.064,
+    "sha256": "7a3ab2367e06f1442a9ac39c1719b453f6b3dd6f8efcd0bf4a69d1807c3b0f93"
   },
   "film_ended": {
     "text": "The film has ended.",
     "audio": "media/prompts/film_ended.mp3",
-    "duration": 1.2
+    "duration": 1.2,
+    "sha256": "129e3eb5e38ca94003aec38778d723af6d473a7d04096b7e7bf57ea4d687cbe7"
   },
   "film_ended_pending": {
     "text": "The film has ended. A missed description is waiting.",
     "audio": "media/prompts/film_ended_pending.mp3",
-    "duration": 3.336
+    "duration": 3.336,
+    "sha256": "ad74d810fabc60b6fcfb36594cc083fd05d1419f2d28d330ede2bc01424dfe33"
   },
   "start_over": {
     "text": "Back at the start.",
     "audio": "media/prompts/start_over.mp3",
-    "duration": 1.224
+    "duration": 1.224,
+    "sha256": "3bc9c5afff9f08944723d814aac0592d1ea4b2019202b5a23913b4cfe885caad"
   },
   "seek_paused": {
     "text": "Paused after skipping.",
     "audio": "media/prompts/seek_paused.mp3",
-    "duration": 1.44
+    "duration": 1.44,
+    "sha256": "7ff73e2a88880a18e96f6a00a0d613b3947ff9c0941d58c8eb34a995c6498b48"
   },
   "buffering": {
     "text": "Playback paused while the film loads.",
     "audio": "media/prompts/buffering.mp3",
-    "duration": 2.232
+    "duration": 2.232,
+    "sha256": "828d527fd51d889e6d8c008bd1d1f7c56129117cb8e91eb62e926ae58e7573ea"
   },
   "level_off": {
     "text": "Description off.",
     "audio": "media/prompts/level_off.mp3",
-    "duration": 1.152
+    "duration": 1.152,
+    "sha256": "5e9d2554a77a273aba925d2ec15ed95fe8cbee3266f4edfc1e01b8f781fefe8c"
   },
   "level_essential": {
     "text": "Essential description: key story moments.",
     "audio": "media/prompts/level_essential.mp3",
-    "duration": 2.664
+    "duration": 2.664,
+    "sha256": "79f5f56c313786879f8f5add2c67f7db2574952cbfee4d9ec8827d4762c4a6e2"
   },
   "level_standard": {
     "text": "Standard description: story and context.",
     "audio": "media/prompts/level_standard.mp3",
-    "duration": 2.904
+    "duration": 2.904,
+    "sha256": "292af1054cdf21c1d91026519f935336b176dcc5f66e05b322b960c5a1899e1e"
   },
   "level_rich": {
     "text": "Rich description: extra visual detail.",
     "audio": "media/prompts/level_rich.mp3",
-    "duration": 2.856
+    "duration": 2.856,
+    "sha256": "c9734b23c2fc253f5126b989ea581c4daf5b89ef3ed31d5dbdd10d22decce7e3"
   },
   "level_fixed": {
     "text": "In this session, the description level is fixed at Standard.",
     "audio": "media/prompts/level_fixed.mp3",
-    "duration": 3.384
+    "duration": 3.384,
+    "sha256": "ecceec20f958bbac1b55b4cdc6752199601bd442940fd7ab6fd69772ecf5b622"
   },
   "text_on": {
     "text": "Description text on.",
     "audio": "media/prompts/text_on.mp3",
-    "duration": 1.536
+    "duration": 1.536,
+    "sha256": "3761987ad58d255cd9e5bed09b93de2edcce098a6461f5078db5dcc49f689f9d"
   },
   "text_off": {
     "text": "Description text off.",
     "audio": "media/prompts/text_off.mp3",
-    "duration": 1.56
+    "duration": 1.56,
+    "sha256": "06656aa09688cad3803f0a6ae8bc5b2f451276c7cf7f589412b5623f5bf537e7"
   },
   "prompts_on": {
     "text": "Spoken guidance on.",
     "audio": "media/prompts/prompts_on.mp3",
-    "duration": 1.512
+    "duration": 1.512,
+    "sha256": "52e7966c77ec0aa6d1ea9b62e142b4a02e3c2b20f85b4800a9b5aa5a434fd8c9"
   },
   "prompts_off": {
     "text": "Spoken guidance off. Use VoiceView to hear the controls.",
     "audio": "media/prompts/prompts_off.mp3",
-    "duration": 3.96
+    "duration": 3.96,
+    "sha256": "833618c9798126c01d0a590f6590248ece062b52660c2feaee5b760bb2335a6b"
   },
   "returning": {
     "text": "Returning to the catalog.",
     "audio": "media/prompts/returning.mp3",
-    "duration": 1.536
+    "duration": 1.536,
+    "sha256": "071b19f4912a1f1d23fd33885ba1720435cc903e8e5825f2ae6b8352da031af4"
   },
   "error_video": {
     "text": "The film could not play.",
     "audio": "media/prompts/error_video.mp3",
-    "duration": 1.416
+    "duration": 1.416,
+    "sha256": "36533964ab27ddab2a06da240c0cafdf0b1328056919eaa783b3b733674b1068"
   },
   "error_audio": {
     "text": "The description could not play.",
     "audio": "media/prompts/error_audio.mp3",
-    "duration": 1.656
+    "duration": 1.656,
+    "sha256": "f92cdd820c07cb1e1212a5e5e390c68b3899fa06d0cd81a7e17839251751ac79"
   },
   "error_package": {
     "text": "This film's description package did not pass its checks, so it cannot play.",
     "audio": "media/prompts/error_package.mp3",
-    "duration": 4.32
+    "duration": 4.32,
+    "sha256": "279b99dc0c0759bd728c515f1be93734ce7b96be42485184d08a1a10a32e6445"
   },
   "help": {
     "text": "Press Select to pause. Choose a description level, revisit the latest moment, or hear an earlier one. Resume continues where you paused. Back returns to the catalog. Fast-forward and rewind move five seconds.",
     "audio": "media/prompts/help.mp3",
-    "duration": 13.872
+    "duration": 13.872,
+    "sha256": "549a1b8bfd206cf3046a4e45039a87f12d9d2de556fde196699341ba0c5b567d"
   },
   "label_play": {
     "text": "Play film",
     "audio": "media/prompts/label_play.mp3",
-    "duration": 0.936
+    "duration": 0.936,
+    "sha256": "599ddaea251cefc121fc97460e38e9bdff9d3d9a7c84b685a8fcc5586a0988e3"
   },
   "label_resume": {
     "text": "Resume film",
     "audio": "media/prompts/label_resume.mp3",
-    "duration": 1.128
+    "duration": 1.128,
+    "sha256": "da2429b9253274c2b79bc7329cd9c3cdd76f04d5d7ffbf12e50a37738448b808"
   },
   "label_resume_skip": {
     "text": "Resume without recovering",
     "audio": "media/prompts/label_resume_skip.mp3",
-    "duration": 1.632
+    "duration": 1.632,
+    "sha256": "52d002ff20c5079e11254f20835aa96a12a6836cf0863fc539b6899504018dbd"
   },
   "label_recover": {
     "text": "Revisit latest moment",
     "audio": "media/prompts/label_recover.mp3",
-    "duration": 1.608
+    "duration": 1.608,
+    "sha256": "3ac938e2da953e14bfa3a8e5b7aafe7dd312c937267cb7e31ff6c17edcdf13a8"
   },
   "label_recover_pending": {
     "text": "Hear missed description",
     "audio": "media/prompts/label_recover_pending.mp3",
-    "duration": 1.488
+    "duration": 1.488,
+    "sha256": "cfd532e2bc1f6b0f1f3a7605e91aa7b26ebb6800ef3a44d4f6fcab97ddc09072"
   },
   "label_start_over": {
     "text": "Start over",
     "audio": "media/prompts/label_start_over.mp3",
-    "duration": 0.984
+    "duration": 0.984,
+    "sha256": "a4c4400e9a2b4c60be0190920f033c14af2a4773305c08040587236541abe80d"
   },
   "label_return": {
     "text": "Return to catalog",
     "audio": "media/prompts/label_return.mp3",
-    "duration": 1.416
+    "duration": 1.416,
+    "sha256": "24d7686a0b121063f425a84becfa9f58320d17205ed603b27d05ce896633c0dc"
   },
   "label_retry": {
     "text": "Try again",
     "audio": "media/prompts/label_retry.mp3",
-    "duration": 0.984
+    "duration": 0.984,
+    "sha256": "ecb284a0a1e69b2a9f0578c64b54e213892a7614eedfe87f118a10f901eca5d8"
   },
   "label_help": {
     "text": "Hear the controls",
     "audio": "media/prompts/label_help.mp3",
-    "duration": 1.248
+    "duration": 1.248,
+    "sha256": "91376b923d98e6fd395a52470d656757f6a3205b0fc713545d08baec345c4479"
   },
   "label_text_on": {
     "text": "Description text, on",
     "audio": "media/prompts/label_text_on.mp3",
-    "duration": 1.896
+    "duration": 1.896,
+    "sha256": "9ecfbbd09d65c1591014e4e032b24b310703cb09cb962afd2bc4a59e253fc283"
   },
   "label_text_off": {
     "text": "Description text, off",
     "audio": "media/prompts/label_text_off.mp3",
-    "duration": 1.872
+    "duration": 1.872,
+    "sha256": "42d969dfaafafec829429bdfd0ae01510626af01e48a82c9eab3894dc118ca6f"
   },
   "label_guidance_on": {
     "text": "Spoken guidance, on",
     "audio": "media/prompts/label_guidance_on.mp3",
-    "duration": 1.896
+    "duration": 1.896,
+    "sha256": "ea9aaeb6c4061464dc72f809185f86a2328deb5c39c182b02de92065b090cb33"
   },
   "label_guidance_off": {
     "text": "Spoken guidance, off",
     "audio": "media/prompts/label_guidance_off.mp3",
-    "duration": 1.896
+    "duration": 1.896,
+    "sha256": "eb38f69bf07afc691f1e09c77a9fe4042e10881998773a21ccc6e5a70fa68d52"
   },
   "label_level_off": {
     "text": "Off. No description.",
     "audio": "media/prompts/label_level_off.mp3",
-    "duration": 2.16
+    "duration": 2.16,
+    "sha256": "104370cadf19fd9bf6041199cf51d4d1f5381495b68b63ab38bc98a7fff5088c"
   },
   "label_level_essential": {
     "text": "Essential. Key story moments.",
     "audio": "media/prompts/label_level_essential.mp3",
-    "duration": 2.544
+    "duration": 2.544,
+    "sha256": "6c2b0e23733eeecae5ade7852aa2166c9b751899d7cf3775e3c7976e01097778"
   },
   "label_level_standard": {
     "text": "Standard. Story and context.",
     "audio": "media/prompts/label_level_standard.mp3",
-    "duration": 2.76
+    "duration": 2.76,
+    "sha256": "80d883de05bff9340593034707b35e1cc3e9c9789be17fcd61ac0eae8a511f92"
   },
   "label_level_rich": {
     "text": "Rich. More visual detail.",
     "audio": "media/prompts/label_level_rich.mp3",
-    "duration": 2.544
+    "duration": 2.544,
+    "sha256": "5de8ebb749fb8a76d339a66787b7b2d5269eb0df8e7491cc24a59e230014ba6d"
   },
   "label_level_off_selected": {
     "text": "Off. No description. Current level.",
     "audio": "media/prompts/label_level_off_selected.mp3",
-    "duration": 3.456
+    "duration": 3.456,
+    "sha256": "a87ee88dd0ace4dd6607c5f201db1109333990b1d2b5f4071b05b7aae6927d94"
   },
   "label_level_essential_selected": {
     "text": "Essential. Key story moments. Current level.",
     "audio": "media/prompts/label_level_essential_selected.mp3",
-    "duration": 3.864
+    "duration": 3.864,
+    "sha256": "18158b9ba2638ee427d543809bbbd09367ef1f408419fa78a8825c7c48c5c065"
   },
   "label_level_standard_selected": {
     "text": "Standard. Story and context. Current level.",
     "audio": "media/prompts/label_level_standard_selected.mp3",
-    "duration": 4.08
+    "duration": 4.08,
+    "sha256": "6422aff6493fe09b5f8d11dc966f819dd774f0db4cf527aa3179452b7bbc9244"
   },
   "label_level_rich_selected": {
     "text": "Rich. More visual detail. Current level.",
     "audio": "media/prompts/label_level_rich_selected.mp3",
-    "duration": 3.84
+    "duration": 3.84,
+    "sha256": "8559ccfd53ae8fe9e751f52713c70076dea35312afa0fc83950b80c23181bba8"
   },
   "label_level_standard_suggested": {
     "text": "Standard. Story and context. Suggested.",
     "audio": "media/prompts/label_level_standard_suggested.mp3",
-    "duration": 4.128
+    "duration": 4.128,
+    "sha256": "e923783850192d300670f860289b2c0e68f1f35f5f2fc160aa8ed7f5f308e08f"
   },
   "film_tears_of_steel": {
     "text": "Tears of Steel. The Bridge. A seventy-two second science fiction excerpt.",
     "audio": "media/prompts/film_tears_of_steel.mp3",
-    "duration": 5.352
+    "duration": 5.352,
+    "sha256": "ea6d0a9a2c24c322777ac36ce7c15b86056216ee3ffced25bacb6954b13812ef"
   },
   "film_sintel_dragon": {
     "text": "Sintel. The Rooftop. A seventy-two second excerpt. A young woman explores a sunlit city.",
     "audio": "media/prompts/film_sintel_dragon.mp3",
-    "duration": 7.008
+    "duration": 7.008,
+    "sha256": "c89feb9342cdff48dd01d7dc7ab180e786a2741944eecbd28b3b96145882bee5"
   },
   "film_red_envelope_fixture": {
     "text": "The red envelope. Fifteen second engineering test clip.",
     "audio": "media/prompts/film_red_envelope_fixture.mp3",
-    "duration": 3.984
+    "duration": 3.984,
+    "sha256": "9450a6af405a21ef9570bf7b0102f5b9f4aa337e5115f4d6f8f2a15661e9b252"
   },
   "start_over_confirm": {
     "text": "Press Select again to start over from the beginning.",
     "audio": "media/prompts/start_over_confirm.mp3",
-    "duration": 2.616
+    "duration": 2.616,
+    "sha256": "5f0dca3dd7a739e175f9610069098eeeec486c392fd8c9933990445193a88ab3"
   },
   "label_start_over_confirm": {
     "text": "Press Select again to start over.",
     "audio": "media/prompts/label_start_over_confirm.mp3",
-    "duration": 1.968
+    "duration": 1.968,
+    "sha256": "16e182ecbccf5d44daff56186334420eb94f7d87dc65377506564fd9fa4ef3fd"
   },
   "label_earlier": {
     "text": "Earlier moment",
     "audio": "media/prompts/label_earlier.mp3",
-    "duration": 1.152
+    "duration": 1.152,
+    "sha256": "1f076b80bec742918ba18e99d6def67791b30afba30acf56169e6783b9bf98ff"
   },
   "no_earlier": {
     "text": "There is no earlier moment to revisit yet.",
     "audio": "media/prompts/no_earlier.mp3",
-    "duration": 2.64
-  },
-  "preview_notice": {
-    "text": "Content review build. Narration has been prepared with AI and still needs human approval.",
-    "audio": "media/prompts/preview_notice.mp3",
-    "duration": 5.496
+    "duration": 2.64,
+    "sha256": "4a5274afde7fb926d5e4f192aabae520bb931e0a6afb54fa64939bb4de4f530b"
   },
   "error_baseline": {
     "text": "The fixed Standard comparison soundtrack is not available for this film.",
     "audio": "media/prompts/error_baseline.mp3",
-    "duration": 4.008
+    "duration": 4.008,
+    "sha256": "009b1245935782159955da0d9e353f05025a4a235b7ea5ec0910e3f0887deda8"
   }
 }

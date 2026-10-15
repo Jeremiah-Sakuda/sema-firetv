@@ -58,11 +58,11 @@ Real problems we hit while building Sema between 2026-09-27 and 2026-10-05. Each
 * **Task:** build the `vegaWebview` template project.
 * **Steps:** `cd ".../2025 Fall Projects/.../Sema/vega-app" && npm run build:debug`
 * **Expected:** a debug `.vpkg`.
-* **Actual:**
+* **Actual** (personal path replaced with an equivalent path containing spaces):
 
   ```
-  /bin/sh: /Users/jerem/Desktop/Projects/2025: No such file or directory
-  error Unable to generate a manifest: Error: Command failed: /Users/jerem/Desktop/Projects/2025 Fall Projects/…/vega-app/node_modules/@amazon-devices/kepler-module-manifest-builder/dist/src/cli.js build -d /Users/jerem/Desktop/Projects/2025 Fall Projects/…/vega-app -p ./package.json -s
+  /bin/sh: /Users/developer/Projects/Film: No such file or directory
+  error Unable to generate a manifest: Error: Command failed: /Users/developer/Projects/Film App/vega-app/node_modules/@amazon-devices/kepler-module-manifest-builder/dist/src/cli.js build -d /Users/developer/Projects/Film App/vega-app -p ./package.json -s
   ```
 
   `@amazon-devices/kepler-compatibility-metro-config@0.0.7` (`dist/src/utils.js`, `buildKeplerManifest`) runs `child_process.execSync(\`${manifestBuilderBinary} build ${packageDirArgs} -p … -s\`)` with unquoted paths. A symlinked, space-free path does not help, because the CLI uses the physical cwd.

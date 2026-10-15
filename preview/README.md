@@ -1,5 +1,7 @@
 # Included two-film prototype
 
+This is the runnable viewer experience: choose the description level, revisit a past visual moment and continue from the same frame. The two excerpts illustrate the proposed publisher workflow described in the [project README](../README.md#who-it-is-for).
+
 From the repository root, run `npm run preview`. Node.js 22 is sufficient; no AWS account, Python environment or authoring workspace is needed.
 
 `media/integrity.json` binds the included movies, narration, posters and fixed Standard mixes. The build verifies these files, then rebuilds HTML, CSS, player scripts and spoken guidance from the main source.

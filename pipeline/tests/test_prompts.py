@@ -1,4 +1,5 @@
 """UI prompt set generation (stub Polly -> real mp3 files -> measured durations)."""
+import hashlib
 import json
 import re
 import tempfile
@@ -33,11 +34,12 @@ class PromptSetTests(unittest.TestCase):
             manifest = json.loads((root / "web" / "media" / "prompts" / "prompts.json").read_text())
             self.assertEqual(set(manifest), set(load_prompts()))
             for pid, entry in manifest.items():
-                self.assertEqual(set(entry), {"text", "audio", "duration"})
+                self.assertEqual(set(entry), {"text", "audio", "duration", "sha256"})
                 self.assertTrue(SAFE.match(entry["audio"]))
                 self.assertEqual(entry["audio"], f"media/prompts/{pid}.mp3")
                 self.assertTrue((root / "web" / entry["audio"]).is_file())
                 self.assertGreater(entry["duration"], 0)
+                self.assertEqual(entry["sha256"], hashlib.sha256((root / "web" / entry["audio"]).read_bytes()).hexdigest())
             # Same voice/engine as narration, recorded in the side report (not in the flat mapping).
             meta = json.loads((root / "report" / "prompts-report.json").read_text())
             self.assertEqual(meta["voice"]["voiceId"], "Joanna")

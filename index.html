@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <p id="review-banner" class="review-banner" hidden>Content review build · narration approval pending</p>
+  <p id="review-banner" class="review-banner" hidden>Open-film prototype · AI-prepared descriptions</p>
   <header>
     <span class="brand"><span class="mark" aria-hidden="true">s</span>sema<span class="tagline">Follow the story.</span></span>
     <span id="mode-badge" class="badge-muted" hidden>STUDY: FIXED STANDARD</span>
@@ -15,15 +15,16 @@
   <main>
     <section id="guidance-error" class="guidance-error" hidden role="alertdialog" aria-modal="true" aria-describedby="guidance-error-message" aria-labelledby="guidance-error-title">
       <h2 id="guidance-error-title">Spoken guidance stopped</h2>
-      <p id="guidance-error-message" role="alert">The control announcement could not play. Try again, or return to the catalog. A screen reader can read these controls.</p>
+      <p id="guidance-error-message" role="alert">The control announcement could not play. Try again, or return to the catalog. If VoiceView is on, you can continue using it to hear the controls.</p>
       <div class="actions">
         <button id="guidance-retry" data-say="label_retry">Try again</button>
         <button id="guidance-return" data-say="label_return">Return to catalog</button>
+        <button id="guidance-continue" hidden>Continue with VoiceView</button>
       </div>
     </section>
     <section id="catalog" aria-labelledby="catalog-title">
       <p class="eyebrow">AUDIO DESCRIPTION THAT WAITS FOR YOU</p>
-      <h1 id="catalog-title">Pause anytime. Hear what you missed.</h1>
+      <h1 id="catalog-title">Choose your detail. Revisit a moment.</h1>
       <p class="intro">Press Select to pause and revisit a visual moment, described from what has already been on screen. Then continue from the same frame.</p>
       <div id="film-list" class="film-list"></div>
       <p id="catalog-note" class="fine-print"></p>
@@ -46,7 +47,7 @@
     <section id="player" hidden aria-labelledby="control-title">
       <video id="film" preload="auto" playsinline tabindex="-1" aria-hidden="true"></video>
       <div id="caption" hidden aria-hidden="true"></div>
-      <div id="transport-hint" aria-hidden="true">Select: pause and options · Back: catalog</div>
+      <div id="transport-hint" aria-hidden="true"></div>
       <section id="controls" class="panel" aria-labelledby="control-title">
         <div class="panel-title">
           <div><p class="eyebrow" id="mode-label">PAUSED</p><h2 id="control-title"></h2></div>
@@ -54,25 +55,31 @@
         </div>
         <p id="status"></p>
         <p id="moment-context" class="fine-print" hidden></p>
+        <div class="actions" aria-label="Viewing controls">
+          <button id="resume" class="primary">Play film</button>
+          <button id="recover">Revisit latest moment</button>
+          <button id="earlier" data-say="label_earlier">Earlier moment</button>
+          <button id="retry" hidden data-say="label_retry">Try again</button>
+        </div>
+        <p id="detail-label" class="control-label" aria-hidden="true">Description detail</p>
         <div id="level-group" class="levels" role="radiogroup" aria-label="Description detail">
           <button role="radio" aria-checked="false" data-level="essential" aria-label="Essential, key story moments">Essential<span>Key story moments</span></button>
           <button role="radio" aria-checked="false" data-level="standard" aria-label="Standard, story and context">Standard<span>Story and context</span></button>
           <button role="radio" aria-checked="false" data-level="rich" aria-label="Rich, more visual detail">Rich<span>More visual detail</span></button>
           <button role="radio" aria-checked="false" data-level="off" aria-label="Off, no description">Off<span>No description</span></button>
         </div>
-        <div class="actions">
-          <button id="resume" class="primary">Play film</button>
-          <button id="recover">Revisit latest moment</button>
-          <button id="earlier" data-say="label_earlier">Earlier moment</button>
-          <button id="retry" hidden data-say="label_retry">Try again</button>
-          <button id="restart" data-say="label_start_over">Start over</button>
+        <div class="utility-actions">
+          <button id="more-options" aria-expanded="false" aria-controls="viewing-options" data-say="label_more_options">More options</button>
           <button id="return" data-say="label_return">Return to catalog</button>
         </div>
-        <div class="preferences">
-          <button data-toggle="text"></button>
-          <button data-toggle="guidance"></button>
-          <button id="help" data-say="label_help">Hear the controls</button>
-        </div>
+        <section id="viewing-options" hidden aria-label="Viewing options">
+          <div class="preferences">
+            <button data-toggle="text"></button>
+            <button data-toggle="guidance"></button>
+            <button id="help" data-say="label_help">Hear the controls</button>
+            <button id="restart" data-say="label_start_over">Start over</button>
+          </div>
+        </section>
       </section>
     </section>
 

@@ -1,6 +1,6 @@
 # Documentation
 
-Start with the [project README](../README.md) to run the included films.
+Start with the [project README](../README.md) for the viewer experience, intended first publisher and two-film demonstration. The [publisher workflow](../README.md#publisher-workflow) explains the proposed path from an authorized title to local Fire TV playback.
 
 | Guide | Purpose |
 |---|---|
@@ -12,5 +12,5 @@ Start with the [project README](../README.md) to run the included films.
 | [Product feedback](PRODUCT-FEEDBACK.md) | Experience using each tool, API and SDK |
 | [Friction log](FRICTION-LOG.md) | 26 reproducible issues in the official six-field format, plus prioritized feature requests |
 | [AWS pilot evidence](evidence/aws/LIVE-PILOT-2026-10-04.json) | Measured usage, timings, fit results and list-price cost of the live authoring run |
-| [Recovery coverage](evidence/recovery-coverage.md) | "Revisit" answered at every sampled position of both drafts, with 0 future facts |
+| [Recovery coverage](evidence/recovery-coverage.md) | A Revisit event was available at every sampled position, with zero selections of later-timestamped events |
 | [Media attribution](../media/ATTRIBUTION.md) | Film licenses, sources and modifications |

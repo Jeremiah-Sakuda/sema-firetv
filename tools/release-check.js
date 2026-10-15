@@ -6,6 +6,7 @@ import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { validatePackage, LEVELS } from '../src/package.js';
+import { recordedClipIssues } from './playback-assets.js';
 
 const canonical = value => JSON.stringify(value, (_, v) => v && !Array.isArray(v) && typeof v === 'object'
   ? Object.fromEntries(Object.keys(v).sort().map(k => [k, v[k]])) : v);
@@ -52,7 +53,7 @@ export function checkRelease(root = projectRoot, { probe = probeMedia } = {}) {
   // Entries marked "pending" are drafts held back from this release (not bundled, not shipped).
   const films = catalog?.films?.filter(f => !f.dev && f.status !== 'pending') ?? [];
   const pendingFilms = catalog?.films?.filter(f => f.status === 'pending').map(f => f.id) ?? [];
-  if (films.length < 1) issue('CATALOG_INCOMPLETE', 'media/catalog.json', 'at least one reviewed real film excerpt required for this submission');
+  if (films.length < 1) issue('CATALOG_INCOMPLETE', 'media/catalog.json', 'at least one approved real film excerpt required for a production release');
   for (const film of films) {
     const pkg = readJSON(film.package);
     if (!pkg) continue;
@@ -114,11 +115,35 @@ export function checkRelease(root = projectRoot, { probe = probeMedia } = {}) {
     const clip = prompts[id];
     if (!clip) { issue('GUIDANCE_MISSING', id, 'spoken guidance cannot rely on simulator speechSynthesis'); continue; }
     if (clip.text !== text.replace(/\s+/g, ' ').trim()) issue('GUIDANCE_STALE', id, 'spoken text no longer matches the interface prompt');
+    const problems=recordedClipIssues(root,id,text,clip,{directory:'media/prompts'});
+    if (problems.length) issue('GUIDANCE_CHANGED',id,problems.join('; '));
     inspect(clip.audio, clip.duration);
+  }
+  // Supplemental controls are rendered locally; their exact text and bytes are
+  // checked independently from the Polly generation provenance.
+  if (safeFile('content/interface-prompts.json')) {
+    const extraTexts=readJSON('content/interface-prompts.json') ?? {};
+    const extraClips=readJSON('media/interface/prompts.json') ?? {};
+    for (const [id,text] of Object.entries(extraTexts)) {
+      const clip=extraClips[id];
+      const problems=recordedClipIssues(root,id,text,clip,{directory:'media/interface',maxDuration:5});
+      if (problems.length) {issue('GUIDANCE_CHANGED',id,problems.join('; '));continue;}
+      inspect(clip.audio,clip.duration);
+    }
+  }
+  if (safeFile('content/moment-labels.json')) {
+    const labels=readJSON('content/moment-labels.json') ?? {};
+    const names=readJSON('media/moment-labels/prompts.json') ?? {};
+    for (const film of films) for (const [event,label] of Object.entries(labels[film.id] ?? {})) {
+      const id=`moment_${film.id}_${event}`.replace(/-/g,'_'),clip=names[id];
+      const problems=recordedClipIssues(root,id,`${label}.`,clip,{directory:'media/moment-labels',maxDuration:5});
+      if (problems.length) {issue('GUIDANCE_CHANGED',id,problems.join('; '));continue;}
+      inspect(clip.audio,clip.duration);
+    }
   }
   return { schemaVersion: 1, checkedAt: new Date().toISOString(), ready: issues.length === 0, assets, pendingFilms,
     guidanceClips: Object.keys(prompts).length, media: [...measured.values()], issues,
-    scope: 'File/provenance/duration checks only. Audible timing, VoiceView and viewer benefit require recorded observations.' };
+    scope: 'File/provenance/duration checks for production packaging.' };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
