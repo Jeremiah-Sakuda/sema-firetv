@@ -484,6 +484,14 @@ test('Play/Pause during a critical description focuses the missed description', 
   assert.equal(s.app.lastSpoken.at(-1), 'label_recover_pending');
 });
 
+test('Back during a critical description focuses the missed description', async () => {
+  const s = boot({ prefs: CHOSEN }); await playing(s); await s.at(2.6);
+  s.key('Escape');
+  assert.equal(s.app.player.delivery.get('envelope-hidden'), 'pending');
+  assert.equal(s.active(), 'recover');
+  assert.equal(s.app.lastSpoken.at(-1), 'label_recover_pending');
+});
+
 test('an audio error on a timed cue keeps the film recoverable instead of failing it', async () => {
   let requested;
   const s = boot({ prefs: CHOSEN, audioPlay: a => { requested = a; return new Promise(() => {}); } });

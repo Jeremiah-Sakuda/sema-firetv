@@ -2,7 +2,7 @@
 
 ### Audio description at your pace.
 
-**Sema gives blind and low-vision viewers control over the visual story on Fire TV. They choose how much description to hear, press Select to hear any moment already on screen, then continue from the same frame. Descriptions are prepared ahead of time on AWS, so every request plays instantly, with no model call and no cloud cost per viewer.**
+**Sema gives blind and low-vision viewers control over the visual story on Fire TV. They choose how much description to hear, press Select to hear any described moment already on screen, then continue from the same frame. Descriptions are prepared ahead of time on AWS, so every request plays instantly, with no model call and no cloud cost per viewer.**
 
 Built for **Fire TV / Vega OS**, with an AWS authoring pipeline. Code: [MIT](LICENSE). Film excerpts: [CC BY 3.0](media/ATTRIBUTION.md).
 
@@ -26,7 +26,7 @@ In this excerpt, 6 of the 13 described moments have no timed slot; Revisit is ho
 **Viewers.** In 2020, an estimated 43 million people worldwide were blind and 295 million more had moderate or severe vision impairment ([Lancet Global Health, 2021](https://pubmed.ncbi.nlm.nih.gov/33275950/)). People who rely on audio description don't all want the same amount of it. In [Describe Now](https://arxiv.org/abs/2411.11835), 20 blind and low-vision participants preferred different description frequency and detail across videos. Sema turns those preferences into controls on the remote.
 
 **Beyond the hackathon.** Sema reaches viewers in two ways:
-- **Inside publishers' apps.** The first fit is an independent film publisher with its own Fire TV app and catalog. It can adapt the MIT-licensed scheduler and the AWS authoring pipeline: preparing a 90-minute feature comes to about $24–29 of estimated AWS usage at the pilot's rate, and serving it costs nothing per viewer. The [integration guide](docs/INTEGRATION.md) covers the package format and the scheduling core, `src/playback.js`: plain JavaScript, tested headless in Node, so a Vega React Native app can import it.
+- **Inside publishers' apps.** The first fit is an independent film publisher with its own Fire TV app and catalog. It can adapt the MIT-licensed scheduler and the AWS authoring pipeline: preparing a 90-minute feature comes to about $24–29 of estimated AWS usage at the pilot's rate, and serving it costs nothing per viewer. The [integration guide](docs/INTEGRATION.md) covers the package format and the scheduling core, `src/playback.js`: plain JavaScript, tested headless in Node, so a Vega React Native app can import it. Because every line is prepared and passes the pipeline's review step before release, the publisher controls exactly what viewers hear, which live generation can't promise.
 - **As a free showcase app** on the Fire TV Appstore, with a catalog of openly licensed films.
 
 **Standards.** In the EU, the [European Accessibility Act](https://eur-lex.europa.eu/eli/dir/2019/882/oj) has applied since June 2025 to services that give access to audiovisual media. EN 301 549, the European ICT accessibility standard, asks that audio-description controls sit at the same level as the main playback controls (clause 7.3). In Sema, pressing Select opens them beside Play.
@@ -35,7 +35,7 @@ In this excerpt, 6 of the 13 described moments have no timed slot; Revisit is ho
 
 | Viewer action | Behavior |
 |---|---|
-| Choose the amount of description | Essential, Standard or Rich. Every level fits the measured dialogue gaps; Rich adds visual detail where the gap allows. |
+| Choose the amount of description | Essential, Standard or Rich. Every level fits the measured dialogue gaps; Rich adds visual detail where the gap allows. In dialogue-dense scenes the levels converge, and Revisit carries the extra detail. |
 | Revisit a moment | The film stays paused while Sema describes a visual moment. Earlier moment steps further back. Only moments at or before the current position are offered. |
 | Recover interrupted narration | If a critical description is cut off, it is offered first and stays available until heard or deliberately skipped. A clip that is cut off never counts as heard. |
 | Keep watching | Timed descriptions fit within the recorded dialogue gaps. Fit is checked again when narration starts; stalls and late starts have recovery paths. |
@@ -59,7 +59,7 @@ All playback media is in the repository. Narration and 63 control prompts use Am
 ## Publisher workflow
 
 1. **Supply an authorized film.** Amazon S3 holds the authoring input; Amazon Transcribe supplies dialogue timestamps.
-2. **Prepare descriptions.** Bedrock Nova Pro observes timestamped frames. Nova 2 Lite writes three detail levels and a separate Revisit description for each moment.
+2. **Prepare descriptions.** Bedrock Nova Pro observes timestamped frames. Nova 2 Lite drafts three detail levels and a separate Revisit description for each moment.
 3. **Render and check.** Amazon Polly voices the lines. The pipeline measures each recording against its gap, rewrites lines that don't fit and checks that required facts survive.
 4. **Review.** An editor approves, edits or drops each line. Approval is bound to the exact source, timing and audio, so any later change reopens review.
 5. **Package.** The player uses prepared media locally, so a viewer's request never waits for generation.

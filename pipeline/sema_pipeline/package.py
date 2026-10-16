@@ -24,7 +24,9 @@ def default_web_root(ws: Workspace) -> Path:
 
 def validate_with_node(package_path: Path, validator: Path | None = None, fixture: bool = False) -> tuple[bool, str]:
     validator = validator or PROJECT_ROOT / "tools" / "validate.js"
-    node = shutil.which("node") or "/opt/homebrew/bin/node"
+    node = shutil.which("node")
+    if not node:
+        raise PipelineError("Node.js is required to validate packages; install Node.js 22 and retry.")
     args = [node, str(validator), str(package_path)] + (["--fixture"] if fixture else [])
     proc = subprocess.run(args, capture_output=True, text=True)
     return proc.returncode == 0, (proc.stdout + proc.stderr).strip()
@@ -129,8 +131,17 @@ def run_package(ws: Workspace, cfg: dict, *, web_root: Path | None = None, versi
 
     target = (ws.dir / "package.draft.json") if draft else (asset_dir / "package.json")
     previous = json.loads(target.read_text()) if target.is_file() else None
-    target.write_text(json.dumps(package, indent=2, ensure_ascii=False) + "\n")
-    if previous and isinstance(previous.get("pipeline"), dict):
+    # A production package is validated as a candidate first, so a failed build
+    # never replaces or deletes the audio of the last good package.
+    candidate = target if draft else target.with_name(target.name + ".new")
+    candidate.write_text(json.dumps(package, indent=2, ensure_ascii=False) + "\n")
+    ok, output = validate_with_node(candidate, validator)
+    if candidate != target:
+        if ok:
+            candidate.replace(target)
+        else:
+            candidate.unlink(missing_ok=True)
+    if ok and previous and isinstance(previous.get("pipeline"), dict):
         # Remove audio this pipeline wrote for an older package that is no longer referenced.
         keep = {v["audio"] for c in cues for v in c["variants"].values()} | {e["recovery"]["audio"] for e in events}
         old = {v["audio"] for c in previous.get("cues", []) for v in c["variants"].values()}
@@ -139,7 +150,6 @@ def run_package(ws: Workspace, cfg: dict, *, web_root: Path | None = None, versi
             if stale.startswith(f"{rel_prefix}/audio/"):
                 (asset_dir / stale[len(rel_prefix) + 1:]).unlink(missing_ok=True)
 
-    ok, output = validate_with_node(target, validator)
     result = {"path": str(target), "webRoot": str(web_root), "valid": ok, "validator": output.splitlines()[-1] if ok else "FAILED",
               "validatorOutput": output, "reviewStatus": package["reviewStatus"], "packagedAt": now_iso(),
               "cues": len(cues), "events": len(events)}

@@ -58,7 +58,7 @@ button.unavailable { opacity: .55; }
 .control-label { font-size: .8rem; color: var(--muted); margin: .85rem 0 0; }
 #controls .levels { margin-top: .35rem; }
 #viewing-options { margin-top: .9rem; padding-top: .15rem; border-top: 1px solid var(--border); }
-#moment-context { white-space: pre-line; min-height: 2.5rem; margin: .5rem 0 0; }
+#moment-context { white-space: pre-line; min-height: 2.5rem; margin: .5rem 0 0; font-size: 1rem; color: var(--text); }
 .levels button { min-width: 6.4rem; text-align: left; }
 .levels span { display: block; font-size: .85rem; color: var(--muted); }
 .preferences button { font-size: .9rem; min-height: 1.9rem; }

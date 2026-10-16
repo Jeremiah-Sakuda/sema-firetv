@@ -379,7 +379,8 @@ function openControls(reason, prompt, focusId) {
   if (!player || view !== 'player') return;
   session.pause();
   player.position = video.currentTime; player.controls(reason);
-  if (focusId === 'pending-or-resume') focusId = player.pending().length ? 'recover' : 'resume';
+  // A description cut off by this pause is offered before anything else.
+  if (focusId === 'pending-or-resume' || focusId === 'pending-or-return') focusId = player.pending().length ? 'recover' : focusId.slice(11);
   if (FIXED && focusId === 'recover' && !player.pending().length) focusId = 'resume';
   render(); announce(prompt, focusId); persist();
 }
@@ -550,7 +551,7 @@ function back() {
     return true;
   }
   if (view === 'welcome') { view = 'catalog'; render(); announce('returning', `film-${lastFilmId}`); return true; }
-  if (player.mode === 'playing') { openControls('back', 'paused_return', 'return'); return true; }
+  if (player.mode === 'playing') { openControls('back', 'paused_return', 'pending-or-return'); return true; }
   if (player.mode === 'recovering') { stopRecovery(); announce('recovery_stopped', 'resume'); return true; }
   if (optionsOpen) { setOptions(false); return true; }
   leave(); return true;
