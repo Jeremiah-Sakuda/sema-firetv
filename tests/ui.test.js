@@ -448,14 +448,20 @@ test('earlier moments can be revisited while the film clock stays paused', async
   await s.finishAudio(); assert.equal(s.$('earlier').getAttribute('aria-disabled'), 'true');
 });
 
-test('Earlier moment pressed during the oldest moment names the control that really has focus', async () => {
+test('Earlier moment pressed during the oldest moment lets the description finish', async () => {
   const s = boot({ prefs: CHOSEN }); await playing(s);
   await s.at(2.6); await s.finishAudio(); await s.at(9.6); await s.finishAudio();
   s.key('Enter'); s.$('recover').click(); await s.finishAudio();
   s.$('earlier').click(); assert.equal(s.app.player.active.events[0], 'envelope-hidden');
+  const label = s.$('earlier').getAttribute('aria-label');
   s.$('earlier').focus(); s.$('earlier').click();                 // no older moment while this one plays
+  assert.equal(s.app.player.mode, 'recovering', 'the oldest description is not cut off');
+  assert.equal(s.active(), 'earlier');
+  assert.equal(s.$('earlier').getAttribute('aria-label'), label, 'the focused name does not change mid-description');
+  assert.equal(s.app.lastSpoken.includes('recovery_stopped'), false);
+  await s.finishAudio();
   assert.equal(s.active(), 'resume');
-  assert.deepEqual([...s.app.lastSpoken], ['recovery_stopped', 'no_earlier', 'label_resume'], 'speech names Resume, which has focus, not Earlier moment');
+  assert.equal(s.app.lastSpoken[0], 'recovery_complete');
 });
 
 test('Play/Pause during a critical description focuses the missed description', async () => {
@@ -576,11 +582,17 @@ test("VoiceView detected by the Vega host turns Sema's voice off, unless the vie
   assert.equal(s.app.lastSpoken.length, 0, 'on Vega, the first words wait for the screen-reader state');
   s.w.__semaScreenReader(true);
   assert.equal(s.app.prefs.guidance, false);
-  assert.equal(s.$('announcer').getAttribute('aria-live'), 'polite');
-  assert.equal([...s.app.lastSpoken][0], 'welcome', 'startup announced through the live region');
+  assert.equal(s.$('announcer').getAttribute('aria-live'), 'off', 'VoiceView speaks status through the native API, not twice');
+  assert.equal([...s.app.lastSpoken][0], 'welcome');
+  assert.ok(sent.some(m => m.sema === 'announce' && /^Welcome to Sema/.test(m.text)), 'startup goes to VoiceView through the host');
   assert.ok(sent.some(m => m.sema === 'screen-reader' && m.on === true));
+  s.$(`film-${fixture.id}`).click(); s.$('resume').click(); s.key('Enter');
+  assert.equal(sent.filter(m => m.sema === 'announce').at(-1).text, 'Paused.', 'state changes reach VoiceView without naming the focused control');
+  const before = sent.filter(m => m.sema === 'announce').length;
   s.w.__semaScreenReader(false);
   assert.equal(s.app.prefs.guidance, true, 'automatic choice follows the screen reader');
+  s.key('Escape');
+  assert.equal(sent.filter(m => m.sema === 'announce').length, before, "Sema's own voice speaks again; nothing goes to VoiceView");
   s.w.document.querySelector('#welcome [data-toggle="guidance"], [data-toggle="guidance"]').click();  // explicit: off
   s.w.__semaScreenReader(false);
   assert.equal(s.app.prefs.guidance, false, 'an explicit choice is never overridden');
@@ -748,7 +760,7 @@ test('opening options stops a recovery without delivering its critical fact', as
 });
 
 test('guidance failure can continue with detected VoiceView without losing pending narration', async () => {
-  const s=boot({prefs:{...CHOSEN,guidance:false,guidanceChosen:true},speech:false,bridge:[]});
+  const sent=[];const s=boot({prefs:{...CHOSEN,guidance:false,guidanceChosen:true},speech:false,bridge:sent});
   s.w.__semaScreenReader(true);await playing(s);await s.at(2.6);s.key('Enter');s.$('more-options').click();
   s.w.document.querySelector('#controls [data-toggle="guidance"]').click();await flush();
   assert.equal(s.app.guidanceFailed,true);assert.equal(s.$('guidance-continue').hidden,false);
@@ -756,7 +768,8 @@ test('guidance failure can continue with detected VoiceView without losing pendi
   assert.equal(s.app.guidanceFailed,false);assert.equal(s.app.prefs.guidance,false);
   assert.equal(s.app.player.mode,'controls');assert.equal(s.app.player.pending().length,1);
   assert.equal(s.video.currentTime,at);assert.equal(s.active(),'recover');
-  assert.equal(s.$('announcer').getAttribute('aria-live'),'polite');
+  assert.equal(s.$('announcer').getAttribute('aria-live'),'off');
+  assert.match(sent.filter(m=>m.sema==='announce').at(-1).text,/VoiceView can read the controls/);
 });
 
 test('a VoiceView continuation is never offered when no screen reader is detected', async () => {

@@ -2,7 +2,7 @@
 
 ### Audio description at your pace.
 
-**Sema gives blind and low-vision viewers control over the visual story on Fire TV. They choose how much description to hear, revisit a visual moment from the remote, then continue from the same frame.**
+**Sema gives blind and low-vision viewers control over the visual story on Fire TV. They choose how much description to hear, press Select to hear any moment already on screen, then continue from the same frame. Descriptions are prepared ahead of time on AWS, so every request plays instantly, with no model call and no cloud cost per viewer.**
 
 Built for **Fire TV / Vega OS**, with an AWS authoring pipeline. Code: [MIT](LICENSE). Film excerpts: [CC BY 3.0](media/ATTRIBUTION.md).
 
@@ -27,7 +27,7 @@ In this excerpt, 4 of the 13 described moments have no timed slot; Revisit is ho
 
 **Beyond the hackathon.** Sema reaches viewers in two ways:
 - **As a Fire TV app** with its own catalog of openly licensed films.
-- **For publishers.** A publisher can adapt the MIT-licensed player and the AWS authoring pipeline to add viewer-controlled description to its own films. The scheduling core, `src/playback.js`, has no browser dependencies, so it can be reused outside the WebView player.
+- **For publishers.** A publisher can adapt the MIT-licensed player and the AWS authoring pipeline to add viewer-controlled description to its own films. The [integration guide](docs/INTEGRATION.md) covers the package format and the scheduling core, `src/playback.js`, which runs without a browser.
 
 **Standards.** In the EU, the [European Accessibility Act](https://eur-lex.europa.eu/eli/dir/2019/882/oj) has applied since June 2025 to services that give access to audiovisual media. EN 301 549, the European ICT accessibility standard, asks that audio-description controls sit at the same level as the main playback controls (clause 7.3). In Sema, they are one Select away.
 
@@ -37,9 +37,9 @@ In this excerpt, 4 of the 13 described moments have no timed slot; Revisit is ho
 |---|---|
 | Choose the amount of description | Essential, Standard or Rich. Every level fits the measured dialogue gaps; Rich adds visual detail where the gap allows. |
 | Revisit a moment | The film stays paused while Sema describes a visual moment. Earlier moment steps further back. Only moments at or before the current position are offered. |
-| Recover interrupted narration | If a critical description is cut off, it is offered first and stays available until heard or deliberately skipped. |
+| Recover interrupted narration | If a critical description is cut off, it is offered first and stays available until heard or deliberately skipped. A clip that is cut off never counts as heard. |
 | Keep watching | Timed descriptions fit within the recorded dialogue gaps. Fit is checked again when narration starts; stalls and late starts have recovery paths. |
-| Use spoken guidance or VoiceView | Recorded prompts announce controls and state changes. When VoiceView is on, Sema turns its own guidance off so each control is spoken once. A viewer's explicit choice takes precedence. |
+| Use spoken guidance or VoiceView | Recorded prompts announce controls and state changes. When VoiceView is on, Sema hands speech to VoiceView: its own guidance turns off, and state changes go to VoiceView through the native announce API. A viewer's explicit choice takes precedence. |
 | Resume and keep preferences | Detail level and film position persist. More options holds text, spoken guidance, help and a confirmed Start over. Back closes these options first. |
 
 The catalog contains two **72-second** Blender open-film excerpts: *Sintel — The Rooftop* and *Tears of Steel — The Bridge*. Together they have:
@@ -64,14 +64,14 @@ All playback media is in the repository. Narration and 63 control prompts use Am
 4. **Review.** An editor approves, edits or drops each line. Approval is bound to the exact source, timing and audio, so any later change reopens review.
 5. **Package.** The player uses prepared media locally, so a viewer's request never waits for generation.
 
-The [pipeline guide](pipeline/README.md) documents the working CLI and release checks.
+The [pipeline guide](pipeline/README.md) documents the working CLI and release checks. For the two included excerpts, an AI editorial pass (Codex) corrected the drafted wording against the source frames; [`content/editorial/`](content/editorial/) records every change and the exact text that ships.
 
 Measured in the [October 4 live run](docs/evidence/aws/LIVE-PILOT-2026-10-04.json):
 
 | Per 72-second excerpt | Sintel | Tears of Steel |
 |---|---:|---:|
 | Estimated AWS usage at list price, including reruns | $0.38 | $0.32 |
-| Automated stage time | 97 s | 86 s |
+| Latest automated run | 97 s | 86 s |
 | Timed variants fitting on first render | 32 of 33 | 22 of 24 |
 
 That works out to roughly 30 cents of estimated AWS usage per minute of film. Viewing makes no cloud calls, so more viewers add no AWS cost.
@@ -103,10 +103,12 @@ Open **http://127.0.0.1:4173**. Use arrow keys as the D-pad, Enter as Select, Es
 
 ## Verified behavior
 
-- **Test suites (October 16):** 137 JavaScript, 75 offline pipeline and 5 native host tests pass. Both films' description contracts and the repository checks pass too.
+- **Test suites (October 16):** 140 JavaScript, 76 offline pipeline and 6 native host tests pass. Both films pass their description contracts, the editorial record matches every shipped line, and the repository checks pass.
 - **Browser:** real-media Chrome runs cover both films at all three levels. They also cover the keyboard flow through Revisit, Earlier moment, resume and every Back action.
 - **Vega package:** the aarch64 build contains 200 hash-matched playback assets.
 - **Vega Virtual Device (October 16 build):** in the bridge scene, Revisit, Earlier moment, resume and recovery of an interrupted critical description all worked from the remote. Earlier builds also covered both excerpts end to end, Back, and VoiceView turning on and off.
+
+The included excerpts run with `npm run preview`. `npm run release:check` is the separate gate for editor-approved production packages.
 
 [Test commands and dated evidence](docs/TESTING.md)
 
@@ -126,11 +128,11 @@ npm run content:check
 | `media/` | Spoken guidance, engineering fixture and production catalog |
 | `vega-app/` | Native Vega WebView host and package build |
 | `pipeline/` | AWS authoring stages and offline tests |
-| `content/editorial/` | Editorial record for the included narration |
+| `content/editorial/` | Editorial record: every change to the drafted narration and the exact text that ships |
 | `tests/`, `tools/` | Regression tests, bundling, media checks and platform diagnostics |
 | `docs/` | Setup, architecture, evidence, friction log and developer feedback |
 
-[Documentation index](docs/README.md) · [Architecture](docs/ARCHITECTURE.md) · [Viewing language](GLOSSARY.md) · [Friction log](docs/FRICTION-LOG.md) · [Product feedback](docs/PRODUCT-FEEDBACK.md) · [Contributing](CONTRIBUTING.md)
+[Documentation index](docs/README.md) · [Architecture](docs/ARCHITECTURE.md) · [Integration](docs/INTEGRATION.md) · [Viewing language](GLOSSARY.md) · [Friction log](docs/FRICTION-LOG.md) · [Product feedback](docs/PRODUCT-FEEDBACK.md) · [Contributing](CONTRIBUTING.md)
 
 Film credits and adaptation details are in [media attribution](media/ATTRIBUTION.md).
 

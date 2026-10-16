@@ -6,6 +6,7 @@ Start with the [project README](../README.md) for the viewer experience, who it 
 |---|---|
 | [Vega build and run](vega/BUILD-AND-RUN.md) | Install and run the actual TV application |
 | [Architecture](ARCHITECTURE.md) | Playback design, media contracts and AWS integration |
+| [Integration](INTEGRATION.md) | Add Sema's scheduler and packages to another Fire TV app |
 | [Testing and evidence](TESTING.md) | Reproduce checks and see dated results |
 | [Authoring pipeline](../pipeline/README.md) | Produce narration from authorized film sources |
 | [Platform findings](vega/PLATFORM-FINDINGS.md) | Reproduce platform issues and understand the workarounds |

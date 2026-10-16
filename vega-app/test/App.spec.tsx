@@ -44,6 +44,13 @@ test('Back exits failed startup; subresource errors do not close the player', ()
   act(() => { expect(mockBack()).toBe(true); }); expect(mockExit).toHaveBeenCalledTimes(1);
 });
 
+test('player state changes are spoken by VoiceView through the native announce API', () => {
+  const {AccessibilityInfo} = jest.requireMock('@amazon-devices/react-native-kepler');
+  act(() => get('sema-webview').props.onMessage({nativeEvent: {data: JSON.stringify({sema: 'announce', text: 'Paused.'})}}));
+  expect(AccessibilityInfo.announceForAccessibility).toHaveBeenCalledWith('Paused.');
+  act(() => get('sema-webview').props.onMessage({nativeEvent: {data: JSON.stringify({sema: 'announce'})}}));
+  expect(AccessibilityInfo.announceForAccessibility).toHaveBeenCalledTimes(1);
+});
 test('VoiceView state reaches the page once it is ready, and follows changes', async () => {
   mockReader = true;
   act(() => screen.unmount());

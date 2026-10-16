@@ -130,10 +130,20 @@ function interruptRecovery() {
  * happened. (Double speech found by the Oct 8 accessibility review.)
  */
 function focusTail() { return prefs.guidance && !guidanceFailed ? focusedItem() : []; }
-/** Visible status, mirrored to a screen-reader live region when guidance is off. */
+/**
+ * With VoiceView on in the Vega app, status changes go to VoiceView through the
+ * host's native announce API, so they join VoiceView's own speech queue instead
+ * of depending on WebView live-region support.
+ */
+const nativeAnnounce = () => screenReader === true && !!window.ReactNativeWebView;
+/** Visible status, also spoken by the screen reader when Sema's own voice is off. */
 function setStatus(message, { announce = true } = {}) {
   $('status').textContent = message;
   $('announcer').textContent = announce ? message : '';
+  const ownVoice = prefs.guidance && !guidanceFailed;
+  if (announce && message && !ownVoice && nativeAnnounce()) {
+    try { window.ReactNativeWebView.postMessage(JSON.stringify({ sema: 'announce', text: message })); } catch { /* live region remains */ }
+  }
 }
 
 const atEnd = () => !!player && player.position >= film.duration - 0.05;
@@ -221,8 +231,9 @@ function renderToggles() {
     b.textContent = `Spoken guidance: ${prefs.guidance ? 'on' : 'off'}`; b.classList.toggle('on', prefs.guidance);
     b.dataset.say = prefs.guidance ? 'label_guidance_on' : 'label_guidance_off';
   });
-  // With guidance off, a screen reader announces status changes instead.
-  $('announcer').setAttribute('aria-live', prefs.guidance && !guidanceFailed ? 'off' : 'polite');
+  // With guidance off, a screen reader announces status changes instead: through
+  // the native announce API in the Vega app, otherwise through the live region.
+  $('announcer').setAttribute('aria-live', (prefs.guidance && !guidanceFailed) || nativeAnnounce() ? 'off' : 'polite');
 }
 function render() {
   $('guidance-error').hidden = !guidanceFailed;
@@ -271,8 +282,9 @@ function render() {
         if (preview && event.labelPrompt && CLIPS[event.labelPrompt]) button.dataset.momentPrompt = event.labelPrompt;
       }
     };
-    $('earlier').textContent = 'Earlier moment';
-    describeButton($('earlier'), earlier);
+    // While an earlier moment is being described, the focused button keeps its
+    // name, so a screen reader doesn't announce the next moment over the description.
+    if (!(mode === 'recovering' && browsingEarlier)) { $('earlier').textContent = 'Earlier moment'; describeButton($('earlier'), earlier); }
     describeButton(recover, player.pending()[0] ?? visibleMoments()[0], !pending);
     const moment = film.events.find(e => e.id === revisitCursor && e.availableAt <= player.position);
     const last = film.events.find(e => e.id === lastDescribedId && e.availableAt <= player.position);
@@ -283,8 +295,12 @@ function render() {
     $('moment-context').hidden = FIXED;
     $('moment-context').textContent = contextLines.join('\n');
     $('retry').hidden = mode !== 'error';
-    $('level-group').hidden = LOCKED;
-    $('detail-label').hidden = LOCKED;
+    // While a moment is being described, only the viewing actions remain, so the
+    // panel shrinks and the frame being described stays visible.
+    const describing = mode === 'recovering';
+    $('level-group').hidden = LOCKED || describing;
+    $('detail-label').hidden = LOCKED || describing;
+    document.querySelector('#controls .utility-actions').hidden = describing;
     document.querySelectorAll('[data-toggle="text"]').forEach(b => { b.hidden = FIXED; });
     document.querySelectorAll('[data-level]').forEach(b => {
       const current = b.dataset.level === player.level;
@@ -394,6 +410,9 @@ function recover(eventId) {
 }
 function recoverEarlier() {
   const event = earlierMoment();
+  // At the oldest moment, a press while it is being described must not cut it
+  // off and hand focus to Resume: the description simply continues.
+  if (!event && player?.mode === 'recovering') { diagnostic({ sema: 'earlier-none-while-describing' }); return; }
   if (!event) { announce('no_earlier'); return; }
   recover(event.id);
 }

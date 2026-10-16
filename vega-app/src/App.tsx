@@ -86,6 +86,10 @@ export const App = () => {
               clearTimer(); phaseRef.current = 'ready'; setPhase('ready'); hideSplash();
               sendScreenReader();
             } else if (message?.sema === 'exit') backHandler.exitApp();
+            else if (message?.sema === 'announce' && typeof message.text === 'string') {
+              // VoiceView speaks the player's state changes in its own queue.
+              try { AccessibilityInfo.announceForAccessibility(message.text); } catch { /* live region remains */ }
+            }
           } catch { /* optional plain-text diagnostic */ }
           console.info(`[WebViewMessage] ${data}`);
         }}

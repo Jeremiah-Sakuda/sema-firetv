@@ -31,6 +31,16 @@ SEMA_URL=http://127.0.0.1:4173 npm run test:browser
 
 `SEMA_CHROME` can point to an existing Chrome executable; `SEMA_PLAYWRIGHT_MODULE` can point to an existing Playwright module. Results go to `artifacts/browser/`, or `SEMA_BROWSER_OUT` if provided. This harness decodes real media in Chrome.
 
+## October 16, 2026 review-round fixes
+
+- 140 JavaScript tests, 76 offline pipeline tests and 6 native host tests pass.
+- With VoiceView on in the Vega app, state changes go to VoiceView through the host's `announceForAccessibility` call, and the live region stays quiet so nothing is spoken twice.
+- Pressing Earlier moment during the oldest moment lets that description finish, and the focused button keeps its name while it plays.
+- While a moment is described, the panel keeps only the viewing actions, so the frame stays visible. Selected levels carry a check mark as well as color.
+- The cue planner keeps optional actions from being read over a later camera shot.
+- `content/editorial/` now records the later text revisions and the exact shipped text; `npm run content:check` fails if they drift.
+- `tests/integration-example.test.js` runs the publisher integration path in plain Node.
+
 ## October 16, 2026 fixes and checks
 
 - 137 JavaScript tests, 75 offline pipeline tests and 5 native host tests pass.

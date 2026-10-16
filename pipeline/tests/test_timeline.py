@@ -103,6 +103,17 @@ class CuePlanningTests(unittest.TestCase):
         self.assertEqual([(c["start"], c["end"], c["events"]) for c in cues],
                          [(2.0, 7.11, ["room", "envelope"]), (9.0, 15.0, ["door"])])
 
+    def test_optional_action_is_not_read_over_a_later_shot(self):
+        # Sintel c11 shape: the smile is in shot s17; the only later window is in s18.
+        windows = [{"id": "w1", "start": 69.46, "end": 72.0, "scene": "s18"}]
+        smile = {**ev("smile", 68.0, False), "scene": "s17"}
+        bowl = {**ev("bowl", 69.5, False), "scene": "s18"}
+        cues, unplaced = plan_cues(windows, [smile, bowl])
+        self.assertEqual([c["events"] for c in cues], [["bowl"]])
+        critical = {**ev("wound", 68.0, True), "scene": "s17"}
+        cues, unplaced = plan_cues(windows, [critical])
+        self.assertEqual([c["events"] for c in cues], [["wound"]], "a critical fact is still placed")
+
     def test_event_not_available_in_window_moves_to_later_window(self):
         windows = [{"id": "w1", "start": 0.0, "end": 3.0}, {"id": "w2", "start": 6.0, "end": 9.0}]
         events = [ev("late", 2.5)]  # 3.0 - 2.5 < 1.5 -> no room in w1

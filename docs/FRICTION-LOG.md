@@ -1,6 +1,6 @@
 # Friction log
 
-Real problems we hit while building Sema between 2026-09-27 and 2026-10-05. Each entry gives:
+Real problems we hit while building Sema between 2026-09-27 and 2026-10-08. Each entry gives:
 - the task
 - exact steps
 - expected vs. actual result, with verbatim error text

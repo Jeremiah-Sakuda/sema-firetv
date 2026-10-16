@@ -17,10 +17,10 @@ Sema's narration is authored offline by a multi-service AWS pipeline (`pipeline/
 
 **Measured in the live pilot** ([evidence](evidence/aws/LIVE-PILOT-2026-10-04.json)):
 - **Estimated list-price cost:** $0.38 and $0.32 per excerpt, including reruns.
-- **Automated stage time:** about 97 s and 86 s.
+- **Latest automated run:** about 97 s and 86 s.
 - **First-render fit:** 32 of 33 and 22 of 24 lines fit their gap on the first render.
 
-An AI editorial pass then refined the drafts; `content/editorial/` holds the record. Release packaging goes through the pipeline's review step, which binds approval to the exact source, timing and audio.
+An AI editorial pass (Codex) then corrected the drafts against the source frames; `content/editorial/` records every change and the exact shipped text. Release packaging goes through the pipeline's review step, which binds approval to the exact source, timing and audio.
 
 ## Vega SDK and CLI
 

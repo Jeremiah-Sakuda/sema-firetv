@@ -173,9 +173,15 @@ def plan_cues(windows: list[dict], events: list[dict], *, min_window: float = 1.
     pending = {e["id"]: e for e in events}
     cues: list[dict] = []
 
+    def same_shot(e: dict, window: dict) -> bool:
+        # Windows are split at camera cuts, so an optional action from another
+        # shot would be read over a picture that no longer shows it.
+        return not e.get("scene") or not window.get("scene") or e["scene"] == window["scene"]
+
     def available(t: float, window: dict) -> list[dict]:
         return sorted((e for e in pending.values() if e["availableAt"] <= t and
-                       (e["critical"] or t - e["availableAt"] <= max_optional_age_seconds)),
+                       (e["critical"] or (t - e["availableAt"] <= max_optional_age_seconds
+                                          and same_shot(e, window)))),
                       key=lambda e: (e["availableAt"], e["id"]))
 
     def arrivals(after: float, until: float, critical_only: bool = False) -> list[float]:

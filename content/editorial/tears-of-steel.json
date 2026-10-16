@@ -529,5 +529,132 @@
         "after": "Smoke hangs over a dark city as a large platform hovers beside a tower."
       }
     ]
+  },
+  "laterRevisions": {
+    "preparedBy": "AI coding assistants (Codex and Claude Code)",
+    "period": "2026-10-05 to 2026-10-14",
+    "kind": "Text alignment after the frame precheck: restore identifying facts required by content/description-contracts.json and reuse measured recordings where a shorter level could not keep them.",
+    "changes": [
+      {
+        "cue": "c02",
+        "level": "rich",
+        "before": "Engines blaze above red steel.",
+        "after": "Rocket engines blaze."
+      },
+      {
+        "cue": "c03",
+        "level": "standard",
+        "before": "Rocket above the city.",
+        "after": "A rocket rises above the city."
+      },
+      {
+        "cue": "c03",
+        "level": "rich",
+        "before": "A rocket climbs above the skyline.",
+        "after": "A rocket rises above the city."
+      },
+      {
+        "cue": "c05",
+        "level": "rich",
+        "before": "Colored displays frame a turning knob.",
+        "after": "A hand turns a control knob."
+      },
+      {
+        "cue": "c06",
+        "level": "rich",
+        "before": "An exposed brain, wired and lit.",
+        "after": "An exposed brain on a platform."
+      },
+      {
+        "cue": "c07",
+        "level": "essential",
+        "before": "A man peers.",
+        "after": "Mechanical eye."
+      },
+      {
+        "cue": "c07",
+        "level": "standard",
+        "before": "His mechanical eye.",
+        "after": "Mechanical eye."
+      },
+      {
+        "cue": "c07",
+        "level": "rich",
+        "before": "An eye device.",
+        "after": "Mechanical eye."
+      },
+      {
+        "cue": "c09",
+        "level": "standard",
+        "before": "Smoke above city.",
+        "after": "Smoke over the city."
+      },
+      {
+        "cue": "c09",
+        "level": "rich",
+        "before": "Smoke above city.",
+        "after": "Smoke over the city."
+      }
+    ]
+  },
+  "shipped": {
+    "source": "preview/media/tears-of-steel/package.json",
+    "cues": {
+      "c02": {
+        "essential": "Engines blaze.",
+        "standard": "Rocket engines blaze.",
+        "rich": "Rocket engines blaze."
+      },
+      "c03": {
+        "essential": "A rocket rises.",
+        "standard": "A rocket rises above the city.",
+        "rich": "A rocket rises above the city."
+      },
+      "c04": {
+        "essential": "Forty years later.",
+        "standard": "Text: forty years later.",
+        "rich": "Above dark machinery: forty years later."
+      },
+      "c05": {
+        "essential": "A knob turns.",
+        "standard": "A hand turns a knob.",
+        "rich": "A hand turns a control knob."
+      },
+      "c06": {
+        "essential": "An exposed brain.",
+        "standard": "An exposed brain on a platform.",
+        "rich": "An exposed brain on a platform."
+      },
+      "c07": {
+        "essential": "Mechanical eye.",
+        "standard": "Mechanical eye.",
+        "rich": "Mechanical eye."
+      },
+      "c08": {
+        "essential": "Tears of Steel.",
+        "standard": "Title: Tears of Steel.",
+        "rich": "White title: Tears of Steel."
+      },
+      "c09": {
+        "essential": "Smoky city.",
+        "standard": "Smoke over the city.",
+        "rich": "Smoke over the city."
+      }
+    },
+    "recoveries": {
+      "blender-credit": "White text reads: Blender Foundation Presents.",
+      "rocket-engines": "Rocket engines blaze above a red metal structure.",
+      "rocket-over-city": "A rocket rises above a city skyline.",
+      "pair-on-bridge": "A man and a woman stand beside a canal on a metal bridge.",
+      "mechanical-hand": "The woman raises her mechanical right hand toward the man.",
+      "forty-years-later": "White text over a dark industrial interior reads: 40 years later.",
+      "wireframe-figures": "Orange and blue wireframe figures stand among machinery and floating colored lines.",
+      "control-panel": "A hand turns a knob on a control panel beneath colored digital displays.",
+      "workers-at-machine": "Several people stand around machinery behind translucent colored displays.",
+      "brain-on-platform": "A brain sits exposed on a round illuminated platform, surrounded by fine wires and needles.",
+      "eye-device": "A man peers over the brain with a circular mechanical device over one eye.",
+      "film-title": "The scene cuts to a black title card. White text reads: Tears of Steel.",
+      "dark-city": "Smoke hangs over a dark city as a large platform hovers beside a tower."
+    }
   }
 }

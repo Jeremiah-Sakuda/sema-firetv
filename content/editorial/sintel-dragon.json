@@ -568,5 +568,140 @@
         "after": "The woman lowers a dark bowl onto a surface."
       }
     ]
+  },
+  "laterRevisions": {
+    "preparedBy": "AI coding assistants (Codex and Claude Code)",
+    "period": "2026-10-05 to 2026-10-14",
+    "kind": "Text alignment after the frame precheck: restore identifying facts required by content/description-contracts.json and reuse measured recordings where a shorter level could not keep them.",
+    "changes": [
+      {
+        "cue": "c02",
+        "level": "standard",
+        "before": "She walks through a narrow alley.",
+        "after": "A red-haired woman walks through an alley."
+      },
+      {
+        "cue": "c02",
+        "level": "rich",
+        "before": "Red-haired, she carries a staff through the narrow alley.",
+        "after": "A red-haired woman carries a staff through a narrow sunlit alley."
+      },
+      {
+        "cue": "c04",
+        "level": "rich",
+        "before": "Brown food in hand.",
+        "after": "She holds brown food."
+      },
+      {
+        "cue": "c05",
+        "level": "rich",
+        "before": "Onto the roof.",
+        "after": "She climbs up."
+      },
+      {
+        "cue": "c06",
+        "level": "essential",
+        "before": "Dragon, injured wing.",
+        "after": "A dragon has a torn wing."
+      },
+      {
+        "cue": "c10",
+        "level": "essential",
+        "before": "She tends its wing.",
+        "after": "Indoors, she tends its wing."
+      },
+      {
+        "cue": "c10",
+        "level": "standard",
+        "before": "She tends the dragon's wing.",
+        "after": "Indoors, she tends the dragon’s wing."
+      },
+      {
+        "cue": "c10",
+        "level": "rich",
+        "before": "On her lap, she tends its wing.",
+        "after": "Indoors, she tends its wing on her lap."
+      },
+      {
+        "cue": "c11",
+        "level": "rich",
+        "before": "She holds it close, smiling.",
+        "after": "She smiles at it."
+      }
+    ]
+  },
+  "shipped": {
+    "source": "preview/media/sintel-dragon/package.json",
+    "cues": {
+      "c01": {
+        "essential": "Sunlit city.",
+        "standard": "Sunlit rooftops.",
+        "rich": "Sunlit rooftops."
+      },
+      "c02": {
+        "essential": "A woman walks.",
+        "standard": "A red-haired woman walks through an alley.",
+        "rich": "A red-haired woman carries a staff through a narrow sunlit alley."
+      },
+      "c03": {
+        "essential": "She lifts a lid.",
+        "standard": "She lifts a dark lid and peers underneath.",
+        "rich": "In fingerless gloves, she holds open the large lid and peers underneath."
+      },
+      "c04": {
+        "essential": "She holds food.",
+        "standard": "She holds brown food.",
+        "rich": "She holds brown food."
+      },
+      "c05": {
+        "essential": "She climbs.",
+        "standard": "She climbs up.",
+        "rich": "She climbs up."
+      },
+      "c06": {
+        "essential": "A dragon has a torn wing.",
+        "standard": "A dragon crouches with a torn, bloody wing.",
+        "rich": "A golden dragon by a chimney, its wing torn and bloody."
+      },
+      "c07": {
+        "essential": "Blood pools.",
+        "standard": "Blood on the roof.",
+        "rich": "Blood below its wing."
+      },
+      "c08": {
+        "essential": "She kneels.",
+        "standard": "She kneels beside it.",
+        "rich": "She kneels beside the dragon."
+      },
+      "c09": {
+        "essential": "She offers the dragon her hand.",
+        "standard": "She reaches an open hand toward the dragon.",
+        "rich": "She extends her gloved hand; the small dragon opens its mouth."
+      },
+      "c10": {
+        "essential": "Indoors, she tends its wing.",
+        "standard": "Indoors, she tends the dragon’s wing.",
+        "rich": "Indoors, she tends its wing on her lap."
+      },
+      "c11": {
+        "essential": "She smiles.",
+        "standard": "She smiles at it.",
+        "rich": "She smiles at it."
+      }
+    },
+    "recoveries": {
+      "city-view": "A sunlit city stretches toward a tall tower.",
+      "woman-in-alley": "A red-haired woman walks through a narrow alley with a staff.",
+      "woman-lifts-lid": "She holds open a large dark lid and peers underneath it.",
+      "woman-holds-food": "She holds a rough brown piece of food in her gloved hand.",
+      "woman-climbs-roof": "She climbs up onto a sloping tiled roof.",
+      "injured-dragon": "A small dragon crouches beside a chimney with blood on its torn wing.",
+      "torn-wing": "The dragon's pale wing is ripped and blood pools on the roof.",
+      "woman-kneels": "The woman kneels beside the injured dragon.",
+      "offered-hand": "The woman kneels beside the small dragon on the roof. Its wing is torn and bloody. She offers her open hand; the dragon opens its mouth.",
+      "dragon-in-lap": "Inside a dim room, the woman cradles the dragon in her lap. She tends its injured wing.",
+      "woman-and-dragon": "In the dim room, the woman smiles and holds the small dragon close.",
+      "bowl-down": "The woman lowers a dark bowl onto a surface."
+    }
   }
 }
