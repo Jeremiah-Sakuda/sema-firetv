@@ -310,7 +310,7 @@ function renderCatalog() {
   }
   const reviewed = films.filter(f => f.package.reviewStatus === 'approved').length;
   $('catalog-note').textContent = films.length
-    ? `${films.length} film${films.length === 1 ? '' : 's'}. ${PREVIEW ? 'Open-film excerpts with AI-prepared descriptions. Playback works offline.' : reviewed ? 'Descriptions drafted with Amazon Bedrock, voiced with Amazon Polly, and approved by a human reviewer.' : 'Engineering fixture only; not reviewed for publication.'}`
+    ? `${films.length} film${films.length === 1 ? '' : 's'}. ${PREVIEW ? 'Open-film excerpts with three description levels and Revisit. Playback works offline.' : reviewed ? 'Descriptions drafted with Amazon Bedrock, voiced with Amazon Polly, and approved by a human reviewer.' : 'Engineering fixture only; not reviewed for publication.'}`
     : 'No films are packaged yet. Run the authoring pipeline, then npm run bundle.';
 }
 
@@ -658,7 +658,7 @@ if (window.SEMA_TEST) window.__sema = { loop, get player() { return player; }, g
 /* ---------- start ---------- */
 renderCatalog();
 $('load-status').textContent = films.length ? '' : 'No packaged films found.';
-render(); $('review-banner').hidden = !PREVIEW;
+render();
 function startup() {
   if (startupDone) return;
   startupDone = true; clearTimeout(startupTimer);

@@ -169,7 +169,6 @@ async function remoteFlowRun(){
 async function polishRun(){
   const {page,context}=await pageFor('/?codec=vp8');
   await page.locator('#film-tears-of-steel').click();await page.locator('[data-choose-level=standard]').click();
-  assert.equal(await page.locator('#review-banner').isVisible(),false,'prototype notice stays out of the film');
   assert.equal(await page.locator('#viewing-options').isVisible(),false);
   await page.waitForTimeout(1400);
   assert.equal(await page.evaluate(()=>window.__sema.lastSpoken.includes('welcome')),false,'late native startup does not replace current viewing instructions');
@@ -225,7 +224,6 @@ try{
   if(process.env.SEMA_BROWSER_SCOPE!=='interactions') await guidanceFailureRun();
   if(process.env.SEMA_BROWSER_SCOPE!=='guidance'){
   const {page,context}=await pageFor('/');await page.screenshot({path:path.join(output,'catalog.png')});
-  assert.equal(await page.locator('#review-banner').isVisible(),true);
   await page.setViewportSize({width:375,height:812});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   await page.screenshot({path:path.join(output,'mobile.png')});await context.close();
   if(process.env.SEMA_BROWSER_SCOPE!=='interactions'){

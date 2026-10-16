@@ -1,12 +1,12 @@
 # Documentation
 
-Start with the [project README](../README.md) for the viewer experience, intended first publisher and two-film demonstration. The [publisher workflow](../README.md#publisher-workflow) explains the proposed path from an authorized title to local Fire TV playback.
+Start with the [project README](../README.md) for the viewer experience, who it serves and the two-film demonstration. The [publisher workflow](../README.md#publisher-workflow) explains the path from an authorized title to local Fire TV playback.
 
 | Guide | Purpose |
 |---|---|
 | [Vega build and run](vega/BUILD-AND-RUN.md) | Install and run the actual TV application |
 | [Architecture](ARCHITECTURE.md) | Playback design, media contracts and AWS integration |
-| [Testing and evidence](TESTING.md) | Reproduce checks and understand their scope |
+| [Testing and evidence](TESTING.md) | Reproduce checks and see dated results |
 | [Authoring pipeline](../pipeline/README.md) | Produce narration from authorized film sources |
 | [Platform findings](vega/PLATFORM-FINDINGS.md) | Reproduce platform issues and understand the workarounds |
 | [Product feedback](PRODUCT-FEEDBACK.md) | Experience using each tool, API and SDK |

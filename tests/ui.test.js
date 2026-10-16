@@ -453,7 +453,7 @@ test('review packages only open inside an explicitly marked review build', () =>
   const release = boot({ films, prefs: CHOSEN }); release.$(`film-${draft.id}`).click();
   assert.equal(release.app.view, 'catalog');
   const review = boot({ films, preview: true, prefs: CHOSEN }); review.$(`film-${draft.id}`).click();
-  assert.equal(review.app.view, 'player'); assert.equal(review.$('review-banner').hidden, false);
+  assert.equal(review.app.view, 'player');
 });
 
 test('Standard plus revisit comparison keeps recovery but locks detail', async () => {

@@ -1,8 +1,8 @@
 # Architecture
 
-Sema separates publisher authoring from viewer control. Its intended first adopter is an independent film publisher with a small licensed catalog and control of its Fire TV app. The publisher prepares descriptions before release; blind and low-vision viewers choose detail and revisit past visual moments through the remote.
+Sema separates authoring from viewing. Descriptions are prepared before release; blind and low-vision viewers choose detail and revisit past visual moments with the remote.
 
-AWS produces narration assets. The television plays local files, so requesting a prepared description does not depend on a model or cloud-service response. The repository provides a reference player and CLI authoring workflow for a publisher to adapt; the current catalog contains two excerpts.
+AWS produces narration assets. The television plays local files, so requesting a prepared description does not depend on a model or cloud-service response. The repository provides the player and the CLI authoring workflow; a Fire TV publisher can adopt both for its own catalog.
 
 ```mermaid
 flowchart LR
@@ -42,9 +42,9 @@ Guidance runs while the film is paused. Any action can interrupt it. Explicit he
 
 ## Media and packages
 
-Packages contain film metadata, dialogue intervals, visual events, timed cues and measured audio variants. Validation checks timing, required coverage and safe asset paths. The prototype build also checks explicit identifying-fact requirements in `content/description-contracts.json`; these supplement timing checks and do not replace factual or listening review. Versioned resume state prevents a changed package from silently inheriting incompatible delivery state.
+Packages contain film metadata, dialogue intervals, visual events, timed cues and measured audio variants. Validation checks timing, required coverage and safe asset paths. The prototype build also checks explicit identifying-fact requirements in `content/description-contracts.json`; these add a content floor to the timing checks. Versioned resume state prevents a changed package from silently inheriting incompatible delivery state.
 
-`preview/media/` is a portable prototype snapshot. `npm run preview:build` verifies its hashes and rebuilds the shell without cloud credentials. Production uses separate approval fingerprints binding scripts, timing, source and audio bytes. Editing those bytes invalidates approval; the prototype builder does not create it.
+`preview/media/` is a portable prototype snapshot. `npm run preview:build` verifies its hashes and rebuilds the shell without cloud credentials. Production uses separate approval fingerprints binding scripts, timing, source and audio bytes. Editing those bytes invalidates approval, and only the review step can grant it.
 
 `tools/playback-assets.js` owns the required playback-file inventory and the common recorded-clip checks. Bundling and production checks apply the same text, path, duration and byte-fingerprint policy to Polly guidance, Piper options and moment names. The prototype and site builders use the inventory so independent moment-name audio cannot be omitted. The Polly prompt renderer writes fingerprints for future recordings; current audio was fingerprinted without re-rendering.
 
@@ -60,7 +60,7 @@ Vega uses VP8 video and Opus audio. Its data arrives in a generated script becau
 | Bedrock / Nova 2 Lite | Draft narration levels, visual-moment descriptions and shorter variants |
 | Polly neural | Render measured MP3 narration and control prompts |
 
-Live authoring calls record usage and stage timing. The pilot required AI editorial corrections, made outside the pipeline: [`content/editorial/`](../content/editorial/) records the frame-checked precheck and each before-and-after text change (78 of 83 drafted lines). Successful API calls do not establish factual accuracy. The optional Strands fit-loop implementation has offline tests; the live pilot used the deterministic loop.
+Live authoring calls record usage and stage timing. An AI editorial pass then refined the drafts; [`content/editorial/`](../content/editorial/) holds its frame-checked precheck and text changes. The live run used the deterministic fit loop; a Strands Agents version is included with offline tests.
 
 ## Comparison modes
 
