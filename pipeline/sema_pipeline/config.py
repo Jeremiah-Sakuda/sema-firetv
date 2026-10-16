@@ -42,7 +42,7 @@ DEFAULTS: dict = {
         "frame_width": 640,
     },
     "script": {
-        "model_id": "us.amazon.nova-pro-v1:0",
+        "model_id": "us.amazon.nova-2-lite-v1:0",
         "max_tokens": 1200,
         "temperature": 0.3,
         "top_p": 0.9,

@@ -223,7 +223,7 @@ Real problems we hit while building Sema between 2026-09-27 and 2026-10-05. Each
   * `inputd-cli series "button_press KEY_LEFT short"` → `Unrecognized command: button_press KEY_LEFT short`
 * **Expected:** usage says `inputd-cli series <comma_separated_actions>...`.
 * **Actual:** only the **unquoted** form works: `inputd-cli series button_hold KEY_BACK` → `Injecting Button Press As Driver: KEY_BACK State: down`. The held state persists across invocations.
-* **Workaround:** one `series button_hold` / `button_release` call per key (see `BUILD-AND-RUN.md` §6).
+* **Workaround:** one `series button_hold` / `button_release` call per key (entry 18 shows the overlapping-hold form that toggles VoiceView).
 * **Suggestion:** fix the parser or the usage text, and add an example.
 
 ## 15. VVD `<video>` playback stalls after ~3 s, seeks never complete, and `play()` can hang. High (for media apps)
