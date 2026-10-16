@@ -31,9 +31,17 @@ SEMA_URL=http://127.0.0.1:4173 npm run test:browser
 
 `SEMA_CHROME` can point to an existing Chrome executable; `SEMA_PLAYWRIGHT_MODULE` can point to an existing Playwright module. Results go to `artifacts/browser/`, or `SEMA_BROWSER_OUT` if provided. This harness decodes real media in Chrome.
 
+## October 16, 2026 final build on the Vega Virtual Device
+
+Commit `15e8eb5`, after a fresh simulator restart. [Log excerpts](vega/logs/evidence-excerpts.txt); screenshots 66–67 in `vega/screenshots/`.
+- All 184 media files in the aarch64 package match their source hashes.
+- In *Tears of Steel*, a pause at 34.8 s and Revisit described `mechanical-hand` with description text on screen and the compact panel. Earlier moment described `pair-on-bridge`.
+- Back at 46.5 s cut off the critical "forty years later" cue. The pause focused "Hear missed description".
+- With VoiceView turned on by the Back+Menu hold, the missed description played and "Description complete." went to the host's announce call (`{"sema":"announce"}` in the device log). Recorded guidance named no control, so nothing was spoken twice. VoiceView was turned off again afterwards.
+
 ## October 16, 2026 review-round fixes
 
-- 144 JavaScript tests, 78 offline pipeline tests and 6 native host tests pass.
+- 145 JavaScript tests, 78 offline pipeline tests and 6 native host tests pass.
 - Four optional timed lines that were read over a later camera shot (*Sintel* c05, c07 and c11; *Tears of Steel* c05) were dropped from the timed track. Their moments stay available through Revisit. The *Tears of Steel* c06 cue no longer marks the workers moment as described. The comparison mixes were regenerated and the integrity manifest updated; the editorial record lists each change.
 - Earlier moment steps back from the moment Revisit plays, and before any Revisit the context line names that moment, so the two lines always read in order. After a Revisit at the end of the film, the panel still says the film ended.
 - After a guidance failure without a screen reader, Back turns spoken guidance off for that session only.

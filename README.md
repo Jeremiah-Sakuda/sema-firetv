@@ -10,9 +10,9 @@ Built for **Fire TV / Vega OS**, with an AWS authoring pipeline. Code: [MIT](LIC
 
 Audio description has to fit between the lines of dialogue. In the bridge scene of *Tears of Steel*, two characters talk from 23.05 s to 45.22 s. The longest pause in that stretch is 1.21 s. Saying *"A man and a woman stand beside a canal on a metal bridge"* takes 3.3 s, so a timed track has to leave it out. With Sema, the viewer can still hear it.
 
-![Sema on the Vega Virtual Device, paused at 0:34 in the Tears of Steel bridge scene. The panel reads "Revisiting a visual moment: Describing at 0:33: Mechanical hand. Next earlier at 0:25: People on the bridge", and the description text reads "The woman raises her mechanical right hand toward the man."](docs/vega/screenshots/65-bridge-revisit-oct16.png)
+![Sema on the Vega Virtual Device, paused at 0:34 in the Tears of Steel bridge scene while the mechanical hand is described. The compact panel reads "Revisiting a visual moment. Describing at 0:33: Mechanical hand. Next earlier at 0:25: People on the bridge", and the description text reads "The woman raises her mechanical right hand toward the man."](docs/vega/screenshots/66-bridge-revisit-final.png)
 
-*Sema on the Vega Virtual Device (October 16 build).*
+*Sema on the Vega Virtual Device (October 16 final build).*
 
 1. **Select** pauses the film and focuses **Revisit latest moment**.
 2. **Select** again: *"The woman raises her mechanical right hand toward the man."*
@@ -103,10 +103,10 @@ Open **http://127.0.0.1:4173**. Use arrow keys as the D-pad, Enter as Select, Es
 
 ## Verified behavior
 
-- **Test suites (October 16):** 144 JavaScript, 78 offline pipeline and 6 native host tests pass. Both films pass their description contracts, the editorial record matches every shipped line, and the repository checks pass.
+- **Test suites (October 16):** 145 JavaScript, 78 offline pipeline and 6 native host tests pass. Both films pass their description contracts, the editorial record matches every shipped line, and the repository checks pass.
 - **Browser:** real-media Chrome runs cover both films at all three levels. They also cover the keyboard flow through Revisit, Earlier moment, resume and every Back action.
-- **Vega package:** the aarch64 build contains 200 hash-matched playback assets.
-- **Vega Virtual Device (October 16 build):** in the bridge scene, Revisit, Earlier moment, resume and recovery of an interrupted critical description all worked from the remote. Earlier builds also covered both excerpts end to end, Back, and VoiceView turning on and off.
+- **Vega package:** the aarch64 build's 184 media files match their source hashes.
+- **Vega Virtual Device (October 16 final build):** in the bridge scene, Revisit, Earlier moment and resume worked from the remote, and Back during a critical description focused the missed description. With VoiceView on, state changes reached the host's announce call. Earlier builds also covered both excerpts end to end and the VoiceView toggle.
 
 The included excerpts run with `npm run preview`. `npm run release:check` is the separate gate for editor-approved production packages.
 

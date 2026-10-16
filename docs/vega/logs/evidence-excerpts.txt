@@ -121,3 +121,27 @@ Oct 16 19:09:29.715950  {"sema":"playback","type":"resume","position":34.884}
 Oct 16 19:09:40.254469  {"sema":"playback","type":"audio-cancel","position":45.551,"reason":"transport-pause","token":11}
 Oct 16 19:09:40.254569  {"sema":"playback","type":"pause","position":45.551,"reason":"transport-pause"}
 Oct 16 19:09:40.257355  {"sema":"say","ids":["paused","label_recover_pending"],"focus":"recover"}
+
+## October 16 final build (commit 15e8eb5): bridge Revisit and Earlier, Back during a critical cue, VoiceView announcements through the host
+Oct 16 20:35:52.106520  {"sema":"playback","type":"resume","position":0}
+Oct 16 20:36:27.059122  {"sema":"playback","type":"pause","position":34.765,"reason":"select"}
+Oct 16 20:36:27.065924  {"sema":"say","ids":["paused","label_recover","moment_tears_of_steel_mechanical_hand"],"focus":"recover"}
+Oct 16 20:36:28.588943  {"sema":"playback","type":"pause","position":34.765,"reason":"recovery"}
+Oct 16 20:36:28.589098  {"sema":"playback","type":"recovery","position":34.765,"event":"mechanical-hand","pending":false,"otherShot":false}
+Oct 16 20:36:31.644013  {"sema":"say","ids":["recovery_complete","label_resume"],"focus":"resume"}
+Oct 16 20:36:42.985997  {"sema":"playback","type":"pause","position":34.765,"reason":"recovery"}
+Oct 16 20:36:42.988651  {"sema":"playback","type":"recovery","position":34.765,"event":"mechanical-hand","pending":false,"otherShot":false}
+Oct 16 20:36:46.121541  {"sema":"say","ids":["recovery_complete","label_resume"],"focus":"resume"}
+Oct 16 20:37:01.236139  {"sema":"playback","type":"pause","position":34.765,"reason":"recovery"}
+Oct 16 20:37:01.236181  {"sema":"playback","type":"recovery","position":34.765,"event":"pair-on-bridge","pending":false,"otherShot":false}
+Oct 16 20:37:04.715833  {"sema":"say","ids":["recovery_complete","label_earlier","moment_tears_of_steel_rocket_over_city"],"focus":"earlier"}
+Oct 16 20:37:07.008457  {"sema":"playback","type":"resume","position":34.765}
+Oct 16 20:37:18.643574  {"sema":"playback","type":"audio-cancel","position":46.516,"reason":"back","token":12}
+Oct 16 20:37:18.643640  {"sema":"playback","type":"pause","position":46.516,"reason":"back"}
+Oct 16 20:37:18.643661  {"sema":"say","ids":["paused_return","label_recover_pending"],"focus":"recover"}
+Oct 16 20:37:30.960419  {"sema":"screen-reader","on":true,"guidanceChosen":false}
+Oct 16 20:37:36.417714  {"sema":"playback","type":"pause","position":46.516,"reason":"recovery"}
+Oct 16 20:37:36.419069  {"sema":"playback","type":"recovery","position":46.516,"event":"forty-years-later","pending":true,"otherShot":true}
+Oct 16 20:37:40.960906  {"sema":"announce","text":"Description complete."}
+Oct 16 20:37:40.981524  {"sema":"say","ids":["recovery_complete"],"focus":"resume"}
+Oct 16 20:38:00.679468  {"sema":"screen-reader","on":false,"guidanceChosen":false}
