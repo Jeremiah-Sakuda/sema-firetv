@@ -106,3 +106,18 @@ Oct 09 03:51:18.536399  {"sema":"playback","type":"pause","position":35.061,"rea
 Oct 09 03:51:18.536592  {"sema":"playback","type":"recovery","position":35.061,"event":"mechanical-hand","pending":false,"otherShot":false}
 Oct 09 03:51:21.792524  {"sema":"say","ids":["recovery_complete","suggest_rich","label_level_rich"],"focus":"rich"}
 # Revisiting the same moment twice suggests Rich detail.
+
+## October 16 build: level-row focus, Revisit and Earlier in the bridge scene, Play/Pause during a critical cue (collected by tools/vega-probe/collect.js)
+Oct 16 19:08:23.560665  {"sema":"playback","type":"resume","position":0}
+Oct 16 19:08:58.515747  {"sema":"playback","type":"pause","position":34.884,"reason":"select"}
+Oct 16 19:08:58.515885  {"sema":"say","ids":["paused","label_recover","moment_tears_of_steel_mechanical_hand"],"focus":"recover"}
+Oct 16 19:09:00.037636  {"sema":"playback","type":"pause","position":34.884,"reason":"recovery"}
+Oct 16 19:09:00.037671  {"sema":"playback","type":"recovery","position":34.884,"event":"mechanical-hand","pending":false,"otherShot":false}
+Oct 16 19:09:03.123979  {"sema":"say","ids":["recovery_complete","label_resume"],"focus":"resume"}
+Oct 16 19:09:23.378681  {"sema":"playback","type":"pause","position":34.884,"reason":"recovery"}
+Oct 16 19:09:23.378699  {"sema":"playback","type":"recovery","position":34.884,"event":"pair-on-bridge","pending":false,"otherShot":false}
+Oct 16 19:09:26.873373  {"sema":"say","ids":["recovery_complete","label_earlier","moment_tears_of_steel_rocket_over_city"],"focus":"earlier"}
+Oct 16 19:09:29.715950  {"sema":"playback","type":"resume","position":34.884}
+Oct 16 19:09:40.254469  {"sema":"playback","type":"audio-cancel","position":45.551,"reason":"transport-pause","token":11}
+Oct 16 19:09:40.254569  {"sema":"playback","type":"pause","position":45.551,"reason":"transport-pause"}
+Oct 16 19:09:40.257355  {"sema":"say","ids":["paused","label_recover_pending"],"focus":"recover"}

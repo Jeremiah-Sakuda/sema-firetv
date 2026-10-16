@@ -31,6 +31,20 @@ SEMA_URL=http://127.0.0.1:4173 npm run test:browser
 
 `SEMA_CHROME` can point to an existing Chrome executable; `SEMA_PLAYWRIGHT_MODULE` can point to an existing Playwright module. Results go to `artifacts/browser/`, or `SEMA_BROWSER_OUT` if provided. This harness decodes real media in Chrome.
 
+## October 16, 2026 fixes and checks
+
+- 137 JavaScript tests, 75 offline pipeline tests and 5 native host tests pass.
+- New regression tests cover five remote and playback fixes:
+  - Entering the description-level row lands on the selected level, so Down from the actions can't put one Select on Off.
+  - Pressing Earlier moment while the oldest moment plays names the control that has focus afterwards (Resume).
+  - Play/Pause during a critical description focuses "Hear missed description".
+  - An audio error on a timed cue drops optional detail or keeps a critical fact recoverable, the same as a start timeout.
+  - The film ending while its last description plays still ends with focused controls.
+- **Vega Virtual Device, October 16 build** ([log excerpts](vega/logs/evidence-excerpts.txt); screenshots 64–65 in `vega/screenshots/`):
+  - Down from Play film landed on Standard, the selected level.
+  - In *Tears of Steel*, a pause at 34.9 s and Revisit described `mechanical-hand` with description text on screen. Earlier moment then described `pair-on-bridge`, and focus stayed on Earlier moment.
+  - Play/Pause at 45.55 s cut off the critical "forty years later" cue. Sema said "Paused. Hear missed description" with focus on that control.
+
 ## October 15, 2026 submission checks
 
 - 133 JavaScript tests pass, including four source-export privacy regressions.

@@ -10,9 +10,9 @@ Built for **Fire TV / Vega OS**, with an AWS authoring pipeline. Code: [MIT](LIC
 
 Audio description has to fit between the lines of dialogue. In the bridge scene of *Tears of Steel*, two characters talk from 23.05 s to 45.22 s. The longest pause in that stretch is 1.21 s. Saying *"A man and a woman stand beside a canal on a metal bridge"* takes 3.3 s, so a timed track has to leave it out. With Sema, the viewer can still hear it.
 
-![Sema on the Vega Virtual Device, paused at 0:35 in the Tears of Steel bridge scene. The panel reads "Revisiting a visual moment", and the description text reads "The woman raises her mechanical right hand toward the man."](docs/vega/screenshots/60-bridge-revisit-mechanical-hand.png)
+![Sema on the Vega Virtual Device, paused at 0:34 in the Tears of Steel bridge scene. The panel reads "Revisiting a visual moment: Describing at 0:33: Mechanical hand. Next earlier at 0:25: People on the bridge", and the description text reads "The woman raises her mechanical right hand toward the man."](docs/vega/screenshots/65-bridge-revisit-oct16.png)
 
-*Sema on the Vega Virtual Device (October 8 build).*
+*Sema on the Vega Virtual Device (October 16 build).*
 
 1. **Select** pauses the film and focuses **Revisit latest moment**.
 2. **Select** again: *"The woman raises her mechanical right hand toward the man."*
@@ -23,11 +23,11 @@ In this excerpt, 4 of the 13 described moments have no timed slot; Revisit is ho
 
 ## Who it is for
 
-**Viewers.** WHO estimates that [at least 2.2 billion people](https://www.who.int/news-room/fact-sheets/detail/blindness-and-visual-impairment) live with a near or distance vision impairment. People who rely on audio description don't all want the same amount of it. In [Describe Now](https://arxiv.org/abs/2411.11835), 20 blind and low-vision participants preferred different description frequency and detail across videos. Sema turns those preferences into controls on the remote.
+**Viewers.** In 2020, an estimated 43 million people worldwide were blind and 295 million more had moderate or severe vision impairment ([Lancet Global Health, 2021](https://pubmed.ncbi.nlm.nih.gov/33275950/)). People who rely on audio description don't all want the same amount of it. In [Describe Now](https://arxiv.org/abs/2411.11835), 20 blind and low-vision participants preferred different description frequency and detail across videos. Sema turns those preferences into controls on the remote.
 
 **Beyond the hackathon.** Sema reaches viewers in two ways:
 - **As a Fire TV app** with its own catalog of openly licensed films.
-- **Inside other Fire TV apps.** The MIT-licensed player and the AWS authoring pipeline let a publisher add viewer-controlled description to its own films.
+- **For publishers.** A publisher can adapt the MIT-licensed player and the AWS authoring pipeline to add viewer-controlled description to its own films. The scheduling core, `src/playback.js`, has no browser dependencies, so it can be reused outside the WebView player.
 
 **Standards.** In the EU, the [European Accessibility Act](https://eur-lex.europa.eu/eli/dir/2019/882/oj) has applied since June 2025 to services that give access to audiovisual media. EN 301 549, the European ICT accessibility standard, asks that audio-description controls sit at the same level as the main playback controls (clause 7.3). In Sema, they are one Select away.
 
@@ -103,12 +103,10 @@ Open **http://127.0.0.1:4173**. Use arrow keys as the D-pad, Enter as Select, Es
 
 ## Verified behavior
 
-- **Test suites (October 16):** 133 JavaScript, 75 offline pipeline and 5 native host tests pass. Both films' description contracts and the repository checks pass too.
+- **Test suites (October 16):** 137 JavaScript, 75 offline pipeline and 5 native host tests pass. Both films' description contracts and the repository checks pass too.
 - **Browser:** real-media Chrome runs cover both films at all three levels. They also cover the keyboard flow through Revisit, Earlier moment, resume and every Back action.
 - **Vega package:** the aarch64 build contains 200 hash-matched playback assets.
-- **Vega Virtual Device:**
-  - Both excerpts played, and Revisit, Earlier moment, interruption recovery, resume and Back all worked from the remote.
-  - Turning VoiceView on and off reached the running app each time.
+- **Vega Virtual Device (October 16 build):** in the bridge scene, Revisit, Earlier moment, resume and recovery of an interrupted critical description all worked from the remote. Earlier builds also covered both excerpts end to end, Back, and VoiceView turning on and off.
 
 [Test commands and dated evidence](docs/TESTING.md)
 

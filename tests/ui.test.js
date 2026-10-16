@@ -297,10 +297,11 @@ test('D-pad follows the viewing, detail and utility rows', () => {
   assert.equal(from('#resume','ArrowRight').id,'recover');
   assert.equal(from('[data-level="essential"]','ArrowUp').id,'resume');
   assert.equal(from('[data-level="rich"]','ArrowUp').id,'recover');
-  assert.equal(from('#resume','ArrowDown').dataset.level,'essential');
+  assert.equal(from('#resume','ArrowDown').dataset.level,'standard', 'entering the level row lands on the selected level');
   assert.equal(from('#controls [data-toggle="guidance"]','ArrowUp').id,'return');
   assert.equal(from('#controls [data-toggle="text"]','ArrowUp').id,'more-options');
-  assert.equal(from('#more-options','ArrowUp').dataset.level,'essential');
+  assert.equal(from('#more-options','ArrowUp').dataset.level,'standard');
+  assert.equal(from('#recover','ArrowDown').dataset.level,'standard', 'Down from Revisit never lands on Off');
   assert.equal(from('#restart','ArrowRight').id,'restart');
 });
 
@@ -445,6 +446,49 @@ test('earlier moments can be revisited while the film clock stays paused', async
   assert.equal(s.app.player.active.events[0], 'envelope-hidden');
   assert.equal(s.video.currentTime, position);
   await s.finishAudio(); assert.equal(s.$('earlier').getAttribute('aria-disabled'), 'true');
+});
+
+test('Earlier moment pressed during the oldest moment names the control that really has focus', async () => {
+  const s = boot({ prefs: CHOSEN }); await playing(s);
+  await s.at(2.6); await s.finishAudio(); await s.at(9.6); await s.finishAudio();
+  s.key('Enter'); s.$('recover').click(); await s.finishAudio();
+  s.$('earlier').click(); assert.equal(s.app.player.active.events[0], 'envelope-hidden');
+  s.$('earlier').focus(); s.$('earlier').click();                 // no older moment while this one plays
+  assert.equal(s.active(), 'resume');
+  assert.deepEqual([...s.app.lastSpoken], ['recovery_stopped', 'no_earlier', 'label_resume'], 'speech names Resume, which has focus, not Earlier moment');
+});
+
+test('Play/Pause during a critical description focuses the missed description', async () => {
+  const s = boot({ prefs: CHOSEN }); await playing(s); await s.at(2.6);
+  assert.ok(s.app.player.active, 'critical cue is speaking');
+  s.key(' ');
+  assert.equal(s.app.player.delivery.get('envelope-hidden'), 'pending');
+  assert.equal(s.active(), 'recover');
+  assert.equal(s.app.lastSpoken.at(-1), 'label_recover_pending');
+});
+
+test('an audio error on a timed cue keeps the film recoverable instead of failing it', async () => {
+  let requested;
+  const s = boot({ prefs: CHOSEN, audioPlay: a => { requested = a; return new Promise(() => {}); } });
+  await playing(s); await s.at(2.6); assert.ok(requested);
+  requested.dispatchEvent(new s.w.Event('error'));
+  assert.notEqual(s.app.player.mode, 'error');
+  assert.equal(s.app.player.delivery.get('envelope-hidden'), 'pending');
+  assert.equal(s.active(), 'recover');
+});
+
+test('the film ending during its last description still ends with focused controls', async () => {
+  // An optional final cue is dropped at the end without pausing, which used to leave the player "playing".
+  const optionalEnd = { ...fixture, events: fixture.events.map(e => e.id === 'door-open' ? { ...e, critical: false } : e) };
+  const s = boot({ prefs: CHOSEN, films: [{ package: optionalEnd, poster: null, dev: false, allowFixture: true }] }); await playing(s);
+  await s.at(2.6); await s.finishAudio(); await s.at(9.6);
+  assert.ok(s.app.player.active, 'final cue is still speaking');
+  s.video.currentTime = 15; s.video.dispatchEvent(new s.w.Event('ended')); await flush();
+  assert.equal(s.app.player.active, null);
+  assert.equal(s.app.player.mode, 'ended');
+  assert.equal(s.$('controls').closest('[hidden]'), null);
+  assert.equal(s.active(), 'return');
+  assert.equal(s.app.lastSpoken[0], 'film_ended');
 });
 
 test('review packages only open inside an explicitly marked review build', () => {

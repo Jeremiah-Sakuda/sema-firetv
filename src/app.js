@@ -86,12 +86,8 @@ function say(ids, visible) {
   // Explicit spoken actions own the audio channel. Focus speech is separately
   // suppressed during recovery; Help and preference actions deliberately stop it.
   clearTimeout(focusSpeechTimer); pendingFocusSpeechTarget = null;
-  const interrupted = view === 'player' && player?.mode === 'recovering';
-  if (interrupted) {
-    session.stopNarration(); player.controls('guidance-request');
-    render(); focusOn('resume'); persist();
-    list.unshift({ id: 'recovery_stopped', text: clipText('recovery_stopped') });
-  }
+  const interrupted = interruptRecovery();
+  if (interrupted) list.unshift({ id: 'recovery_stopped', text: clipText('recovery_stopped') });
   // Prompts and button labels are separate clips; as text, each needs its own stop
   // ("Earlier moment. A rocket rises.", not "Earlier moment A rocket rises.").
   const message = visible ?? list.map(i => /[.!?:]$/.test(i.text) ? i.text : `${i.text}.`).join(' ');
@@ -115,8 +111,18 @@ function focusedItem() {
  * speech cannot contradict the layout.
  */
 function announce(ids, target) {
+  // Stop any recovery first: it moves focus, and speech must name the control
+  // that has focus afterwards, not the one pressed.
+  const stopped = interruptRecovery();
   if (target) focusOn(target);
-  say([...(Array.isArray(ids) ? ids : [ids]), ...focusTail()]);
+  say([...(stopped ? ['recovery_stopped'] : []), ...(Array.isArray(ids) ? ids : [ids]), ...focusTail()]);
+}
+/** Speech during a recovery stops it; its fact stays pending. True when one was stopped. */
+function interruptRecovery() {
+  if (view !== 'player' || player?.mode !== 'recovering') return false;
+  session.stopNarration(); player.controls('guidance-request');
+  render(); focusOn('resume'); persist();
+  return true;
 }
 /**
  * With spoken guidance off, a screen reader (VoiceView) already reads the
@@ -162,7 +168,11 @@ function moveFocus(direction) {
   const items = [...scope.querySelectorAll('button')].filter(shown);
   const from = document.activeElement;
   if (!items.includes(from)) { focusOn(defaultFocusId()); speakFocused(); return; }
-  const next = nearestInDirection(from.getBoundingClientRect(), items.filter(v => v !== from).map(v => ({ v, r: v.getBoundingClientRect() })), direction)?.v;
+  let next = nearestInDirection(from.getBoundingClientRect(), items.filter(v => v !== from).map(v => ({ v, r: v.getBoundingClientRect() })), direction)?.v;
+  // Entering a radio group lands on its selected option, so Down from the
+  // actions never puts focus (and one Select) on "Off" by position alone.
+  const group = next?.closest('[role="radiogroup"]');
+  if (group && !group.contains(from)) next = group.querySelector('[aria-checked="true"]') ?? next;
   if (next) next.focus();
   else if (prefs.guidance) speakFocused();  // at an edge: repeat where the viewer is instead of silence
 }
@@ -339,6 +349,7 @@ function openControls(reason, prompt, focusId) {
   if (!player || view !== 'player') return;
   session.pause();
   player.position = video.currentTime; player.controls(reason);
+  if (focusId === 'pending-or-resume') focusId = player.pending().length ? 'recover' : 'resume';
   if (FIXED && focusId === 'recover' && !player.pending().length) focusId = 'resume';
   render(); announce(prompt, focusId); persist();
 }
@@ -430,7 +441,12 @@ function onEnded() {
   if (endedHandled || !player) return;
   endedHandled = true;
   if (FIXED) { player.position = film.duration; player.mode = 'ended'; }
-  else if (player.mode === 'playing') player.tick(film.duration);
+  else if (player.mode === 'playing') {
+    // A cue still speaking when the film ends is cut off (its critical fact
+    // stays recoverable) so the film is always marked ended and controls return.
+    if (player.active) { session.stopNarration(); player.cancel('film-ended'); }
+    player.tick(film.duration);
+  }
   session.pause(); render();
   const pending = player.pending().length > 0;
   announce(pending ? 'film_ended_pending' : 'film_ended', pending ? 'recover' : 'return'); persist();
@@ -510,7 +526,7 @@ function back() {
 window.__semaBack = () => { back(); };
 function playPause() {
   if (view !== 'player' || !player) return;
-  if (player.mode === 'playing') openControls('transport-pause', 'paused', 'resume');
+  if (player.mode === 'playing') openControls('transport-pause', 'paused', 'pending-or-resume');
   else if (player.mode === 'recovering') { stopRecovery(); announce('recovery_stopped', 'resume'); }
   else resume();
 }

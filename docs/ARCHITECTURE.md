@@ -2,7 +2,7 @@
 
 Sema separates authoring from viewing. Descriptions are prepared before release; blind and low-vision viewers choose detail and revisit past visual moments with the remote.
 
-AWS produces narration assets. The television plays local files, so requesting a prepared description does not depend on a model or cloud-service response. The repository provides the player and the CLI authoring workflow; a Fire TV publisher can adopt both for its own catalog.
+AWS produces narration assets. The television plays local files, so requesting a prepared description does not depend on a model or cloud-service response. The repository provides the player and the CLI authoring workflow; a Fire TV publisher can adapt both for its own catalog. The scheduler in `src/playback.js` has no browser dependencies, so it can be reused outside the WebView player.
 
 ```mermaid
 flowchart LR

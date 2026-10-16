@@ -106,12 +106,22 @@ export function createPlaybackSession({ video, voice, getPlayback, onEvent = () 
     const current = () => narration === attempt && getPlayback() === playback && playback?.active?.token === cue.token;
     const lost = paused => { stopNarration(); emit('narration-lost', { cue, paused }); };
     const fail = () => { if (current()) emit('narration-failed', { cue }); };
+    // A timed cue that cannot play is handled like one that never starts:
+    // optional detail is dropped and a critical fact becomes recoverable.
+    // Only a failed recovery, which the viewer asked for, reports an error.
+    const failed = () => {
+      if (!current()) return;
+      if (cue.kind === 'recovery') { fail(); return; }
+      playback.record('audio-error', { token: cue.token });
+      playback.position = video.currentTime;
+      lost(playback.lose('audio-error'));
+    };
     audio.onended = () => {
       if (!current()) return;
       const delivered = playback.complete(cue.token);
       stopNarration(); emit('narration-completed', { cue, delivered });
     };
-    audio.onerror = fail;
+    audio.onerror = failed;
     const timeout = () => {
       if (!current()) return;
       playback.record('audio-timeout', { token: cue.token, kind: cue.kind, started: attempt.started });
@@ -137,8 +147,8 @@ export function createPlaybackSession({ video, voice, getPlayback, onEvent = () 
       if (!canStart()) { lost(playback.mode !== 'playing'); return; }
       attempt.requested = true;
       try {
-        audio.play()?.then?.(() => { if (current()) started(); else audio.pause(); }, fail);
-      } catch { fail(); }
+        audio.play()?.then?.(() => { if (current()) started(); else audio.pause(); }, failed);
+      } catch { failed(); }
     };
     if (audio.readyState >= 3) attempt.start();
     else { audio.addEventListener('canplay', attempt.start, { once: true }); audio.load?.(); }
