@@ -1,0 +1,152 @@
+{
+  "date": "2026-10-04",
+  "platform": "Vega Virtual Device / SDK 0.24.12112",
+  "app": "com.sema.viewer.main",
+  "packageBytes": 2042505,
+  "media": "engineering fixture plus real Polly guidance",
+  "completedPromptIds": [
+    "film_red_envelope_fixture",
+    "level_standard",
+    "onboarding",
+    "paused_recover",
+    "ready",
+    "recovery_complete"
+  ],
+  "errorOrWatchdogEvents": [],
+  "events": [
+    {
+      "deviceLogTime": "Oct 04 16:01:54.783223 am",
+      "sema": "guidance",
+      "type": "clip-ended",
+      "id": "welcome",
+      "duration": 4.776
+    },
+    {
+      "deviceLogTime": "Oct 04 16:01:54.793849 am",
+      "sema": "guidance",
+      "type": "clip-requested",
+      "id": "film_red_envelope_fixture",
+      "duration": 3.984
+    },
+    {
+      "deviceLogTime": "Oct 04 16:01:54.940988 am",
+      "sema": "guidance",
+      "type": "clip-playing",
+      "id": "film_red_envelope_fixture",
+      "duration": 3.984
+    },
+    {
+      "deviceLogTime": "Oct 04 16:01:59.078225 am",
+      "sema": "guidance",
+      "type": "clip-ended",
+      "id": "film_red_envelope_fixture",
+      "duration": 3.984
+    },
+    {
+      "deviceLogTime": "Oct 04 16:02:43.192422 am",
+      "sema": "guidance",
+      "type": "clip-requested",
+      "id": "onboarding",
+      "duration": 21.888
+    },
+    {
+      "deviceLogTime": "Oct 04 16:02:43.474218 am",
+      "sema": "guidance",
+      "type": "clip-playing",
+      "id": "onboarding",
+      "duration": 21.888
+    },
+    {
+      "deviceLogTime": "Oct 04 16:03:05.354996 am",
+      "sema": "guidance",
+      "type": "clip-ended",
+      "id": "onboarding",
+      "duration": 21.888
+    },
+    {
+      "deviceLogTime": "Oct 04 16:03:23.519470 am",
+      "sema": "guidance",
+      "type": "clip-requested",
+      "id": "level_standard",
+      "duration": 2.904
+    },
+    {
+      "deviceLogTime": "Oct 04 16:03:23.901627 am",
+      "sema": "guidance",
+      "type": "clip-playing",
+      "id": "level_standard",
+      "duration": 2.904
+    },
+    {
+      "deviceLogTime": "Oct 04 16:03:26.784466 am",
+      "sema": "guidance",
+      "type": "clip-ended",
+      "id": "level_standard",
+      "duration": 2.904
+    },
+    {
+      "deviceLogTime": "Oct 04 16:03:26.785009 am",
+      "sema": "guidance",
+      "type": "clip-requested",
+      "id": "ready",
+      "duration": 5.88
+    },
+    {
+      "deviceLogTime": "Oct 04 16:03:26.931434 am",
+      "sema": "guidance",
+      "type": "clip-playing",
+      "id": "ready",
+      "duration": 5.88
+    },
+    {
+      "deviceLogTime": "Oct 04 16:03:32.946031 am",
+      "sema": "guidance",
+      "type": "clip-ended",
+      "id": "ready",
+      "duration": 5.88
+    },
+    {
+      "deviceLogTime": "Oct 04 16:04:21.778831 am",
+      "sema": "guidance",
+      "type": "clip-requested",
+      "id": "paused_recover",
+      "duration": 2.784
+    },
+    {
+      "deviceLogTime": "Oct 04 16:04:21.819480 am",
+      "sema": "guidance",
+      "type": "clip-playing",
+      "id": "paused_recover",
+      "duration": 2.784
+    },
+    {
+      "deviceLogTime": "Oct 04 16:04:24.721814 am",
+      "sema": "guidance",
+      "type": "clip-ended",
+      "id": "paused_recover",
+      "duration": 2.784
+    },
+    {
+      "deviceLogTime": "Oct 04 16:05:32.575398 am",
+      "sema": "guidance",
+      "type": "clip-requested",
+      "id": "recovery_complete",
+      "duration": 3.096
+    },
+    {
+      "deviceLogTime": "Oct 04 16:05:32.706302 am",
+      "sema": "guidance",
+      "type": "clip-playing",
+      "id": "recovery_complete",
+      "duration": 3.096
+    },
+    {
+      "deviceLogTime": "Oct 04 16:05:35.947403 am",
+      "sema": "guidance",
+      "type": "clip-ended",
+      "id": "recovery_complete",
+      "duration": 3.096
+    }
+  ],
+  "scope": "HTML audio playing/end events captured through the actual Vega bridge. This confirms software playback completion. No human listening or audio recording; no physical VoiceView/Dolby claim. Interruption timing was not conclusively demonstrated by this new check; pause/recovery guidance was observed."
+}

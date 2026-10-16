@@ -41,9 +41,11 @@ p.resume();
 
 // On every player time update:
 const cue = p.tick(player.currentTime);
-if (cue) {
+if (p.mode === 'controls') pauseAndOfferRevisit();   // a critical cue no longer fits: see below
+else if (cue) {
   // Load cue.audio. When it actually starts playing, confirm it still fits:
   if (p.canStart(cue.token, player.currentTime)) playAudio(cue.audio, () => p.complete(cue.token));
+  else if (p.mode === 'controls') pauseAndOfferRevisit();
 }
 
 // The viewer pauses:      p.controls('pause');
@@ -53,6 +55,8 @@ if (cue) {
 // Missed facts:           p.pending();                   // interrupted critical facts, oldest first
 // Persist and restore:    p.snapshot(); p.restore(saved);
 ```
+
+**Check `p.mode` after `tick()` and `canStart()`.** If a critical description can no longer fit (a late start, a stall, a seek into its window), the scheduler switches to `controls` and lists the fact in `pending()`. Pause the film and offer Revisit, which plays that fact first; `src/app.js` does this in its playback loop. Optional detail is simply dropped without pausing.
 
 The scheduler never selects a moment later than the current position. A critical description that is cut off stays in `pending()` until `complete()` confirms it played to the end; a cancelled clip never counts as heard.
 

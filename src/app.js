@@ -36,7 +36,10 @@ const store = {
 };
 const prefs = { level: 'standard', chosen: false, guidance: true, textMode: false, ...store.get('sema-prefs-v1', {}) };
 if (![...LEVELS, 'off'].includes(prefs.level)) prefs.level = 'standard';
-const savePrefs = () => store.set('sema-prefs-v1', prefs);
+// After a guidance failure without a screen reader, guidance is off for this
+// session only: the stored preference keeps it on, so the next visit tries again.
+let guidanceOffThisSession = false;
+const savePrefs = () => store.set('sema-prefs-v1', guidanceOffThisSession ? { ...prefs, guidance: true } : prefs);
 const resumeKey = id => `sema-resume-v2:${LOCKED ? PARAMS.get('study') + ':' : ''}${id}`;
 
 const films = (DATA.films ?? []).filter(f => DEBUG || !f.dev).map(f => ({
@@ -54,7 +57,13 @@ let screenReader = null, startupDone = false, startupTimer = null, interacted = 
 const activated = () => interacted || !!navigator.userActivation?.hasBeenActive;
 for (const type of ['keydown', 'pointerdown']) document.addEventListener(type, () => { interacted = true; }, true);
 const visibleMoments = () => film?.events.filter(e => e.availableAt <= player.position).sort((a, b) => b.availableAt - a.availableAt) ?? [];
-const earlierMoment = () => { const seen = visibleMoments(); const i = seen.findIndex(e => e.id === revisitCursor); return seen[(i < 0 ? 0 : i) + 1]; };
+/** Earlier steps back from the moment Revisit plays: a missed critical fact first, otherwise the latest. */
+const earlierMoment = () => {
+  const seen = visibleMoments();
+  const anchor = revisitCursor ?? player?.pending()[0]?.id ?? seen[0]?.id;
+  const i = seen.findIndex(e => e.id === anchor);
+  return seen[(i < 0 ? 0 : i) + 1];
+};
 /** Vega diagnostics go to the device log through the host bridge: prompt IDs and playback events only, no user data. */
 function diagnostic(message) {
   try { window.ReactNativeWebView?.postMessage(JSON.stringify(message)); } catch { /* optional bridge */ }
@@ -257,7 +266,7 @@ function render() {
       : optionsOpen ? 'Select: activate control · Back: close options'
       : 'Select: activate control · Back: catalog';
     $('control-title').textContent = film.title ?? film.id;
-    $('mode-label').textContent = { recovering: 'REVISITING A VISUAL MOMENT', ended: 'FILM ENDED', error: 'PLAYBACK PROBLEM' }[mode] ?? 'PAUSED';
+    $('mode-label').textContent = { recovering: 'REVISITING A VISUAL MOMENT', ended: 'FILM ENDED', error: 'PLAYBACK PROBLEM' }[mode === 'controls' && atEnd() ? 'ended' : mode] ?? 'PAUSED';
     $('position').textContent = `${formatTime(player.position)} / ${formatTime(film.duration)}`;
     const resume = $('resume'), atStart = player.position < 0.25;
     resume.textContent = pending ? 'Resume without recovering' : atStart ? 'Play film' : `Resume from ${formatTime(player.position)}`;
@@ -290,7 +299,12 @@ function render() {
     const last = film.events.find(e => e.id === lastDescribedId && e.availableAt <= player.position);
     const context = moment ?? last;
     const state = mode === 'recovering' ? 'Describing' : context?.id === lastDescribedId ? 'Last described' : 'Selected moment';
-    const contextLines = [context ? `${state} at ${formatTime(context.availableAt)}: ${context.label ?? context.id}` : 'Revisit pauses the film. Resume continues from the same frame.'];
+    // Before any Revisit, the first line names what Revisit will play, so it and
+    // "Next earlier" always read in order.
+    const target = revisitCursor ? null : player.pending()[0] ?? visibleMoments()[0];
+    const contextLines = [target && mode !== 'error'
+      ? `${pending ? 'Missed description' : 'Latest moment'} at ${formatTime(target.availableAt)}: ${target.label ?? target.id}`
+      : context ? `${state} at ${formatTime(context.availableAt)}: ${context.label ?? context.id}` : 'Revisit pauses the film. Resume continues from the same frame.'];
     if (mode !== 'error' && earlier) contextLines.push(`Next earlier at ${formatTime(earlier.availableAt)}: ${earlier.label ?? earlier.id}`);
     $('moment-context').hidden = FIXED;
     $('moment-context').textContent = contextLines.join('\n');
@@ -522,7 +536,7 @@ function toggle(kind) {
   } else {
     // Confirm "off" in speech before going quiet; confirm "on" after.
     if (prefs.guidance) { say('prompts_off'); prefs.guidance = false; } else { prefs.guidance = true; say('prompts_on'); }
-    prefs.guidanceChosen = true; savePrefs(); render();
+    prefs.guidanceChosen = true; guidanceOffThisSession = false; savePrefs(); render();
   }
 }
 
@@ -611,7 +625,12 @@ function retryGuidance() {
   announce('help', defaultFocusId());
 }
 function returnFromGuidanceFailure() {
-  voice.stop(); guidanceFailed = false; prefs.guidance = false; prefs.guidanceChosen = true; savePrefs();
+  voice.stop(); guidanceFailed = false; prefs.guidance = false;
+  // Only a screen reader makes "off" a lasting choice; otherwise a blind viewer
+  // without VoiceView would find Sema silent on every later visit.
+  if (screenReader === true) { prefs.guidanceChosen = true; guidanceOffThisSession = false; }
+  else guidanceOffThisSession = true;
+  savePrefs();
   if (view === 'player') leave();
   else { view = 'catalog'; render(); focusOn(defaultFocusId()); }
   setStatus('Spoken guidance is off. Use your screen reader, or turn guidance on to try it again.');

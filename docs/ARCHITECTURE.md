@@ -60,7 +60,7 @@ Vega uses VP8 video and Opus audio. Its data arrives in a generated script becau
 | Bedrock / Nova 2 Lite | Draft narration levels, visual-moment descriptions and shorter variants |
 | Polly neural | Render measured MP3 narration and control prompts |
 
-Live authoring calls record usage and stage timing. An AI editorial pass (Codex) then corrected the drafts against the source frames. [`content/editorial/`](../content/editorial/) holds the frame-checked precheck, every text change (including later revisions) and the exact shipped text; `npm run content:check` fails if the record and the package disagree. The live run used the deterministic fit loop; a Strands Agents version is included with offline tests.
+Live authoring calls record usage and stage timing. AI editorial passes (Codex and Claude Code) then corrected the drafts against the source frames. [`content/editorial/`](../content/editorial/) holds the frame-checked precheck, every text change (including later revisions) and the exact shipped text; `npm run content:check` fails if the record and the package disagree. The live run used the deterministic fit loop; a Strands Agents version is included with offline tests.
 
 ## Comparison modes
 

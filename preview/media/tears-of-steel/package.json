@@ -1,6 +1,6 @@
 {
   "id": "tears-of-steel",
-  "version": "review-ca1464a1d882",
+  "version": "review-66c34f0c5118",
   "title": "Tears of Steel — The Bridge",
   "synopsis": "Two people meet on a bridge.",
   "credits": "(CC) Blender Foundation | mango.blender.org | CC BY 3.0",
@@ -194,35 +194,8 @@
       }
     },
     {
-      "id": "c05",
-      "events": [
-        "control-panel"
-      ],
-      "start": 53.88,
-      "end": 56.667,
-      "margin": 0.2,
-      "variants": {
-        "essential": {
-          "text": "A knob turns.",
-          "duration": 1.224,
-          "audio": "media/tears-of-steel/audio/c05-essential.mp3"
-        },
-        "standard": {
-          "text": "A hand turns a knob.",
-          "duration": 1.368,
-          "audio": "media/tears-of-steel/audio/c05-standard.mp3"
-        },
-        "rich": {
-          "text": "A hand turns a control knob.",
-          "duration": 1.752,
-          "audio": "media/tears-of-steel/audio/c05-rich.mp3"
-        }
-      }
-    },
-    {
       "id": "c06",
       "events": [
-        "workers-at-machine",
         "brain-on-platform"
       ],
       "start": 58.0,

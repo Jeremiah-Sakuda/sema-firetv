@@ -19,17 +19,17 @@ Audio description has to fit between the lines of dialogue. In the bridge scene 
 3. When the description finishes, focus returns to Resume. Press **Right twice**, then **Select** on **Earlier moment**: *"A man and a woman stand beside a canal on a metal bridge."*
 4. **Play** continues from the paused frame.
 
-In this excerpt, 4 of the 13 described moments have no timed slot; Revisit is how a viewer hears them. Revisit only offers moments that have already been on screen.
+In this excerpt, 6 of the 13 described moments have no timed slot; Revisit is how a viewer hears them. Revisit only offers moments that have already been on screen.
 
 ## Who it is for
 
 **Viewers.** In 2020, an estimated 43 million people worldwide were blind and 295 million more had moderate or severe vision impairment ([Lancet Global Health, 2021](https://pubmed.ncbi.nlm.nih.gov/33275950/)). People who rely on audio description don't all want the same amount of it. In [Describe Now](https://arxiv.org/abs/2411.11835), 20 blind and low-vision participants preferred different description frequency and detail across videos. Sema turns those preferences into controls on the remote.
 
 **Beyond the hackathon.** Sema reaches viewers in two ways:
-- **As a Fire TV app** with its own catalog of openly licensed films.
-- **For publishers.** A publisher can adapt the MIT-licensed player and the AWS authoring pipeline to add viewer-controlled description to its own films. The [integration guide](docs/INTEGRATION.md) covers the package format and the scheduling core, `src/playback.js`, which runs without a browser.
+- **Inside publishers' apps.** The first fit is an independent film publisher with its own Fire TV app and catalog. It can adapt the MIT-licensed scheduler and the AWS authoring pipeline: preparing a 90-minute feature comes to about $24–29 of estimated AWS usage at the pilot's rate, and serving it costs nothing per viewer. The [integration guide](docs/INTEGRATION.md) covers the package format and the scheduling core, `src/playback.js`: plain JavaScript, tested headless in Node, so a Vega React Native app can import it.
+- **As a free showcase app** on the Fire TV Appstore, with a catalog of openly licensed films.
 
-**Standards.** In the EU, the [European Accessibility Act](https://eur-lex.europa.eu/eli/dir/2019/882/oj) has applied since June 2025 to services that give access to audiovisual media. EN 301 549, the European ICT accessibility standard, asks that audio-description controls sit at the same level as the main playback controls (clause 7.3). In Sema, they are one Select away.
+**Standards.** In the EU, the [European Accessibility Act](https://eur-lex.europa.eu/eli/dir/2019/882/oj) has applied since June 2025 to services that give access to audiovisual media. EN 301 549, the European ICT accessibility standard, asks that audio-description controls sit at the same level as the main playback controls (clause 7.3). In Sema, pressing Select opens them beside Play.
 
 ## What Sema does
 
@@ -44,7 +44,7 @@ In this excerpt, 4 of the 13 described moments have no timed slot; Revisit is ho
 
 The catalog contains two **72-second** Blender open-film excerpts: *Sintel — The Rooftop* and *Tears of Steel — The Bridge*. Together they have:
 - 25 described moments;
-- 57 timed narration variants;
+- 45 timed narration variants;
 - 67 recorded control prompts;
 - 25 short recorded moment names.
 
@@ -53,7 +53,7 @@ All playback media is in the repository. Narration and 63 control prompts use Am
 ## Why it belongs on Fire TV
 
 - **The remote is the whole interface.** Every action works with the D-pad, Select, Back and Play/Pause.
-- **VoiceView and Dolby audio.** Fire TV's screen reader, VoiceView, can only speak during video playback if Dolby audio is disabled ([friction log, entry 21](docs/FRICTION-LOG.md)). Sema pauses the film before any interface speech, so it never needs VoiceView to talk over a playing film.
+- **VoiceView and Dolby audio.** Turning on VoiceView, Fire TV's screen reader, shows a dialog: it "can only speak during video playback if Dolby audio is disabled" ([friction log, entry 21](docs/FRICTION-LOG.md)). Sema pauses the film before any interface speech, so VoiceView never has to talk over a playing film.
 - **Prepared, not generated, at viewing time.** A Revisit request plays a prepared recording instantly, with no model call or network wait.
 
 ## Publisher workflow
@@ -64,7 +64,7 @@ All playback media is in the repository. Narration and 63 control prompts use Am
 4. **Review.** An editor approves, edits or drops each line. Approval is bound to the exact source, timing and audio, so any later change reopens review.
 5. **Package.** The player uses prepared media locally, so a viewer's request never waits for generation.
 
-The [pipeline guide](pipeline/README.md) documents the working CLI and release checks. For the two included excerpts, an AI editorial pass (Codex) corrected the drafted wording against the source frames; [`content/editorial/`](content/editorial/) records every change and the exact text that ships.
+The [pipeline guide](pipeline/README.md) documents the working CLI and release checks. For the two included excerpts, AI editorial passes (Codex and Claude Code) corrected the drafted wording against the source frames; [`content/editorial/`](content/editorial/) records every change and the exact text that ships.
 
 Measured in the [October 4 live run](docs/evidence/aws/LIVE-PILOT-2026-10-04.json):
 
@@ -85,7 +85,7 @@ Related work explores:
 - customizable description ([CustomAD, ASSETS 2024](https://www.guoanhong.com/papers/ASSETS24-CustomAD.pdf));
 - conversational video description ([ViDscribe, 2026](https://arxiv.org/abs/2603.14662)).
 
-Sema brings this to the living-room TV. It combines detail choice, spoiler-safe Revisit of past moments and recovery of interrupted facts, all from the remote, with prepared playback that responds instantly.
+What Sema adds is the delivery. Every answer is written, voiced and measured before release, so it plays instantly from the remote, can't describe what is still to come, and costs nothing per view. And a critical fact that gets cut off is never counted as heard.
 
 ## Try it
 
@@ -103,7 +103,7 @@ Open **http://127.0.0.1:4173**. Use arrow keys as the D-pad, Enter as Select, Es
 
 ## Verified behavior
 
-- **Test suites (October 16):** 140 JavaScript, 76 offline pipeline and 6 native host tests pass. Both films pass their description contracts, the editorial record matches every shipped line, and the repository checks pass.
+- **Test suites (October 16):** 144 JavaScript, 78 offline pipeline and 6 native host tests pass. Both films pass their description contracts, the editorial record matches every shipped line, and the repository checks pass.
 - **Browser:** real-media Chrome runs cover both films at all three levels. They also cover the keyboard flow through Revisit, Earlier moment, resume and every Back action.
 - **Vega package:** the aarch64 build contains 200 hash-matched playback assets.
 - **Vega Virtual Device (October 16 build):** in the bridge scene, Revisit, Earlier moment, resume and recovery of an interrupted critical description all worked from the remote. Earlier builds also covered both excerpts end to end, Back, and VoiceView turning on and off.

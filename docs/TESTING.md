@@ -33,7 +33,12 @@ SEMA_URL=http://127.0.0.1:4173 npm run test:browser
 
 ## October 16, 2026 review-round fixes
 
-- 140 JavaScript tests, 76 offline pipeline tests and 6 native host tests pass.
+- 144 JavaScript tests, 78 offline pipeline tests and 6 native host tests pass.
+- Four optional timed lines that were read over a later camera shot (*Sintel* c05, c07 and c11; *Tears of Steel* c05) were dropped from the timed track. Their moments stay available through Revisit. The *Tears of Steel* c06 cue no longer marks the workers moment as described. The comparison mixes were regenerated and the integrity manifest updated; the editorial record lists each change.
+- Earlier moment steps back from the moment Revisit plays, and before any Revisit the context line names that moment, so the two lines always read in order. After a Revisit at the end of the film, the panel still says the film ended.
+- After a guidance failure without a screen reader, Back turns spoken guidance off for that session only.
+- The frame-batch observer keeps a new moment whose ID repeats an earlier one, under a fresh ID.
+- `docs/INTEGRATION.md` says to check the scheduler's mode after `tick()` and `canStart()`, and the headless test covers a late critical cue.
 - With VoiceView on in the Vega app, state changes go to VoiceView through the host's `announceForAccessibility` call, and the live region stays quiet so nothing is spoken twice.
 - Pressing Earlier moment during the oldest moment lets that description finish, and the focused button keeps its name while it plays.
 - While a moment is described, the panel keeps only the viewing actions, so the frame stays visible. Selected levels carry a check mark as well as color.

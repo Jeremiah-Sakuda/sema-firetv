@@ -464,6 +464,17 @@ test('Earlier moment pressed during the oldest moment lets the description finis
   assert.equal(s.app.lastSpoken[0], 'recovery_complete');
 });
 
+test('with a missed fact pending, Earlier steps back from the fact Revisit plays', async () => {
+  const s = boot({ prefs: CHOSEN }); await playing(s);
+  await s.at(2.6); s.key('Enter');                                // cut off the critical envelope cue
+  assert.equal(s.app.player.delivery.get('envelope-hidden'), 'pending');
+  s.$('resume').click(); await flush(); await s.at(9.6); await s.finishAudio(); await s.at(11);
+  s.key('Enter');
+  assert.equal(s.active(), 'recover');
+  assert.equal(s.$('earlier').getAttribute('aria-disabled'), 'true', 'nothing is older than the missed fact Revisit will play');
+  s.$('recover').click(); assert.equal(s.app.player.active.events[0], 'envelope-hidden');
+});
+
 test('Play/Pause during a critical description focuses the missed description', async () => {
   const s = boot({ prefs: CHOSEN }); await playing(s); await s.at(2.6);
   assert.ok(s.app.player.active, 'critical cue is speaking');
@@ -534,6 +545,7 @@ test('unavailable guidance keeps retry recoverable and Back enables screen-reade
   assert.equal(s.$('guidance-error').hidden, false);
   s.key('Escape');
   assert.equal(s.app.view, 'catalog'); assert.equal(s.app.prefs.guidance, false);
+  assert.equal(JSON.parse(s.w.localStorage.getItem('sema-prefs-v1')).guidance, true, 'without a screen reader, guidance is off for this session only');
   assert.equal(s.$('guidance-error').hidden, true);
   assert.equal(s.$('catalog').inert, false);
   assert.equal(s.$('announcer').getAttribute('aria-live'), 'polite');
@@ -732,9 +744,29 @@ test('moment context separates the completed answer from the next control and do
   s.$('recover').click();await s.finishAudio();s.$('earlier').click();await s.finishAudio();
   assert.match(s.$('moment-context').textContent,/Last described.*First moment[\s\S]*Next earlier.*Older moment/);
   s.$('resume').click();await flush();s.key('Enter');
-  assert.match(s.$('moment-context').textContent,/Last described.*First moment/, 'resuming does not erase the last completed description');
+  assert.match(s.$('moment-context').textContent,/^Latest moment at 0:09: Second moment\nNext earlier at 0:02: First moment$/, 'after resuming, the context names what Revisit plays now');
 });
 
+
+test('before any Revisit, the context names what Revisit plays, in order with Next earlier', async () => {
+  const pkg = structuredClone(fixture);
+  pkg.events[0].label = 'First moment'; pkg.events[1].label = 'Second moment';
+  pkg.events.push({ ...pkg.events[1], id: 'untimed', label: 'Untimed moment', availableAt: 10, critical: false });
+  const s = boot({ prefs: CHOSEN, films: [{ package: pkg, allowFixture: true }] });
+  await playing(s); await s.at(2.6); await s.finishAudio(); await s.at(9.6); await s.finishAudio(); await s.at(11);
+  s.key('Enter');
+  assert.match(s.$('moment-context').textContent, /^Latest moment at 0:10: Untimed moment\nNext earlier at 0:09: Second moment$/);
+  s.$('recover').click(); assert.equal(s.app.player.active.events[0], 'untimed');
+});
+
+test('after a Revisit at the end of the film, the panel still says the film ended', async () => {
+  const s = boot({ prefs: CHOSEN }); await playing(s);
+  await s.at(2.6); await s.finishAudio(); await s.at(9.6); await s.finishAudio();
+  s.video.currentTime = 15; s.video.dispatchEvent(new s.w.Event('ended')); await flush();
+  assert.equal(s.$('mode-label').textContent, 'FILM ENDED');
+  s.$('recover').click(); await s.finishAudio();
+  assert.equal(s.$('mode-label').textContent, 'FILM ENDED');
+});
 
 test('More options preserves the paused frame, closes with Back and stays closed after resume', async () => {
   const s=boot({prefs:CHOSEN});await playing(s);await s.at(1);s.key('Enter');

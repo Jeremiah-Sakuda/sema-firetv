@@ -1,6 +1,6 @@
 {
   "id": "sintel-dragon",
-  "version": "review-5258e0923342",
+  "version": "review-0bf76079e3ba",
   "title": "Sintel — The Rooftop",
   "synopsis": "An encounter on a rooftop.",
   "credits": "© copyright Blender Foundation | durian.blender.org | CC BY 3.0",
@@ -228,32 +228,6 @@
       }
     },
     {
-      "id": "c05",
-      "events": [
-        "woman-climbs-roof"
-      ],
-      "start": 30.083,
-      "end": 32.0,
-      "margin": 0.2,
-      "variants": {
-        "essential": {
-          "text": "She climbs.",
-          "duration": 1.032,
-          "audio": "media/sintel-dragon/audio/c05-essential.mp3"
-        },
-        "standard": {
-          "text": "She climbs up.",
-          "duration": 1.104,
-          "audio": "media/sintel-dragon/audio/c05-standard.mp3"
-        },
-        "rich": {
-          "text": "She climbs up.",
-          "duration": 1.104,
-          "audio": "media/sintel-dragon/audio/c05-rich.mp3"
-        }
-      }
-    },
-    {
       "id": "c06",
       "events": [
         "injured-dragon"
@@ -276,32 +250,6 @@
           "text": "A golden dragon by a chimney, its wing torn and bloody.",
           "duration": 3.312,
           "audio": "media/sintel-dragon/audio/c06-rich.mp3"
-        }
-      }
-    },
-    {
-      "id": "c07",
-      "events": [
-        "torn-wing"
-      ],
-      "start": 39.792,
-      "end": 41.875,
-      "margin": 0.2,
-      "variants": {
-        "essential": {
-          "text": "Blood pools.",
-          "duration": 1.056,
-          "audio": "media/sintel-dragon/audio/c07-essential.mp3"
-        },
-        "standard": {
-          "text": "Blood on the roof.",
-          "duration": 1.104,
-          "audio": "media/sintel-dragon/audio/c07-standard.mp3"
-        },
-        "rich": {
-          "text": "Blood below its wing.",
-          "duration": 1.344,
-          "audio": "media/sintel-dragon/audio/c07-rich.mp3"
         }
       }
     },
@@ -380,32 +328,6 @@
           "text": "Indoors, she tends its wing on her lap.",
           "duration": 2.544,
           "audio": "media/sintel-dragon/audio/c10-rich.mp3"
-        }
-      }
-    },
-    {
-      "id": "c11",
-      "events": [
-        "woman-and-dragon"
-      ],
-      "start": 69.458,
-      "end": 72.0,
-      "margin": 0.2,
-      "variants": {
-        "essential": {
-          "text": "She smiles.",
-          "duration": 1.176,
-          "audio": "media/sintel-dragon/audio/c11-essential.mp3"
-        },
-        "standard": {
-          "text": "She smiles at it.",
-          "duration": 1.344,
-          "audio": "media/sintel-dragon/audio/c11-standard.mp3"
-        },
-        "rich": {
-          "text": "She smiles at it.",
-          "duration": 1.344,
-          "audio": "media/sintel-dragon/audio/c11-rich.mp3"
         }
       }
     }

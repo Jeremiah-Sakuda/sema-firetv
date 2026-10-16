@@ -79,7 +79,7 @@ body.watching main { padding: 0; }
 body.watching #player { min-height: 100vh; }
 body.watching video { height: 100vh; max-height: 100vh; }
 body.watching #controls { position: absolute; bottom: 5%; left: 5%; right: 5%; max-height: 85vh; overflow: auto; margin: 0; background: #0b1420f2; }
-body.watching #transport-hint { position: absolute; bottom: 0; left: 0; right: 0; background: #07101aaa; }
+body.watching #transport-hint { position: absolute; bottom: 0; left: 0; right: 0; background: #07101ae6; }
 
 #diagnostics { margin-top: 1.5rem; color: var(--muted); font-size: .6rem; }
 #diagnostics button { font-size: .6rem; margin: .25rem; min-height: 0; }

@@ -594,6 +594,22 @@
         "level": "rich",
         "before": "Smoke above city.",
         "after": "Smoke over the city."
+      },
+      {
+        "cue": "c05",
+        "action": "dropped",
+        "events": [
+          "control-panel"
+        ],
+        "reason": "Dropped: optional action read over a later camera shot (planner same-shot rule); the moment stays available through Revisit."
+      },
+      {
+        "cue": "c06",
+        "action": "untagged",
+        "events": [
+          "workers-at-machine"
+        ],
+        "reason": "The line describes only the brain; the optional workers moment stays available through Revisit."
       }
     ]
   },
@@ -614,11 +630,6 @@
         "essential": "Forty years later.",
         "standard": "Text: forty years later.",
         "rich": "Above dark machinery: forty years later."
-      },
-      "c05": {
-        "essential": "A knob turns.",
-        "standard": "A hand turns a knob.",
-        "rich": "A hand turns a control knob."
       },
       "c06": {
         "essential": "An exposed brain.",

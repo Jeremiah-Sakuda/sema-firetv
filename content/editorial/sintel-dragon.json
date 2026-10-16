@@ -627,6 +627,30 @@
         "level": "rich",
         "before": "She holds it close, smiling.",
         "after": "She smiles at it."
+      },
+      {
+        "cue": "c05",
+        "action": "dropped",
+        "events": [
+          "woman-climbs-roof"
+        ],
+        "reason": "Dropped: optional action read over a later camera shot (planner same-shot rule); the moment stays available through Revisit."
+      },
+      {
+        "cue": "c07",
+        "action": "dropped",
+        "events": [
+          "torn-wing"
+        ],
+        "reason": "Dropped: optional action read over a later camera shot (planner same-shot rule); the moment stays available through Revisit."
+      },
+      {
+        "cue": "c11",
+        "action": "dropped",
+        "events": [
+          "woman-and-dragon"
+        ],
+        "reason": "Dropped: optional action read over a later camera shot (planner same-shot rule); the moment stays available through Revisit."
       }
     ]
   },
@@ -653,20 +677,10 @@
         "standard": "She holds brown food.",
         "rich": "She holds brown food."
       },
-      "c05": {
-        "essential": "She climbs.",
-        "standard": "She climbs up.",
-        "rich": "She climbs up."
-      },
       "c06": {
         "essential": "A dragon has a torn wing.",
         "standard": "A dragon crouches with a torn, bloody wing.",
         "rich": "A golden dragon by a chimney, its wing torn and bloody."
-      },
-      "c07": {
-        "essential": "Blood pools.",
-        "standard": "Blood on the roof.",
-        "rich": "Blood below its wing."
       },
       "c08": {
         "essential": "She kneels.",
@@ -682,11 +696,6 @@
         "essential": "Indoors, she tends its wing.",
         "standard": "Indoors, she tends the dragon’s wing.",
         "rich": "Indoors, she tends its wing on her lap."
-      },
-      "c11": {
-        "essential": "She smiles.",
-        "standard": "She smiles at it.",
-        "rich": "She smiles at it."
       }
     },
     "recoveries": {

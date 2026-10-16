@@ -1,7 +1,7 @@
 schema-version = 1
 
 [package]
-title = "Sema — Audio Description, Your Way"
+title = "Sema — Audio Description at Your Pace"
 version = "0.1.0"
 id = "com.sema.viewer"
 icon = "@image/app_icon.png"

@@ -20,7 +20,7 @@ Sema's narration is authored offline by a multi-service AWS pipeline (`pipeline/
 - **Latest automated run:** about 97 s and 86 s.
 - **First-render fit:** 32 of 33 and 22 of 24 lines fit their gap on the first render.
 
-An AI editorial pass (Codex) then corrected the drafts against the source frames; `content/editorial/` records every change and the exact shipped text. Release packaging goes through the pipeline's review step, which binds approval to the exact source, timing and audio.
+AI editorial passes (Codex and Claude Code) then corrected the drafts against the source frames; `content/editorial/` records every change and the exact shipped text. Release packaging goes through the pipeline's review step, which binds approval to the exact source, timing and audio.
 
 ## Vega SDK and CLI
 
@@ -102,7 +102,7 @@ An AI editorial pass (Codex) then corrected the drafts against the source frames
 | JavaScript / Node.js / npm | Player, bundling, release tools and tests | A shared player runs in browser and Vega | Browser success cannot establish target media behavior | Locked dev dependencies and explicit build scripts | Yes, with target verification |
 | Python | Authoring, review and reports | Clear local stages and offline tests | Stage freshness and approval provenance need enforcement | Pinned environment | Yes |
 | jsdom / Node test runner / unittest | Deterministic state, focus, adapter and pipeline regressions | Caught real focus, speech-sequencing and integrity defects | Mocked media cannot verify heard speech or real decode | Local test harnesses and fixtures | Yes, alongside browser and target-platform checks |
-| Git / GitHub | Source history, public OSS repository and CI | Existing public MIT repository and automated workflows | Public source delivery must include the media snapshot and locked setup instructions | Repository and workflow setup | Yes |
+| Git / GitHub | Source history, public OSS repository and CI | Public MIT repository with CI on every push | Public source delivery must include the media snapshot and locked setup instructions | Repository and workflow setup | Yes |
 | Playwright | Real-media browser harness (`npm run test:browser`): full playbacks, remote-key flows, layouts at three sizes | Drove Chrome through real media decode and keyboard-as-remote sequences, with screenshots | Installed separately to keep the default install light | `npm install --no-save` plus a Chromium download | Yes |
 | Claude Code | Implementation, tests, Vega Virtual Device verification through `vda`/`inputd-cli`, documentation and review panels | Found and fixed focus and speech-ordering defects; drove the simulator and its logs end to end | Documentation claims needed checking against the code and evidence | Used in the shared local project | Yes, with code review and verified tests |
 | Codex | Implementation assistance, code review and editorial preparation | Found concrete defects and kept AI edits separate from human review | Suggested code and narration wording required corrections | Used in the shared local project | Yes, with code review and verified tests |

@@ -26,6 +26,15 @@ test('the documented integration sequence runs without a browser', () => {
   assert.equal(p.recover('envelope-hidden').events[0], 'envelope-hidden', 'Earlier moment');
 });
 
+test('a critical cue that can no longer fit switches the scheduler to controls, as the guide says to check', () => {
+  const p = new Playback(pkg, { allowFixture: true });
+  p.enter(); p.resume();
+  assert.equal(p.tick(6.9), null, 'too late for the envelope cue');
+  assert.equal(p.mode, 'controls');
+  assert.deepEqual(p.pending().map(e => e.id), ['envelope-hidden']);
+  assert.equal(p.recover().events[0], 'envelope-hidden', 'Revisit plays the missed fact first');
+});
+
 test('the scheduler never selects a future moment and refuses unapproved packages by default', () => {
   const p = new Playback(pkg, { allowFixture: true });
   p.enter(); p.resume(); p.tick(5);

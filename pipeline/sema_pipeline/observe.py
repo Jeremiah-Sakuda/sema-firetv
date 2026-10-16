@@ -46,6 +46,28 @@ Rules:
 - Order events by availableAt. Use actual observations, never placeholder text."""
 
 
+def merge_batch_events(all_events: list[dict], events: list[dict], batch: int) -> list[str]:
+    """Add one frame batch's events. A repeat of a known moment (same description
+    within a second) is dropped; a new moment that reuses an earlier ID is kept
+    under a fresh ID rather than silently lost."""
+    problems = []
+    existing = {e["id"] for e in all_events}
+    for e in events:
+        if any(abs(o["availableAt"] - e["availableAt"]) <= 1.0 and o["description"].lower() == e["description"].lower()
+               for o in all_events):
+            problems.append(f"batch {batch}: duplicate event {e['id']} dropped")
+            continue
+        if e["id"] in existing:
+            n = 2
+            while f"{e['id']}-{n}" in existing:
+                n += 1
+            problems.append(f"batch {batch}: event ID {e['id']} reused for a new moment; kept as {e['id']}-{n}")
+            e = {**e, "id": f"{e['id']}-{n}"}
+        all_events.append(e)
+        existing.add(e["id"])
+    return problems
+
+
 def _scene_text(scenes: list[dict]) -> str:
     return ", ".join(f"{s['id']} {s['start']:.2f}-{s['end']:.2f}s" for s in scenes)
 
@@ -237,15 +259,7 @@ def observe_frames(ws, cfg, services, manifest, analysis, model_id, fps: float):
         problems += [f"batch {b}: {p}" for p in probs]
         for c in chars:
             characters.setdefault(c["ref"], c)
-        existing = {e["id"] for e in all_events}
-        for e in events:
-            duplicate = e["id"] in existing or any(
-                abs(o["availableAt"] - e["availableAt"]) <= 1.0 and o["description"].lower() == e["description"].lower()
-                for o in all_events)
-            if duplicate:
-                problems.append(f"batch {b}: duplicate event {e['id']} dropped")
-                continue
-            all_events.append(e)
+        problems += merge_batch_events(all_events, events, b)
     all_events.sort(key=lambda e: (e["availableAt"], e["id"]))
     summary = {"modelId": model_id, "videoSource": "frames", "fps": fps, "frameCount": len(frames),
                "batches": len(infos), "requests": sum(i["requests"] for i in infos),
