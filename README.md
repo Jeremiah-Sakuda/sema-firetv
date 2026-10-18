@@ -85,7 +85,7 @@ Related work explores:
 - customizable description ([CustomAD, ASSETS 2024](https://www.guoanhong.com/papers/ASSETS24-CustomAD.pdf));
 - conversational video description ([ViDscribe, 2026](https://arxiv.org/abs/2603.14662)).
 
-What Sema adds is the delivery. Every answer is written, voiced and measured before release, so it plays instantly from the remote, can't describe what is still to come, and costs nothing per view. And a critical fact that gets cut off is never counted as heard.
+What Sema adds is the delivery. Every answer is written, voiced and measured before release, so it plays instantly from the remote, unlocks only at its authored reveal time, and makes no cloud call per view. Editors are responsible for ensuring each description contains only information revealed by that time. And a critical fact that gets cut off is never counted as heard.
 
 ## Try it
 
