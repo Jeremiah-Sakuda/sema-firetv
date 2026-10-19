@@ -1,16 +1,17 @@
 # Adding Sema to a Fire TV app
 
 A publisher with its own Fire TV app and catalog can reuse two parts of Sema:
+
 - **the authoring pipeline**, which turns an authorized film into a package of timed descriptions;
 - **the scheduler**, which decides what to say and when.
 
-Your app keeps its own video player, user interface and audio output.
+Your app supplies the video player, controls and audio output.
 
 ## What you reuse
 
 | File | Role | Dependencies |
 |---|---|---|
-| [`src/playback.js`](../src/playback.js) | Scheduler state machine (173 lines). It decides which description to play at each film position, pauses for interrupted critical facts, and answers Revisit and Earlier moment. | `src/package.js` only; no DOM, media or network APIs |
+| [`src/playback.js`](../src/playback.js) | Chooses descriptions at each film position, tracks interrupted critical facts, and handles Revisit and Earlier moment. | `src/package.js` only; no DOM, media or network APIs |
 | [`src/package.js`](../src/package.js) | Package validation: timing, dialogue overlap, required audio and the approval gate | none |
 | [`pipeline/`](../pipeline/README.md) | Authoring: S3, Transcribe, Bedrock Nova and Polly, then review and packaging | Python, AWS |
 
@@ -68,6 +69,7 @@ The scheduler never selects a moment later than the current position. A critical
 
 ## Complete reference
 
-The player in this repository is one complete adapter:
+For a working example, see the player in this repository:
+
 - [`src/playback-session.js`](../src/playback-session.js) owns media timing;
 - [`src/app.js`](../src/app.js) owns the remote interface and speech.

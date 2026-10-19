@@ -2,7 +2,7 @@
 
 ### Audio description at your pace.
 
-**Sema gives blind and low-vision viewers control over the visual story on Fire TV. They choose how much description to hear, press Select to hear any described moment already on screen, then continue from the same frame. Descriptions are prepared ahead of time on AWS, so every request plays instantly, with no model call and no cloud cost per viewer.**
+Sema lets blind and low-vision viewers choose how much audio description they hear on Fire TV. They can pause to hear a visual moment described, then continue from the same frame.
 
 Built for **Fire TV / Vega OS**, with an AWS authoring pipeline. Code: [MIT](LICENSE). Film excerpts: [CC BY 3.0](media/ATTRIBUTION.md).
 
@@ -23,11 +23,11 @@ In this excerpt, 6 of the 13 described moments have no timed slot; Revisit is ho
 
 ## Who it is for
 
-**Viewers.** In 2020, an estimated 43 million people worldwide were blind and 295 million more had moderate or severe vision impairment ([Lancet Global Health, 2021](https://pubmed.ncbi.nlm.nih.gov/33275950/)). People who rely on audio description don't all want the same amount of it. In [Describe Now](https://arxiv.org/abs/2411.11835), 20 blind and low-vision participants preferred different description frequency and detail across videos. Sema turns those preferences into controls on the remote.
+**Viewers.** In 2020, an estimated 43 million people worldwide were blind and 295 million more had moderate or severe vision impairment ([Lancet Global Health, 2021](https://pubmed.ncbi.nlm.nih.gov/33275950/)). People who rely on audio description don't all want the same amount of it. In [Describe Now](https://arxiv.org/abs/2411.11835), 20 blind and low-vision participants preferred different description frequency and detail across videos. Sema puts those choices on the remote.
 
-**Beyond the hackathon.** Two proposed paths would bring Sema to viewers:
-- **Inside publishers' apps.** The first fit is an independent film publisher with its own Fire TV app and catalog. It can adapt the MIT-licensed scheduler and the AWS authoring pipeline: extrapolating the two-excerpt pilot gives about $24–29 of AWS usage for a 90-minute feature. This is not a feature-length benchmark and excludes editorial, integration and media-distribution costs. Playback makes no AWS calls per viewer. The [integration guide](docs/INTEGRATION.md) covers the package format and the scheduling core, `src/playback.js`: plain JavaScript, tested headless in Node, so a Vega React Native app can import it. Because every line is prepared and passes the pipeline's review step before release, the publisher controls exactly what viewers hear, which live generation can't promise.
-- **As a free showcase app** on the Fire TV Appstore, with a catalog of openly licensed films.
+An independent film publisher with its own Fire TV app is a practical first customer. It could use the authoring pipeline to prepare its catalog and add the scheduler to its player. The [integration guide](docs/INTEGRATION.md) explains the package format and the JavaScript API, with an example tested in Node. Preparing descriptions before release lets the publisher review the words and audio its viewers will hear.
+
+A second proposed route is a free Fire TV Appstore app with openly licensed films. The current repository contains the two-film prototype.
 
 **Standards.** In the EU, the [European Accessibility Act](https://eur-lex.europa.eu/eli/dir/2019/882/oj) has applied since June 2025 to services that give access to audiovisual media. EN 301 549, the European ICT accessibility standard, asks that audio-description controls sit at the same level as the main playback controls (clause 7.3). In Sema, pressing Select opens them beside Play.
 
@@ -43,6 +43,7 @@ In this excerpt, 6 of the 13 described moments have no timed slot; Revisit is ho
 | Resume and keep preferences | Detail level and film position persist. More options holds text, spoken guidance, help and a confirmed Start over. Back closes these options first. |
 
 The catalog contains two **72-second** Blender open-film excerpts: *Sintel — The Rooftop* and *Tears of Steel — The Bridge*. Together they have:
+
 - 25 described moments;
 - 45 timed narration variants;
 - 67 recorded control prompts;
@@ -50,11 +51,9 @@ The catalog contains two **72-second** Blender open-film excerpts: *Sintel — T
 
 All playback media is in the repository. Narration and 63 control prompts use Amazon Polly; moment names and four viewing-options prompts use local Piper speech. Watching uses local files and makes no model or cloud call.
 
-## Why it belongs on Fire TV
+## Fire TV controls
 
-- **The remote is the whole interface.** Every action works with the D-pad, Select, Back and Play/Pause.
-- **VoiceView and Dolby audio.** Turning on VoiceView, Fire TV's screen reader, shows a dialog: it "can only speak during video playback if Dolby audio is disabled" ([friction log, entry 21](docs/FRICTION-LOG.md)). Sema pauses the film before any interface speech, so VoiceView never has to talk over a playing film.
-- **Prepared, not generated, at viewing time.** A Revisit request plays a prepared recording instantly, with no model call or network wait.
+Every action works with the D-pad, Select, Back and Play/Pause. Sema pauses the film before speaking interface guidance. This also avoids asking VoiceView to speak over video: the tested simulator warns that it "can only speak during video playback if Dolby audio is disabled" ([friction log, entry 21](docs/FRICTION-LOG.md)).
 
 ## Publisher workflow
 
@@ -64,7 +63,7 @@ All playback media is in the repository. Narration and 63 control prompts use Am
 4. **Review.** An editor approves, edits or drops each line. Approval is bound to the exact source, timing and audio, so any later change reopens review.
 5. **Package.** The player uses prepared media locally, so a viewer's request never waits for generation.
 
-The [pipeline guide](pipeline/README.md) documents the working CLI and release checks. For the two included excerpts, AI editorial passes (Codex and Claude Code) corrected the drafted wording against the source frames; [`content/editorial/`](content/editorial/) records every change and the exact text that ships.
+The [pipeline guide](pipeline/README.md) covers these commands and the production approval checks. The included excerpts were edited with Codex and Claude Code against source frames. Their [`editorial records`](content/editorial/) list the changes and shipped text; they are separate from the human approval required for a production package.
 
 Measured in the [October 4 live run](docs/evidence/aws/LIVE-PILOT-2026-10-04.json):
 
@@ -74,18 +73,19 @@ Measured in the [October 4 live run](docs/evidence/aws/LIVE-PILOT-2026-10-04.jso
 | Latest automated run | 97 s | 86 s |
 | Timed variants fitting on first render | 32 of 33 | 22 of 24 |
 
-That works out to roughly 30 cents of estimated AWS usage per minute of film. Viewing makes no cloud calls, so more viewers add no AWS cost.
+The pilot used roughly 30 cents of AWS services per minute of film. At that rate, a 90-minute feature would use about $24–29. That is an extrapolation from two excerpts, excluding editorial work, app integration and media distribution. Playback itself makes no AWS calls.
 
-## What makes the interaction distinctive
+## Related work
 
 [Extended audio description](https://www.w3.org/WAI/WCAG22/Understanding/extended-audio-description-prerecorded.html) adds description by pausing the video, at points the author chooses. In Sema, the viewer chooses.
 
 Related work explores:
+
 - viewer-controlled timing and detail ([Describe Now](https://arxiv.org/abs/2411.11835));
 - customizable description ([CustomAD, ASSETS 2024](https://www.guoanhong.com/papers/ASSETS24-CustomAD.pdf));
 - conversational video description ([ViDscribe, 2026](https://arxiv.org/abs/2603.14662)).
 
-What Sema adds is the delivery. Every answer is written, voiced and measured before release, so it plays instantly from the remote, unlocks only at its authored reveal time, and makes no cloud call per view. Editors are responsible for ensuring each description contains only information revealed by that time. And a critical fact that gets cut off is never counted as heard.
+Sema brings these ideas to a Fire TV player with prepared recordings and recovery for interrupted descriptions. The scheduler makes a moment available at its authored reveal time. An editor must check that its wording contains only information revealed by then.
 
 ## Try it
 
@@ -138,9 +138,6 @@ Film credits and adaptation details are in [media attribution](media/ATTRIBUTION
 
 ## Prepare the source handoff
 
-Run `npm run submission:prepare` after `npm ci`. The command doesn't publish anything. It:
-- exports the current public source;
-- verifies an independent copy, with an offline dependency install, the tests and the prototype build;
-- produces a source archive plus per-file hashes.
+Run `npm run submission:prepare` after `npm ci`. It copies the public source, installs dependencies offline in that copy, runs the tests and builds the prototype. It then writes a source archive and a manifest of file hashes. It does not publish the archive.
 
 Private drafts and generated files are excluded. Outputs stay under `.local/submission/kit/`.

@@ -1,10 +1,10 @@
 # Developer product feedback
 
-Observed while building Sema, viewer-controlled audio description for Fire TV. Authoring happens before release, and playback uses local media. Each entry records purpose, strengths, problems, onboarding and whether we would use the tool again.
+These notes describe the tools used to build Sema: what worked, what failed, how setup went and whether we would use each tool again.
 
 ## AWS services used (AWS Builder mini-challenge)
 
-Sema's narration is authored offline by a multi-service AWS pipeline (`pipeline/`). It ran live on October 4, 2026 in us-east-1, on both 72-second film excerpts.
+The pipeline in `pipeline/` prepares narration before playback. It called AWS services in us-east-1 on October 4, 2026 for both 72-second excerpts.
 
 | Service | How Sema uses it |
 |---|---|
@@ -16,6 +16,7 @@ Sema's narration is authored offline by a multi-service AWS pipeline (`pipeline/
 | **Strands Agents SDK** | Agent version of the fit loop, with offline tests. The live run used the deterministic loop. |
 
 **Measured in the live pilot** ([evidence](evidence/aws/LIVE-PILOT-2026-10-04.json)):
+
 - **Estimated list-price cost:** $0.38 and $0.32 per excerpt, including reruns.
 - **Latest automated run:** about 97 s and 86 s.
 - **First-render fit:** 32 of 33 and 22 of 24 lines fit their gap on the first render.
@@ -44,7 +45,7 @@ AI editorial passes (Codex and Claude Code) then corrected the drafts against th
 - Worked: script and media assets load locally, modern JavaScript runs, and Back/media keys can reach the page with the configured props. VoiceView focus tracking was observed on VVD.
 - Needs work: local fetch/XHR fail; Menu is not delivered; console output is not readily available in device logs; accessibility role warnings and audio/speech behavior need clearer documentation.
 - Onboarding: the template helped, followed by a platform probe to establish local-file and key behavior. Speech and audio decisions required additional testing.
-- Build again: Yes, for a shared web/player codebase, while retaining explicit native-platform verification.
+- Build again: Yes, for a shared web/player codebase, with playback checks on Vega.
 
 ## Amazon S3
 
@@ -65,15 +66,15 @@ AI editorial passes (Codex and Claude Code) then corrected the drafts against th
 ## Amazon Bedrock / Nova Converse API
 
 - Purpose: video/frame observations, three narration levels, recovery drafts and fit-loop shortening. The successful final pilot used Nova Pro frame batches and Nova 2 Lite writing/shortening; video and a short visual comparison were also tried.
-- Worked: actual service calls produced structured drafts and recorded token usage; model-assisted shortening integrated with measured Polly duration checks.
+- Worked: the calls returned structured drafts and token counts. Shortened lines were rendered with Polly and measured again.
 - Needs work: initial responses echoed schema examples or invented facts; frame batches still misidentified the injured creature and mechanical hand. Duration-only shortening could erase the time-jump fact. Better grounding diagnostics and examples combining factual preservation with rendered duration would help.
 - Onboarding: region/inference-profile selection and response parsing were manageable after preflight. Prompt/schema and visual-quality iteration required substantial work beyond making a successful API call.
-- Build again: Yes, for proposals inside a controlled editorial workflow. This pilot does not support unattended trustworthy AD generation.
+- Build again: Yes, for drafts that an editor checks against the film. The visual errors need that review.
 
 ## Amazon Polly
 
 - Purpose: neural Joanna speech at 24 kHz MP3 for all narration, recovery and 63 UI prompts; measure each rendered file with ffprobe.
-- Worked: actual speech files and measurable durations were produced, with consistent voice settings across the app.
+- Worked: Polly produced the MP3 files used by the app. ffprobe supplied durations for the fit checks.
 - Needs work: speech duration cannot be safely inferred from word count. Fit requires rendering and measuring; shortening can damage meaning.
 - Onboarding: SDK synthesis was straightforward after temporary credentials worked; integration added fit retries, provenance and prerecording because VVD TTS was unusable.
 - Build again: Yes, with measured fit, explicit factual checks and listening review.
@@ -81,7 +82,7 @@ AI editorial passes (Codex and Claude Code) then corrected the drafts against th
 ## AWS CLI developer login, boto3/botocore and AWS Price List API
 
 - Purpose: temporary local credentials, AWS client calls, and rate verification for list-price estimates.
-- Worked: AWS CLI 2.37.9 developer login connected the signed-in account to the local workflow; compatible boto3/botocore with CRT support consumed credentials. Price List responses supplied pilot rate/product identifiers.
+- Worked: AWS CLI 2.37.9 developer login connected the signed-in account to the local workflow; compatible boto3/botocore with CRT support could use those credentials. Price List responses supplied pilot rate/product identifiers.
 - Needs work: console authentication and SDK authentication are different steps; dependency/version support was a source of setup uncertainty.
 - Onboarding: sign-in was completed in the browser; the local SDK required the compatible dependency setup and a named profile. No access keys are published.
 - Build again: Yes, using temporary credentials, pinned dependencies and a readiness check; limit authoring permissions for continued use.
@@ -92,24 +93,24 @@ AI editorial passes (Codex and Claude Code) then corrected the drafts against th
 - Worked: offline tests exercised tool/result handling and independently measured fit.
 - Needs work: an agent's own report of fit can't be trusted, so the loop re-measures every rendered clip independently.
 - Onboarding: installed as an optional dependency and tested with injected clients.
-- Build again: No for this submission's critical path; reconsider later if agent orchestration measurably reduces authoring effort.
+- Build again: No for the current pipeline; the deterministic loop does the job. Reconsider if the agent version saves authoring work.
 
 ## Other development tools
 
 | Tool | Purpose | Worked | Needs work / limits | Onboarding | Build again |
 |---|---|---|---|---|---|
-| ffmpeg / ffprobe | Excerpts, source-frame PTS, codec renditions, review mixes, duration measurement | Produced usable local files and reproducible probe output | Correct sample timestamps and codec behavior require deliberate validation; duration is not audibility | Local command-line integration | Yes, for media transforms and measurement |
+| ffmpeg / ffprobe | Excerpts, source-frame PTS, codec renditions, review mixes, duration measurement | Produced usable local files and reproducible probe output | Frame timestamps and codecs need checking; duration measurements do not confirm audible quality | Local command-line integration | Yes, for media transforms and measurement |
 | JavaScript / Node.js / npm | Player, bundling, release tools and tests | A shared player runs in browser and Vega | Browser success cannot establish target media behavior | Locked dev dependencies and explicit build scripts | Yes, with target verification |
-| Python | Authoring, review and reports | Clear local stages and offline tests | Stage freshness and approval provenance need enforcement | Pinned environment | Yes |
+| Python | Authoring, review and reports | Clear local stages and offline tests | Changed inputs must invalidate downstream output and approval | Pinned environment | Yes |
 | jsdom / Node test runner / unittest | Deterministic state, focus, adapter and pipeline regressions | Caught real focus, speech-sequencing and integrity defects | Mocked media cannot verify heard speech or real decode | Local test harnesses and fixtures | Yes, alongside browser and target-platform checks |
-| Git / GitHub | Source history, public OSS repository and CI | Public MIT repository with CI on every push | Public source delivery must include the media snapshot and locked setup instructions | Repository and workflow setup | Yes |
+| Git / GitHub | Source history, public OSS repository and CI | Public MIT repository with CI on every push | The media snapshot and dependency lockfiles must ship with the code | Repository and workflow setup | Yes |
 | Playwright | Real-media browser harness (`npm run test:browser`): full playbacks, remote-key flows, layouts at three sizes | Drove Chrome through real media decode and keyboard-as-remote sequences, with screenshots | Installed separately to keep the default install light | `npm install --no-save` plus a Chromium download | Yes |
-| Claude Code | Implementation, tests, Vega Virtual Device verification through `vda`/`inputd-cli`, documentation and review panels | Found and fixed focus and speech-ordering defects; drove the simulator and its logs end to end | Documentation claims needed checking against the code and evidence | Used in the shared local project | Yes, with code review and verified tests |
+| Claude Code | Implementation, tests, Vega Virtual Device verification through `vda`/`inputd-cli`, documentation and code review | Found and fixed focus and speech-ordering defects; drove the simulator and its logs end to end | Documentation claims needed checking against the code and evidence | Used in the shared local project | Yes, with code review and verified tests |
 | Codex | Implementation assistance, code review and editorial preparation | Found concrete defects and kept AI edits separate from human review | Suggested code and narration wording required corrections | Used in the shared local project | Yes, with code review and verified tests |
 
 ## Feedback evidence
 
-The [platform findings](vega/PLATFORM-FINDINGS.md) provide reproduction cases and actionable requests. [Engineering evidence](TESTING.md) documents playback checks, reproduction commands and observed platform behavior.
+See [platform findings](vega/PLATFORM-FINDINGS.md) for reproduction steps and SDK requests, and [testing](TESTING.md) for commands and dated results.
 
 
 ## Piper local speech rendering
@@ -120,4 +121,4 @@ The [platform findings](vega/PLATFORM-FINDINGS.md) provide reproduction cases an
 - Onboarding: isolated Python environment, `piper-tts==1.8.0`, the `en_US-ljspeech-high` voice, and ffmpeg conversion to 24 kHz mono MP3.
 - Build again: Yes for short interface recordings; retain the existing AWS authoring pipeline for film narration.
 
-The [voice model card](https://huggingface.co/rhasspy/piper-voices/blob/main/en/en_US/ljspeech/high/MODEL_CARD) identifies the [LJ Speech dataset](https://keithito.com/LJ-Speech-Dataset/) as public domain. Engine/model files are authoring dependencies and are not bundled into the viewer.
+The [voice model card](https://huggingface.co/rhasspy/piper-voices/blob/main/en/en_US/ljspeech/high/MODEL_CARD) identifies the [LJ Speech dataset](https://keithito.com/LJ-Speech-Dataset/) as public domain. The app includes the recordings; the engine and model stay in the authoring environment.

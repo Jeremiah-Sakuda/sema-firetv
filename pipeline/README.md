@@ -1,8 +1,6 @@
 # AWS narration authoring
 
-The authoring pipeline turns authorized film sources into timed description variants and visual-moment narration. It supports the proposed first adopter: an independent film publisher with a small licensed catalog and control of its Fire TV app. A content editor prepares and reviews each title; an app developer integrates the resulting package and reference player.
-
-Viewing does not call AWS: the player consumes local, measured media packages. The commands below implement the authoring stages; they are a CLI workflow, not a self-service publishing service.
+Use this CLI to prepare narration for a film you have permission to use. It produces timed descriptions at three detail levels and separate Revisit recordings. An editor reviews the content before production packaging; the TV plays the resulting media locally.
 
 For the included films, use `npm run preview` from the repository root. Authoring setup is only needed to generate or edit content.
 
@@ -40,7 +38,7 @@ Adapt [policy.example.json](policy.example.json) to your bucket, account, models
 | `package` | Approved content → versioned player package and media |
 | `report` | Recorded stage/usage data → timings and estimated costs |
 
-The successful live pilot used timestamped frame batches for observation and the deterministic render/measure/shorten loop. The optional Strands mode has offline tests; it is not a live-pilot claim.
+The live pilot used timestamped frame batches and the deterministic render/measure/shorten loop. The optional Strands mode has been tested offline.
 
 ## Example workflow
 
@@ -92,4 +90,4 @@ Events cannot be scheduled before their recorded reveal time. This is a metadata
 SEMA_FORBID_LIVE=1 PYTHONPATH=pipeline pipeline/.venv/bin/python -m unittest discover -s pipeline/tests
 ```
 
-The stub clients follow the same service seams but produce test data. Sine-tone stub output is never represented as live Polly narration. See [architecture](../docs/ARCHITECTURE.md), [test evidence](../docs/TESTING.md) and [developer feedback](../docs/PRODUCT-FEEDBACK.md).
+The test clients implement the same interfaces as the AWS clients and return fixed test data. Their sine-tone audio is for tests only. See [architecture](../docs/ARCHITECTURE.md), [test evidence](../docs/TESTING.md) and [developer feedback](../docs/PRODUCT-FEEDBACK.md).

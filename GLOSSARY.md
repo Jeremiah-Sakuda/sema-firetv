@@ -13,7 +13,7 @@ An event visible in the film that can be described once the viewer reaches it.
 _Avoid_: Scene, when referring to a single event
 
 **Revisit**:
-A viewer's request to hear an available visual moment described while the film remains paused.
+Hearing a visual moment described while the film waits. The moment must already be available at the current playback position.
 _Avoid_: Rewind, recap
 
 **Critical description**:

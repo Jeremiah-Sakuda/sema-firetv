@@ -22,9 +22,9 @@ Latest stage attempts, automated time (excluding human review): **96.837 s**
 - Amazon Bedrock `us.amazon.nova-2-lite-v1:0`: 56 request(s), 25,554 input / 2,863 output tokens
 - Amazon Polly (neural): 253 request(s), 11,792 characters
 
-## Estimated cost (ESTIMATE, not a bill)
+## Estimated AWS cost
 
-_ESTIMATE at list prices; not a bill. Excludes free tier/credits, tax, S3 requests, data transfer. Price table: 2026-10-04 (Nova Pro/2 Lite, neural Polly, batch Transcribe and S3 Standard verified via AWS Price List API; other rates unverified)._
+_List-price estimate, excluding free tier/credits, tax, S3 requests and data transfer. Price table: 2026-10-04 (Nova Pro/2 Lite, neural Polly, batch Transcribe and S3 Standard verified via AWS Price List API; other rates unverified)._
 
 | Service | Item | Quantity | USD |
 |---|---|---|---:|
@@ -35,11 +35,9 @@ _ESTIMATE at list prices; not a bill. Excludes free tier/credits, tax, S3 reques
 | s3 | storage (1 month) | 0.0201 GB | 0.0005 |
 | **total** | | | **0.3808** |
 
-## Human review
+## Editorial work
 
-- Reviewer: None (method: None; completed: False)
-- Review time: pending; no completed human review measurement.
-- Edits: 0; dropped cues: 0; critical events downgraded: 0; attached: 0
+This automated run recorded no completed human review or review time. At this stage, the review counters were all zero: edits, dropped cues, downgraded critical events and attached descriptions. Later AI edits are recorded in [`content/editorial/`](../../../content/editorial/).
 
 ## Fit results
 
@@ -94,5 +92,5 @@ Fit mode: deterministic. 33 variants: 32 fit first try, 1 after regeneration, 0 
 ## Caveats
 
 - Costs are estimates from a parameterized price table (`prices` in config); verify current pricing.
-- Model video sampling can miss brief actions; human review is mandatory before publication.
-- Pilot facts and speech received AI editorial preparation; this is separate from human approval. See content/editorial/ for the change ledger.
+- Frame sampling can miss brief actions. Production packages require editorial approval.
+- The pilot narration was subsequently edited with AI tools; those edits do not grant production approval.

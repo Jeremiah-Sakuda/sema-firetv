@@ -1,6 +1,6 @@
 # Vega platform findings
 
-Observed on Vega SDK 0.24.12112 and its Apple-silicon Virtual Device. These are specific reproduction cases, not claims about every Fire TV device or SDK version. Source probes live in `tools/vega-probe/`. The full [friction log](../FRICTION-LOG.md) has every entry with exact steps, verbatim errors and screenshots (`screenshots/`).
+Observed on Vega SDK 0.24.12112 and its Apple-silicon Virtual Device. Results apply to that SDK and simulator image. Source probes live in `tools/vega-probe/`. The full [friction log](../FRICTION-LOG.md) has every entry with exact steps, verbatim errors and screenshots (`screenshots/`).
 
 | Task and reproduction | Expected → observed | Severity | Implemented workaround | Requested improvement |
 |---|---|---|---|---|
@@ -16,12 +16,12 @@ Observed on Vega SDK 0.24.12112 and its Apple-silicon Virtual Device. These are 
 
 The path-space failure surfaced as a shell error similar to `/Users/developer/Projects/TV: No such file or directory` while generating the module manifest. `vega-app/scripts/build-staged.sh` uses a separate checkout copy because resolving a symlink still exposed the original path.
 
-A bare native packaging command could also finish without the JavaScript bundle needed to run the app. The supported project build invokes the React Native bundle step and then packages it. Verify that a package includes its JavaScript bundle, entry HTML and media.
+The native packaging command could also finish without the JavaScript bundle needed to run the app. The supported project build invokes the React Native bundle step and then packages it. Verify that a package includes its JavaScript bundle, entry HTML and media.
 
 ## AWS authoring lessons
 
 - Console sign-in and local SDK credentials are separate. Temporary developer-login credentials plus compatible boto3/botocore support connected the authoring workflow.
 - Nova visual observations required correction, including the identity of an injured creature and a mechanical hand. Timestamped frames helped inspect proposals; they did not remove the need for factual review.
-- Shortening a line to fit could remove its meaning: “Text” lost the important “40 years later” information. Explicit concept requirements and measured duration checks address different failure modes.
+- Shortening a line to fit could remove its meaning: “Text” lost the important “40 years later” information. The planner now checks for that fact as well as measuring duration.
 
 [Per-tool feedback](../PRODUCT-FEEDBACK.md) · [Engineering evidence](../TESTING.md)

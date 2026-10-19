@@ -34,12 +34,13 @@ SEMA_URL=http://127.0.0.1:4173 npm run test:browser
 ## October 16, 2026 final build on the Vega Virtual Device
 
 Commit `15e8eb5`, after a fresh simulator restart. [Log excerpts](vega/logs/evidence-excerpts.txt); screenshots 66–67 in `vega/screenshots/`.
+
 - All 184 media files in the aarch64 package match their source hashes.
 - In *Tears of Steel*, a pause at 34.8 s and Revisit described `mechanical-hand` with description text on screen and the compact panel. Earlier moment described `pair-on-bridge`.
 - Back at 46.5 s cut off the critical "forty years later" cue. The pause focused "Hear missed description".
 - With VoiceView turned on by the Back+Menu hold, the missed description played and "Description complete." went to the host's announce call (`{"sema":"announce"}` in the device log). Recorded guidance named no control, so nothing was spoken twice. VoiceView was turned off again afterwards.
 
-## October 16, 2026 review-round fixes
+## October 16, 2026 narration and remote fixes
 
 - 145 JavaScript tests, 78 offline pipeline tests and 6 native host tests pass.
 - Four optional timed lines that were read over a later camera shot (*Sintel* c05, c07 and c11; *Tears of Steel* c05) were dropped from the timed track. Their moments stay available through Revisit. The *Tears of Steel* c06 cue no longer marks the workers moment as described. The comparison mixes were regenerated and the integrity manifest updated; the editorial record lists each change.
@@ -83,20 +84,20 @@ The offline pipeline suite also passed 75 tests. The aarch64 Vega SDK package bu
 
 - 129 JavaScript tests pass. New session tests cover superseded video rejection, stale watchdogs, immediate cancellation, real current failures, film changes, cancelled audio readiness, recovery timeouts, buffering cancellation and resource cleanup.
 - An app-level deferred-video regression covers pause, resume and seek: old failures are ignored, and the current failure retains focused Retry.
-- The playback session owns physical media lifetimes; scheduling, spoken-guidance policy and presentation keep their existing responsibilities.
+- The playback session handles media startup, cancellation and cleanup. The scheduler still chooses descriptions, and the app handles guidance and controls.
 - Playback asset tests cover missing moment audio, changed Polly bytes, absent fingerprints and preservation of prior site output when verification fails. The prompt-renderer check binds each generated file to its fingerprint.
 - Eight full real-media browser runs and both interruption/recovery paths pass after the session extraction. Final package checks also decode the recorded labels and exercise the option and guidance flow.
 
 ## October 13, 2026 interface polish
 
 - 115 JavaScript tests pass, including option-panel focus and Back, interruption retention, detected-VoiceView recovery and supplemental recording integrity.
-- Primary viewing actions precede detail selection; text, guidance, help and Start over are disclosed under More options.
+- Resume, Revisit and Earlier moment come before detail selection. Text, guidance, help and Start over are under More options.
 - The real-media browser harness checks the disclosure at 1920, 1280 and 375 pixels, decodes four new option prompts and exercises detected-VoiceView recovery.
 - Source handoff checks exclude generated interface copies and enforce exact archive membership.
 
 ## October 12–13, 2026 iteration checks
 
-- 109 JavaScript tests pass, covering predictable recovery focus and actual identity-clip routing for untimed scenes.
+- 109 JavaScript tests pass, covering focus after recovery and recorded moment names for scenes without timed narration.
 - All 25 short moment-name recordings decode and complete in Chrome; both films pass interruption, revisit, earlier moment and resume checks.
 - The prototype build, all description contracts and repository checks pass.
 - `npm run submission:prepare` repeats those checks in an independent source copy and records hashes and test results in the local source kit.

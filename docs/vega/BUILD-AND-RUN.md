@@ -1,6 +1,6 @@
 # Run Sema on Vega
 
-Verified on macOS Apple silicon with Vega SDK **0.24.12112**, Node.js **22**, and the **aarch64** Vega Virtual Device. Commands below run from the repository root. Physical-device targets and tool behavior can differ by SDK and hardware.
+Verified on macOS Apple silicon with Vega SDK **0.24.12112**, Node.js **22**, and the **aarch64** Vega Virtual Device. Commands below run from the repository root. Other SDK versions and physical devices may behave differently.
 
 ## Build the two-film prototype
 
@@ -21,9 +21,9 @@ If the SDK is elsewhere, set `VEGA_SDK_BIN` to its `bin` directory before invoki
 
 ## Startup recovery
 
-The native host waits for the player's ready message. If loading fails or readiness is absent after 15 seconds, Try again remounts the player and Exit closes the app. Back also exits during failed startup. Screen-reader announcements use the native accessibility API where available.
+The native host waits for the player's ready message. If loading fails or the player has not responded after 15 seconds, Try again reloads it and Exit closes the app. Back also exits during failed startup. Screen-reader announcements use the native accessibility API where available.
 
-With the native dependencies installed, run `npm run test:native` from the repository root for startup regression tests. A successful build does not itself establish simulator or hardware behavior.
+With the native dependencies installed, run `npm run test:native` from the repository root for startup regression tests. These tests cover the host code; use a device or simulator to check playback.
 
 ## Remote and logs
 

@@ -1,6 +1,7 @@
 # Friction log
 
-Real problems we hit while building Sema between 2026-09-27 and 2026-10-08. Each entry gives:
+Problems encountered while building Sema between 2026-09-27 and 2026-10-08. Each entry gives:
+
 - the task
 - exact steps
 - expected vs. actual result, with verbatim error text
@@ -17,6 +18,7 @@ Real problems we hit while building Sema between 2026-09-27 and 2026-10-08. Each
 **Evidence:** [vega/PLATFORM-FINDINGS.md](vega/PLATFORM-FINDINGS.md), `vega/logs/evidence-excerpts.txt` and `vega/screenshots/`.
 
 **Severity scale:**
+
 - **Blocker:** stops the task, with no workaround inside the SDK.
 - **High:** there is a workaround, but it is non-obvious or costly.
 - **Medium:** confusing or noisy.
@@ -229,7 +231,7 @@ Real problems we hit while building Sema between 2026-09-27 and 2026-10-08. Each
 ## 15. VVD `<video>` playback stalls after ~3 s, seeks never complete, and `play()` can hang. High (for media apps)
 
 * **Task:** play a local H.264/AAC MP4 in the WebView.
-* **Steps:** `tools/vega-probe/probe.html` trials T1, V1–V4 and T5 (`docs/vega/PLATFORM-FINDINGS.md` §c/e).
+* **Steps:** `tools/vega-probe/probe.html` trials T1, V1–V4 and T5 (see [platform findings](vega/PLATFORM-FINDINGS.md)).
 * **Expected:** 15 s of playback, `seeked` after a seek, and `ended`. The same file does all of this in desktop Chromium.
 * **Actual:**
   * **High, Main and Baseline profiles; 480p and 720p; with or without an audio track; relative and absolute URLs:** `waiting` fires about 3.1 s after `play()` (0.1 s when there is no audio track) with `readyState` 2. The video never recovers.
@@ -239,7 +241,7 @@ Real problems we hit while building Sema between 2026-09-27 and 2026-10-08. Each
     * `media_transform_wrapper_idl.cc:735] Color Space is not supported. Downgrading to BT709`
     * `JsonMediaCapabilitiesParser:codec capabilities JSON file is missing for the device!!`
 * **More detail:** VP9 WebM behaves exactly like H.264 (stall at 3.18 s; seeks never complete). Both go through `Initializing AmazonVideoDecoderIdl with config: codec: h264|vp9`. AV1 WebM loads with `videoWidth/Height` 0×0 and plays audio only. `canPlayType` still answers `"probably"` for H.264, VP9 and WebM.
-* **Workaround:** **VP8 + Opus in WebM works**: real-time playback to `ended`, every frame presented, seeks in 22–144 ms, verified on 15 s and 72 s films and with separate `new Audio()` narration on top (`PLATFORM-FINDINGS.md`, "Codec trials"). Also put timeouts on `play()` and `seeked`.
+* **Workaround:** **VP8 + Opus in WebM works**: real-time playback to `ended`, every frame presented, seeks in 22–144 ms, verified on 15 s and 72 s films and with separate `new Audio()` narration on top (see [platform findings](vega/PLATFORM-FINDINGS.md)). Also put timeouts on `play()` and `seeked`.
 * **Suggestion:** fix the VVD's platform decoder path, or document "use VP8 on the VVD" and make `canPlayType` truthful.
 
 ## 16. VVD has no working speech: `speechSynthesis` fails and VoiceView's TTS service is missing. High (for accessibility apps)
