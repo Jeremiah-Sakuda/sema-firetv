@@ -1,6 +1,6 @@
 {
   "id": "sintel-dragon",
-  "version": "review-0bf76079e3ba",
+  "version": "review-0bf76079e3ba-media-cbb3053d",
   "title": "Sintel — The Rooftop",
   "synopsis": "An encounter on a rooftop.",
   "credits": "© copyright Blender Foundation | durian.blender.org | CC BY 3.0",
@@ -475,6 +475,19 @@
       "sampleRate": "24000",
       "outputFormat": "mp3"
     },
-    "editorialPreparation": "AI preparation; human approval pending"
+    "editorialPreparation": "AI preparation; human approval pending",
+    "sourceReplacement": {
+      "originalAuthoringSourceSha256": "b73e7cbcff96a80d111d9dd111e1887b4b65ebfa84983ee50967beccf2e587d3",
+      "packagedSourceSha256": "cbb3053d6728a98ac0191566ddf52a5339487ea9d82bf77177a03a77834811b4",
+      "sourceUrl": "https://download.blender.org/durian/movies/Sintel.2010.1080p.mkv",
+      "rangeSeconds": [
+        150,
+        222
+      ],
+      "reason": "Replaced a damaged local extract with a fresh copy of the same source range. The original authoring input hash and AWS output provenance are retained. No narration text or timing changed.",
+      "videoFramesBefore": 1707,
+      "videoFramesAfter": 1728,
+      "date": "2026-10-18"
+    }
   }
 }

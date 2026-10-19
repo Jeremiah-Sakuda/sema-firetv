@@ -31,6 +31,39 @@ SEMA_URL=http://127.0.0.1:4173 npm run test:browser
 
 `SEMA_CHROME` can point to an existing Chrome executable; `SEMA_PLAYWRIGHT_MODULE` can point to an existing Playwright module. Results go to `artifacts/browser/`, or `SEMA_BROWSER_OUT` if provided. This harness decodes real media in Chrome.
 
+## Narration audit and longer-film simulation
+
+```sh
+python3 tools/audit-narration.py --reels
+node tools/simulate-long-film.mjs
+```
+
+The narration audit requires ffmpeg and ffprobe. It reads the shipped packages, decodes all 45 timed variants and 25 Revisit recordings, and checks duration, recorded dialogue overlap, timing slack, quiet audio, clipping and word rate. `--reels` also creates three film-and-description mixes and a Revisit reel for each film. The mixes use fixed ducking and a peak limiter; they are listening aids, not recordings of app playback. Frame contact sheets and JSON indexes help locate each line. Outputs stay in ignored `artifacts/extended-review/`. Signal checks cannot establish pronunciation, clarity or the accuracy of a description.
+
+The simulation repeats the existing excerpt metadata into 12-, 24- and 60-minute packages. It exercises the playback scheduler at all three levels, checks critical-cue interruption and restore, rejects future moments, and counts steps through Earlier. It does not render a new film or exercise the device interface. Its report records actual Node execution time separately from estimated editorial time. Source watches and listening passes have known durations; decision time, edit time and rework rates are explicit assumptions in the script. New-film annotation, breaks, collaboration and service wait times are excluded. These estimates are for planning, not a claim of measured production throughput.
+
+## Audible VoiceView device check
+
+Use a physical device with working VoiceView speech. Record the device model, OS version, app package hash, VoiceView settings, audio output and Dolby mode. Capture audible output and remote actions together; logs alone cannot show what was spoken. Run both films with VoiceView off and on, then repeat the interruption cases after changing the available Dolby setting. If a combination is unsupported or produces a system warning, record that result rather than treating it as a pass.
+
+| Action | Listen for and record |
+|---|---|
+| Cold launch; enter each film | Catalog title, focused film, selected detail level and Play film are intelligible in navigation order. No duplicate control names from Sema and VoiceView. |
+| Change Essential, Standard and Rich | The focused option and selected value are distinguishable. Start playback and confirm the chosen description plays. |
+| Pause, Revisit, then Earlier | The pause state, focused action, moment description and completion state arrive in a useful order. Earlier names the next available moment. |
+| Interrupt a critical timed description with Back and Play/Pause | Film and description stop. The missed-description action is focused and announced. Retry speaks the retained fact and completion once. |
+| Interrupt Revisit with Back; retry; resume | Old narration stops, retry starts the same requested moment, and old completion speech does not arrive over the new action. Film resumes at the paused position. |
+| Navigate rapidly while speech is active | Focus speech follows the current control. Record stale announcements, duplicated names, unexpected queues or speech that masks the requested description. |
+| Open and close the system menu; background and return | Speech and playback recover in the correct state. No abandoned narration or old focus announcement continues after return. |
+| Toggle VoiceView while controls are open | The host reports the change. Built-in guidance and VoiceView do not compete; focused controls remain audible. |
+| Finish the film; Revisit; return to catalog | End state, Revisit completion and catalog focus are spoken in order. |
+
+For each case, retain an audio timestamp, actual spoken words, expected action, observed result and any reproduction steps. Mark a case passed only after hearing it. Automated native-bridge and page tests cover routing and stale callbacks; they do not establish audible queue order or interruption behavior.
+
+## October 18, 2026 source-media repair
+
+The shipped Sintel extract had visible frame corruption near 36–39 seconds and contained 1,707 video frames. A fresh copy of the same 150–222 second range from Blender's source contains 1,728 frames at 24 fps. The preview MP4, VP8/Opus rendition and fixed Standard comparison were rebuilt. Narration text and timing are unchanged. The package records the replacement hash alongside the original AWS authoring-input hash; integrity records cover the new media.
+
 ## October 16, 2026 final build on the Vega Virtual Device
 
 Commit `15e8eb5`, after a fresh simulator restart. [Log excerpts](vega/logs/evidence-excerpts.txt); screenshots 66–67 in `vega/screenshots/`.

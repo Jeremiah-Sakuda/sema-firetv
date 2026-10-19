@@ -5,11 +5,15 @@
 set -eu
 cd "$(dirname "$0")/.."
 mkdir -p content/sources
+staging=$(mktemp -d content/sources/.fetch.XXXXXX)
+trap 'rm -rf "$staging"' EXIT HUP INT TERM
 enc="-c:v libx264 -preset medium -crf 22 -pix_fmt yuv420p -c:a aac -b:a 128k -ac 2 -movflags +faststart"
-ffmpeg -hide_banner -loglevel error -y -ss 0 -t 72 \
+ffmpeg -hide_banner -loglevel error -xerror -y -ss 0 -t 72 \
   -i https://download.blender.org/demo/movies/ToS/tears_of_steel_720p.mov \
-  $enc content/sources/tears-of-steel-opening.mp4
-ffmpeg -hide_banner -loglevel error -y -ss 150 -t 72 \
+  $enc "$staging/tears-of-steel-opening.mp4"
+ffmpeg -hide_banner -loglevel error -xerror -y -ss 150 -t 72 \
   -i https://download.blender.org/durian/movies/Sintel.2010.1080p.mkv \
-  -vf scale=1280:-2 $enc content/sources/sintel-dragon.mp4
+  -vf scale=1280:-2 $enc "$staging/sintel-dragon.mp4"
+mv "$staging/tears-of-steel-opening.mp4" content/sources/tears-of-steel-opening.mp4
+mv "$staging/sintel-dragon.mp4" content/sources/sintel-dragon.mp4
 echo "Fetched excerpts into content/sources/"
