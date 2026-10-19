@@ -6,6 +6,6 @@
   "modelCard": "https://huggingface.co/rhasspy/piper-voices/blob/main/en/en_US/ljspeech/high/MODEL_CARD",
   "dataset": "https://keithito.com/LJ-Speech-Dataset/",
   "datasetLicense": "Public domain",
-  "scope": "Supplemental viewing-options prompts only.",
-  "count": 4
+  "scope": "Supplemental viewing-options and moment-navigation prompts.",
+  "count": 81
 }

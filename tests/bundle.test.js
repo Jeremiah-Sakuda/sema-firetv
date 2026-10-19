@@ -75,7 +75,7 @@ test('supplemental option recordings require current text and intact bytes', t =
   const dir=root(t);fs.mkdirSync(path.join(dir,'content'),{recursive:true});
   fs.copyFileSync('content/interface-prompts.json',path.join(dir,'content/interface-prompts.json'));
   fs.cpSync('media/interface',path.join(dir,'media/interface'),{recursive:true});
-  const data=buildData(dir);assert.equal(Object.keys(data.data.prompts).length,4);
+  const data=buildData(dir);assert.equal(Object.keys(data.data.prompts).length,Object.keys(JSON.parse(fs.readFileSync('content/interface-prompts.json'))).length);
   assert.equal(data.data.prompts.options_open.text,'Viewing options opened.');
   fs.writeFileSync(path.join(dir,'media/interface/options_open.mp3'),'altered');
   assert.ok(buildData(dir).missingClips.includes('options_open'));

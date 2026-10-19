@@ -69,6 +69,7 @@
         </div>
         <div class="utility-actions">
           <button id="more-options" aria-expanded="false" aria-controls="viewing-options" data-say="label_more_options">More options</button>
+          <button id="browse-moments" data-say="picker_label" aria-controls="moment-picker" aria-haspopup="dialog">Browse moments</button>
           <button id="return" data-say="label_return">Return to catalog</button>
         </div>
         <section id="viewing-options" hidden aria-label="Viewing options">
@@ -79,6 +80,17 @@
             <button id="restart" data-say="label_start_over">Start over</button>
           </div>
         </section>
+      </section>
+      <section id="moment-picker" role="dialog" aria-modal="true" aria-labelledby="picker-title" hidden>
+        <p class="eyebrow">FILM PAUSED</p>
+        <h2 id="picker-title">Browse moments</h2>
+        <p id="picker-context" class="fine-print"></p>
+        <p class="picker-help">Choose a time range, then a moment. Only moments already revealed are listed.</p>
+        <div id="moment-rows"></div>
+        <div class="utility-actions">
+          <button id="picker-back" data-say="picker_previous">Previous range</button>
+          <button id="picker-close" data-say="picker_close">Back to viewing controls</button>
+        </div>
       </section>
     </section>
 

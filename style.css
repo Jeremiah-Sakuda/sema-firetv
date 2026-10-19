@@ -96,3 +96,13 @@ pre { white-space: pre-wrap; word-break: break-word; max-height: 300px; overflow
 .guidance-error { position: fixed; inset: 8vh 8vw auto; z-index: 100; padding: 2rem; max-height: 84vh; overflow: auto; background: var(--surface); color: var(--text); border: 3px solid var(--focus); border-radius: 16px; box-shadow: 0 0 0 100vmax rgba(0,0,0,.85); }
 .guidance-error p { max-width: 65ch; }
 body:has(#guidance-error:not([hidden])) header, body:has(#guidance-error:not([hidden])) main > section:not(#guidance-error) { visibility: hidden; }
+
+/* Bounded, vertical remote list. Its own scroll area keeps every focused row visible. */
+body.watching #moment-picker { position: absolute; top: 5%; bottom: 7%; left: 8%; right: 8%; overflow: auto; padding: 1.25rem; border: 1px solid var(--border); border-radius: .7rem; background: var(--bg); scroll-padding: 1rem; }
+#moment-rows { display: grid; gap: .55rem; margin: 1rem 0; }
+#moment-rows button { display: flex; justify-content: space-between; gap: 1rem; align-items: center; text-align: left; min-height: 3rem; padding: .65rem 1rem; }
+#moment-rows strong { font-weight: 650; }
+#moment-rows span { color: var(--muted); font-size: .85rem; }
+.picker-help { color: var(--muted); font-size: .85rem; }
+#moment-picker .fine-print { margin: .5rem 0; }
+@media (max-width: 700px) { body.watching #moment-picker { left: 3%; right: 3%; padding: 1rem; } #moment-rows button { align-items: flex-start; flex-direction: column; gap: .25rem; } }

@@ -56,14 +56,10 @@ let screenReader = null, startupDone = false, startupTimer = null, interacted = 
 /** Browsers block sound until the first key press or click (autoplay policy). */
 const activated = () => interacted || !!navigator.userActivation?.hasBeenActive;
 for (const type of ['keydown', 'pointerdown']) document.addEventListener(type, () => { interacted = true; }, true);
-const visibleMoments = () => film?.events.filter(e => e.availableAt <= player.position).sort((a, b) => b.availableAt - a.availableAt) ?? [];
-/** Earlier steps back from the moment Revisit plays: a missed critical fact first, otherwise the latest. */
-const earlierMoment = () => {
-  const seen = visibleMoments();
-  const anchor = revisitCursor ?? player?.pending()[0]?.id ?? seen[0]?.id;
-  const i = seen.findIndex(e => e.id === anchor);
-  return seen[(i < 0 ? 0 : i) + 1];
-};
+const momentView = () => player?.moments.view(player.position, { cursorId: revisitCursor, pendingIds: player.pending().map(e => e.id) });
+const visibleMoments = () => momentView()?.available ?? [];
+const earlierMoment = () => momentView()?.earlier;
+let momentPicker = null;
 /** Vega diagnostics go to the device log through the host bridge: prompt IDs and playback events only, no user data. */
 function diagnostic(message) {
   try { window.ReactNativeWebView?.postMessage(JSON.stringify(message)); } catch { /* optional bridge */ }
@@ -109,7 +105,9 @@ const accessibleName = el => (el.getAttribute('aria-label') || el.textContent).t
 /** The focused control as a speakable item, so speech names exactly what Select will activate. */
 function focusedItem() {
   const el = document.activeElement;
-  if (!el || el === document.body || !el.dataset?.say) return [];
+  if (!el || el === document.body) return [];
+  if (el.semaSpeech) return el.semaSpeech.map(item => typeof item === 'string' ? { id: item, text: clipText(item) } : item);
+  if (!el.dataset?.say) return [];
   const items = [{ id: el.dataset.say, text: el.dataset.momentPrompt ? clipText(el.dataset.say) : accessibleName(el) }];
   if (el.dataset.momentPrompt) items.push({ id: el.dataset.momentPrompt, text: clipText(el.dataset.momentPrompt) });
   return items;
@@ -170,13 +168,14 @@ function defaultFocusId() {
   if (view === 'catalog') return lastFilmId ? `film-${lastFilmId}` : 'film-list';
   if (view === 'welcome') return `choose-${prefs.chosen ? prefs.level : 'standard'}`;
   if (!player) return 'return';
+  if (momentPicker) return $('moment-rows').querySelector('button')?.id ?? 'picker-close';
   const pending = player.pending().length > 0;
   if (player.mode === 'error') return 'retry';
   if (player.mode === 'recovering') return 'recover';
   if (player.mode === 'ended' || atEnd()) return pending ? 'recover' : 'return';
   return pending ? 'recover' : 'resume';
 }
-function currentView() { if (guidanceFailed) return $('guidance-error'); return view === 'catalog' ? $('catalog') : view === 'welcome' ? $('welcome') : $('controls'); }
+function currentView() { if (guidanceFailed) return $('guidance-error'); if (momentPicker && view === 'player') return $('moment-picker'); return view === 'catalog' ? $('catalog') : view === 'welcome' ? $('welcome') : $('controls'); }
 function ensureFocus() {
   if (view === 'player' && player?.mode === 'playing') return;
   const active = document.activeElement;
@@ -217,7 +216,7 @@ function speakFocused() {
   // or the film after the viewer activates that control.
   if (view === 'player' && ['playing', 'recovering'].includes(player?.mode)) return;
   const el = document.activeElement;
-  if (el?.dataset?.say && !guidanceFailed) voice.say(focusedItem());
+  if ((el?.dataset?.say || el?.semaSpeech) && !guidanceFailed) voice.say(focusedItem());
 }
 document.addEventListener('focusin', event => {
   if (suppressFocusSpeech || !prefs.guidance) return;
@@ -260,8 +259,11 @@ function render() {
   renderToggles();
   if (view === 'player' && player) {
     const mode = player.mode, pending = player.pending().length;
-    $('controls').hidden = mode === 'playing';
+    $('controls').hidden = mode === 'playing' || !!momentPicker;
+    $('moment-picker').hidden = !momentPicker;
+    if (momentPicker) renderMomentPicker();
     $('transport-hint').textContent = mode === 'playing' ? 'Select: pause and options · Back: pause'
+      : momentPicker ? `Up/Down: choose · Select: open · Back: ${momentPicker.path.length ? 'previous range' : 'viewing controls'}`
       : mode === 'recovering' ? 'Back: stop description'
       : optionsOpen ? 'Select: activate control · Back: close options'
       : 'Select: activate control · Back: catalog';
@@ -276,7 +278,9 @@ function render() {
     recover.textContent = pending ? `Hear missed description (${pending})` : 'Revisit latest moment';
     recover.dataset.say = pending ? 'label_recover_pending' : 'label_recover';
     recover.hidden = FIXED;
-    setAvailable(recover, mode !== 'error');
+    setAvailable(recover, mode !== 'error' && !!momentView().revisit);
+    $('browse-moments').hidden = FIXED;
+    setAvailable($('browse-moments'), mode !== 'error' && !!momentView().latest);
     $('earlier').hidden = FIXED;
     const earlier = earlierMoment();
     // Stays available while it is playing an earlier moment, so focus is not pulled away mid-description.
@@ -397,11 +401,12 @@ function stopRecovery(reason = 'cancel-recovery') {
   session.stopNarration(); player.controls(reason); render(); persist();
 }
 async function resume() {
+  if (momentPicker) { momentPicker = null; render(); }
   if (guidanceFailed) return;
   if (!player || view !== 'player' || player.mode === 'error') return;
   if (player.mode === 'ended' || atEnd()) { announce(player.pending().length ? 'film_ended_pending' : 'film_ended', defaultFocusId()); return; }
   session.pause();
-  optionsOpen = false; revisitCursor = null;
+  optionsOpen = false; momentPicker = null; revisitCursor = null;
   if (player.mode === 'recovering') player.controls('cancel-recovery');
   if (!player.resume()) return;
   endedHandled = false;
@@ -412,7 +417,7 @@ async function resume() {
 function startVideo() { return session.playVideo(); }
 
 function recover(eventId) {
-  optionsOpen = false; browsingEarlier = !!eventId;
+  optionsOpen = false; momentPicker = null; browsingEarlier = !!eventId;
   if (!player || view !== 'player' || player.mode === 'error') return;
   if (FIXED) { say('level_fixed'); return; }
   session.pause();
@@ -448,6 +453,7 @@ function chooseLevel(level) {
 }
 function seek(delta) {
   if (!player || view !== 'player' || player.mode === 'error') return;
+  momentPicker = null;
   const wasPlaying = player.mode === 'playing';
   session.pause();
   revisitCursor = null; lastDescribedId = null;
@@ -468,7 +474,7 @@ function requestStartOver() {
 function startOver() {
   if (!player) return;
   session.reset();
-  optionsOpen = false; player.restart(); video.currentTime = 0; endedHandled = false; revisitCursor = null; lastDescribedId = null;
+  optionsOpen = false; momentPicker = null; player.restart(); video.currentTime = 0; endedHandled = false; revisitCursor = null; lastDescribedId = null;
   render(); announce('start_over', 'resume'); persist();
 }
 function onEnded() {
@@ -486,6 +492,7 @@ function onEnded() {
   announce(pending ? 'film_ended_pending' : 'film_ended', pending ? 'recover' : 'return'); persist();
 }
 function fail(prompt) {
+  momentPicker = null;
   session.pause();
   if (player && player.mode !== 'error') { player.position = video.currentTime || player.position; persist(); player.fail(prompt); }
   render(); announce(prompt, 'retry');
@@ -495,7 +502,7 @@ function leave() {
   session.reset();
   if (!['error', 'ended'].includes(player.mode)) player.position = video.currentTime;
   if (player.mode !== 'error') { player.catalog(); persist(); }
-  optionsOpen = false; view = 'catalog'; render(); announce('returning', `film-${film.id}`);
+  optionsOpen = false; momentPicker = null; view = 'catalog'; render(); announce('returning', `film-${film.id}`);
 }
 function openFilm(id) {
   const found = films.find(f => f.package.id === id);
@@ -509,7 +516,7 @@ function openFilm(id) {
     const record = player.record.bind(player), p = player;
     p.record = (type, detail = {}) => { record(type, detail); diagnostic({ sema: 'playback', type, position: Math.round(p.position * 1000) / 1000, ...detail }); };
   }
-  optionsOpen = false; endedHandled = false; codecFallbackUsed = false; revisitCursor = null; lastDescribedId = null;
+  optionsOpen = false; momentPicker = null; endedHandled = false; codecFallbackUsed = false; revisitCursor = null; lastDescribedId = null;
   video.src = FIXED ? ((PREFER_WEBM && entry.standardMixWebm) || entry.standardMix) : ((PREFER_WEBM && entry.webm) || film.video); video.load?.();
   const saved = store.get(resumeKey(film.id), null);
   const restored = saved && !LOCKED ? player.restore(saved) : false;
@@ -551,6 +558,7 @@ function back() {
     return true;
   }
   if (view === 'welcome') { view = 'catalog'; render(); announce('returning', `film-${lastFilmId}`); return true; }
+  if (momentPicker) { pickerBack(); return true; }
   if (player.mode === 'playing') { openControls('back', 'paused_return', 'pending-or-return'); return true; }
   if (player.mode === 'recovering') { stopRecovery(); announce('recovery_stopped', 'resume'); return true; }
   if (optionsOpen) { setOptions(false); return true; }
@@ -565,6 +573,9 @@ function playPause() {
   else resume();
 }
 document.addEventListener('keydown', event => {
+  if (momentPicker && !guidanceFailed && event.key === 'Tab') {
+    event.preventDefault(); movePickerFocus(event.shiftKey ? -1 : 1, true); return;
+  }
   const action = actionForKey(event);
   if (!action) return;
   const playing = view === 'player' && player?.mode === 'playing';
@@ -581,9 +592,15 @@ document.addEventListener('keydown', event => {
     return;
   }
   if (action === 'forward' || action === 'rewind') { event.preventDefault(); seek(action === 'forward' ? 5 : -5); return; }
-  if (action === 'menu') { event.preventDefault(); if (view === 'player') say('help'); return; }
+  if (action === 'menu') { event.preventDefault(); if (view === 'player') say(momentPicker ? 'picker_open' : 'help'); return; }
   if (['up', 'down', 'left', 'right'].includes(action)) {
     event.preventDefault();
+    if (momentPicker) {
+      if (action === 'left') pickerBack();
+      else if (action === 'right') { if (document.activeElement?.dataset.range === 'true') document.activeElement.click(); }
+      else movePickerFocus(action === 'down' ? 1 : -1);
+      return;
+    }
     if (playing) return;
     if (view === 'player' && player?.mode === 'recovering') {
       // Navigating means the viewer is done listening: stop, keep the fact pending, say where focus went.
@@ -643,6 +660,9 @@ $('guidance-return').addEventListener('click', returnFromGuidanceFailure);
 $('resume').addEventListener('click', guarded(resume));
 $('recover').addEventListener('click', guarded(() => recover()));
 $('earlier').addEventListener('click', guarded(recoverEarlier));
+$('browse-moments').addEventListener('click', guarded(openMomentPicker));
+$('picker-back').addEventListener('click', pickerBack);
+$('picker-close').addEventListener('click', closeMomentPicker);
 $('retry').addEventListener('click', guarded(() => openFilm(film.id)));
 $('restart').addEventListener('click', guarded(requestStartOver));
 $('restart').addEventListener('blur', disarmRestart);
@@ -651,6 +671,81 @@ $('help').addEventListener('click', guarded(() => say('help')));
 document.querySelectorAll('[data-level]').forEach(b => b.addEventListener('click', guarded(el => chooseLevel(el.dataset.level))));
 document.querySelectorAll('[data-choose-level]').forEach(b => { b.id = `choose-${b.dataset.chooseLevel}`; b.addEventListener('click', guarded(el => chooseFirstLevel(el.dataset.chooseLevel))); });
 document.querySelectorAll('[data-toggle]').forEach(b => b.addEventListener('click', guarded(el => toggle(el.dataset.toggle))));
+
+/* ---------- moment picker: the page adapter owns focus and speech only ---------- */
+function clockSpeech(time) {
+  const seconds = Math.max(0, Math.floor(time)), result = [];
+  // Digit clips also cover unusually long recordings without a speech engine.
+  const number = n => n < 60 ? [`picker_number_${n}`] : String(n).split('').map(d => `picker_number_${d}`);
+  for (const [value, unit] of [[Math.floor(seconds / 3600), 'hour'], [Math.floor(seconds / 60) % 60, 'minute'], [seconds % 60, 'second']]) {
+    if (value || (!result.length && unit === 'second')) result.push(...number(value), `picker_${unit}${value === 1 ? '' : 's'}`);
+  }
+  return result;
+}
+function pickerIdentity(event) { return { id: event.labelPrompt, text: event.label ?? event.id }; }
+function renderMomentPicker() {
+  const page = player.moments.page(player.position, momentPicker.path, revisitCursor);
+  momentPicker.path = page.path;
+  const signature = JSON.stringify([page.path, page.items.map(row => row.key)]);
+  $('picker-context').textContent = `${page.count} already-revealed moment${page.count === 1 ? '' : 's'}. The film stays at ${formatTime(player.position)}.`;
+  $('picker-back').textContent = page.path.length ? 'Previous range' : 'Back to viewing controls';
+  $('picker-back').dataset.say = page.path.length ? 'picker_previous' : 'picker_close';
+  $('picker-back').hidden = !page.path.length;
+  if (momentPicker.signature === signature) return;
+  momentPicker.signature = signature;
+  const list = $('moment-rows'); list.replaceChildren();
+  page.items.forEach((row, index) => {
+    const button = document.createElement('button'); button.id = `picker-row-${index}`;
+    button.dataset.range = String(row.kind === 'range');
+    const title = document.createElement('strong'), detail = document.createElement('span');
+    if (row.kind === 'range') {
+      title.textContent = `${formatTime(row.first.availableAt)} – ${formatTime(row.last.availableAt)}`;
+      detail.textContent = `${row.first.label ?? row.first.id} → ${row.last.label ?? row.last.id}`;
+      button.setAttribute('aria-label', `From ${spokenDuration(Math.floor(row.first.availableAt))} to ${spokenDuration(Math.floor(row.last.availableAt))}. ${row.count} moments. Open range.`);
+      button.semaSpeech = ['picker_from', ...clockSpeech(row.first.availableAt), 'picker_to', ...clockSpeech(row.last.availableAt), 'picker_open_range'];
+      button.addEventListener('click', () => {
+        momentPicker.path = row.path; momentPicker.signature = null; render();
+        announce('picker_range_open', 'picker-row-0');
+      });
+    } else {
+      button.dataset.moment = row.event.id;
+      title.textContent = row.event.label ?? row.event.id;
+      detail.textContent = formatTime(row.event.availableAt);
+      button.setAttribute('aria-label', `${title.textContent}. At ${spokenDuration(Math.floor(row.event.availableAt))}. Hear description.`);
+      button.semaSpeech = [pickerIdentity(row.event), 'picker_at', ...clockSpeech(row.event.availableAt)];
+      button.addEventListener('click', () => {
+        // Recheck at selection too: a stale row must not reveal a future moment.
+        if (!player.moments.view(player.position).available.some(e => e.id === row.event.id)) { closeMomentPicker(); return; }
+        recover(row.event.id);
+      });
+    }
+    button.append(title, detail); list.append(button);
+  });
+}
+function openMomentPicker() {
+  if (!player || FIXED || !momentView().latest) return;
+  const interrupted = player.mode === 'recovering';
+  session.pause();
+  if (interrupted) stopRecovery('browse-moments');
+  optionsOpen = false; momentPicker = { path: [], signature: null }; render();
+  const page = player.moments.page(player.position, [], revisitCursor);
+  announce([...(interrupted ? ['recovery_stopped'] : []), 'picker_open'], `picker-row-${page.focusIndex}`);
+}
+function closeMomentPicker() {
+  momentPicker = null; render(); announce('picker_closed', 'browse-moments');
+}
+function pickerBack() {
+  if (!momentPicker?.path.length) { closeMomentPicker(); return; }
+  const index = momentPicker.path.at(-1);
+  momentPicker.path = momentPicker.path.slice(0, -1); momentPicker.signature = null;
+  render(); announce('picker_range_back', `picker-row-${index}`);
+}
+function movePickerFocus(delta, wrap = false) {
+  const buttons = [...$('moment-picker').querySelectorAll('button')].filter(shown);
+  let index = buttons.indexOf(document.activeElement) + delta;
+  index = wrap ? (index + buttons.length) % buttons.length : Math.max(0, Math.min(buttons.length - 1, index));
+  buttons[index]?.focus(); buttons[index]?.scrollIntoView?.({ block: 'nearest' });
+}
 
 /* ---------- media and lifecycle ---------- */
 /** On Vega hardware (H.264 untested), switch once to the VP8 rendition proven on the simulator. */

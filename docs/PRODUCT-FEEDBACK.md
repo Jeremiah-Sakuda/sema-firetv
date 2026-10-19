@@ -115,7 +115,7 @@ See [platform findings](vega/PLATFORM-FINDINGS.md) for reproduction steps and SD
 
 ## Piper local speech rendering
 
-- Purpose: render 25 short moment names for focus guidance and four viewing-options prompts. Moment names cover scenes that have no timed description slot.
+- Purpose: render 25 short moment names for focus guidance and 81 viewing-options and moment-navigation prompts. Moment names cover scenes that have no timed description slot.
 - Worked: the named MP3 files play through the same recorded-guidance channel, with durations measured by ffprobe. No runtime speech engine or cloud call is needed.
 - Friction: local authoring needs a separately downloaded voice model and ffmpeg. These short recordings use a different voice from Polly narration; text, byte hashes and measured durations are validated during bundling.
 - Onboarding: isolated Python environment, `piper-tts==1.8.0`, the `en_US-ljspeech-high` voice, and ffmpeg conversion to 24 kHz mono MP3.

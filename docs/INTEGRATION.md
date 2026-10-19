@@ -11,7 +11,8 @@ Your app supplies the video player, controls and audio output.
 
 | File | Role | Dependencies |
 |---|---|---|
-| [`src/playback.js`](../src/playback.js) | Chooses descriptions at each film position, tracks interrupted critical facts, and handles Revisit and Earlier moment. | `src/package.js` only; no DOM, media or network APIs |
+| [`src/playback.js`](../src/playback.js) | Chooses descriptions at each film position, tracks interrupted critical facts, and handles Revisit and Earlier moment. | `src/package.js` and `src/moment-navigation.js`; no DOM, media or network APIs |
+| [`src/moment-navigation.js`](../src/moment-navigation.js) | Revealed-moment availability, Revisit/Earlier selection and bounded picker pages | none |
 | [`src/package.js`](../src/package.js) | Package validation: timing, dialogue overlap, required audio and the approval gate | none |
 | [`pipeline/`](../pipeline/README.md) | Authoring: S3, Transcribe, Bedrock Nova and Polly, then review and packaging | Python, AWS |
 
@@ -53,6 +54,7 @@ else if (cue) {
 // Revisit:                const r = p.recover();         // interrupted critical fact first, else the latest moment
 //                         playAudio(r.audio, () => p.complete(r.token));
 // Earlier moment:         p.recover(eventId);            // any event with availableAt <= current position
+// Browse moments:        p.moments.page(p.position);   // at most six rows; pass row.path to open a range
 // Missed facts:           p.pending();                   // interrupted critical facts, oldest first
 // Persist and restore:    p.snapshot(); p.restore(saved);
 ```

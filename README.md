@@ -36,7 +36,7 @@ A second proposed route is a free Fire TV Appstore app with openly licensed film
 | Viewer action | Behavior |
 |---|---|
 | Choose the amount of description | Essential, Standard or Rich. Every level fits the measured dialogue gaps; Rich adds visual detail where the gap allows. In dialogue-dense scenes the levels converge, and Revisit carries the extra detail. |
-| Revisit a moment | The film stays paused while Sema describes a visual moment. Earlier moment steps further back. Only moments at or before the current position are offered. |
+| Revisit a moment | The film stays paused while Sema describes a visual moment. Earlier moment steps further back; Browse moments lets you choose a time range and a named moment. Only moments at or before the current position are offered. |
 | Recover interrupted narration | If a critical description is cut off, it is offered first and stays available until heard or deliberately skipped. A clip that is cut off never counts as heard. |
 | Keep watching | Timed descriptions fit within the recorded dialogue gaps. Fit is checked again when narration starts; stalls and late starts have recovery paths. |
 | Use spoken guidance or VoiceView | Recorded prompts announce controls and state changes. When VoiceView is on, Sema hands speech to VoiceView: its own guidance turns off, and state changes go to VoiceView through the native announce API. A viewer's explicit choice takes precedence. |
@@ -46,10 +46,10 @@ The catalog contains two **72-second** Blender open-film excerpts: *Sintel — T
 
 - 25 described moments;
 - 45 timed narration variants;
-- 67 recorded control prompts;
+- 144 recorded control prompts;
 - 25 short recorded moment names.
 
-All playback media is in the repository. Narration and 63 control prompts use Amazon Polly; moment names and four viewing-options prompts use local Piper speech. Watching uses local files and makes no model or cloud call.
+All playback media is in the repository. Narration and 63 control prompts use Amazon Polly; moment names and 81 viewing-options and moment-navigation prompts use local Piper speech. Watching uses local files and makes no model or cloud call.
 
 ## Fire TV controls
 
@@ -99,13 +99,14 @@ npm run preview
 Open **http://127.0.0.1:4173**. Use arrow keys as the D-pad, Enter as Select, Escape as Back and Space as Play/Pause. For the target platform, follow the [Vega build guide](docs/vega/BUILD-AND-RUN.md).
 
 - **The bridge example:** start *Tears of Steel* from the beginning and pause at about **38 seconds**, before the next moment at 44 seconds. Then follow the four steps under "One scene".
+- **Distant lookback:** pause after several moments have occurred, open **Browse moments**, choose a time range, then select a named moment. Back returns to the previous range.
 - **Detail choice:** compare the *Sintel* alley cue at about 6 seconds in separate runs. Essential says *"A woman walks."* Rich says *"A red-haired woman carries a staff through a narrow sunlit alley."*
 
 ## Verified behavior
 
-- **Test suites (October 16):** 145 JavaScript, 78 offline pipeline and 6 native host tests pass. Both films pass their description contracts, the editorial record matches every shipped line, and the repository checks pass.
-- **Browser:** real-media Chrome runs cover both films at all three levels. They also cover the keyboard flow through Revisit, Earlier moment, resume and every Back action.
-- **Vega package:** the aarch64 build's 184 media files match their source hashes.
+- **Test suites (October 18):** 156 JavaScript, 78 offline pipeline and 6 native host tests pass. Both films pass their description contracts, the editorial record matches every shipped line, and the repository checks pass.
+- **Browser:** real-media Chrome runs cover both films at all three levels. They also cover the keyboard flow through Revisit, Earlier moment, the spoken moment picker, resume and every Back action.
+- **Vega package:** the aarch64 build's 261 media files match their source hashes.
 - **Vega Virtual Device (October 16 final build):** in the bridge scene, Revisit, Earlier moment and resume worked from the remote, and Back during a critical description focused the missed description. With VoiceView on, state changes reached the host's announce call. Earlier builds also covered both excerpts end to end and the VoiceView toggle.
 
 The included excerpts run with `npm run preview`. `npm run release:check` is the separate gate for editor-approved production packages.

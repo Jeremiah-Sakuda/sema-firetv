@@ -192,7 +192,7 @@ async function polishRun(){
   await page.locator('#recover').focus();await page.screenshot({path:path.join(output,'viewing-controls.png')});
   const clips=await page.evaluate(async()=>{
     window.__sema.voice.stop();const result=[];
-    for(const [id,clip] of Object.entries(window.SEMA_DATA.prompts).filter(([,c])=>c.audio.startsWith('media/interface/'))){
+    for(const [id,clip] of Object.entries(window.SEMA_DATA.prompts).filter(([id,c])=>c.audio.startsWith('media/interface/')&&!id.startsWith('picker_'))){
       await new Promise((resolve,reject)=>{const a=new Audio(clip.audio),t=setTimeout(()=>{a.pause();reject(new Error(id+' timeout'));},7000);
         a.onended=()=>{clearTimeout(t);result.push({id,duration:a.duration,text:clip.text});resolve();};a.onerror=()=>reject(new Error(id+' decode error'));a.play().catch(reject);});
     }return result;
@@ -216,7 +216,60 @@ async function polishRun(){
   report.polish.fixedDetailHidden=true;await fixed.context.close();
   console.log('PASS option disclosure, Back/focus, three viewport sizes, four recorded prompts, detected-VoiceView recovery and fixed-mode layout');
 }
+async function pickerRun(){
+  const {page,context}=await pageFor('/?codec=vp8');
+  await page.locator('#film-tears-of-steel').click();await page.locator('[data-choose-level=standard]').click();
+  assert.equal(await page.locator('#recover').getAttribute('aria-disabled'),'true');
+  assert.equal(await page.locator('#browse-moments').getAttribute('aria-disabled'),'true');
+  await page.locator('[data-level=off]').click();await page.locator('#resume').click();
+  await page.locator('video').evaluate(v=>{v.currentTime=60;});
+  await page.waitForFunction(()=>window.__sema.player.position>=60);
+  await page.keyboard.press('Escape');
+  const paused=await page.locator('video').evaluate(v=>v.currentTime);
+  await page.evaluate(()=>Object.defineProperty(window,'speechSynthesis',{value:undefined,configurable:true}));
+  for(const width of [1920,1280,375]){
+    await page.setViewportSize({width,height:width===375?812:width===1280?720:1080});
+    await page.locator('#browse-moments').click();
+    await page.waitForFunction(()=>!window.__sema.voice.speaking,{},{timeout:30000});
+    assert.equal(await page.evaluate(()=>window.__sema.guidanceFailed),false);
+    assert.equal(await page.evaluate(()=>document.activeElement.id),'picker-row-0');
+    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+    await page.screenshot({path:path.join(output,`picker-${width}.png`)});
+    await page.keyboard.press('Enter');
+    assert.ok(await page.locator('#moment-rows [data-moment]').count()>0);
+    await page.waitForFunction(()=>!window.__sema.voice.speaking,{},{timeout:30000});
+    assert.equal(await page.evaluate(()=>window.__sema.guidanceFailed),false);
+    await page.keyboard.press('Escape');assert.equal(await page.evaluate(()=>document.activeElement.id),'picker-row-0');
+    await page.locator('#picker-close').focus();await page.keyboard.press('Tab');
+    assert.equal(await page.evaluate(()=>document.activeElement.id),'picker-row-0');
+    await page.keyboard.press('Escape');assert.equal(await page.evaluate(()=>document.activeElement.id),'browse-moments');
+    assert.equal(await page.locator('video').evaluate(v=>v.currentTime),paused);
+  }
+  await page.setViewportSize({width:1920,height:1080});
+  await page.locator('#browse-moments').click();await page.locator('#picker-row-0').click();
+  const selected=await page.locator('#picker-row-0').getAttribute('data-moment');
+  await page.locator('#picker-row-0').click();
+  await page.waitForFunction(()=>window.__sema.player.mode==='recovering');
+  await page.waitForFunction(()=>window.__sema.player.mode==='controls',{},{timeout:20000});
+  assert.equal(await page.locator('video').evaluate(v=>v.currentTime),paused);
+  assert.ok(await page.evaluate(id=>window.__sema.player.log.some(e=>e.type==='recovery'&&e.event===id),selected));
+  const clips=await page.evaluate(async()=>{
+    window.__sema.voice.stop();const result=[];
+    for(const [id,clip] of Object.entries(window.SEMA_DATA.prompts).filter(([id])=>id.startsWith('picker_'))){
+      await new Promise((resolve,reject)=>{const a=new Audio(clip.audio);a.playbackRate=3;
+        const t=setTimeout(()=>{a.pause();reject(new Error(id+' timeout'));},7000);
+        a.onended=()=>{clearTimeout(t);result.push({id,duration:a.duration});resolve();};
+        a.onerror=()=>{clearTimeout(t);reject(new Error(id+' decode error'));};a.play().catch(reject);});
+    }return result;
+  });assert.equal(clips.length,77);assert.ok(clips.every(c=>c.duration>0&&c.duration<5));
+  report.picker={viewports:[1920,1280,375],recordedPrompts:clips,selected,pausedFramePreserved:true,backRestoresFocus:true,noSpeechEngine:true};
+  console.log('PASS spoken moment picker, range and leaf speech, Back/Tab focus, paused frame and 77 recordings');
+  await context.close();
+}
+
 try{
+  if(!process.env.SEMA_BROWSER_SCOPE || process.env.SEMA_BROWSER_SCOPE==='picker') await pickerRun();
+  if(process.env.SEMA_BROWSER_SCOPE!=='picker'){
   if(!process.env.SEMA_BROWSER_SCOPE || process.env.SEMA_BROWSER_SCOPE==='polish') { await polishRun(); await remoteFlowRun(); }
   if(process.env.SEMA_BROWSER_SCOPE!=='polish'){
   if(!process.env.SEMA_BROWSER_SCOPE || process.env.SEMA_BROWSER_SCOPE==='identities') await identityRun();
@@ -231,6 +284,7 @@ try{
   await Promise.all(['sintel-dragon','tears-of-steel'].map(film=>fullRun(film,'standard','vp8',true)));
   }
   await Promise.all([interaction('sintel-dragon','injured-dragon'),interaction('tears-of-steel','forty-years-later')]);
+  }
   }
   }
   }

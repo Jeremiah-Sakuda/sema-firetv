@@ -1,3 +1,4 @@
+import { createMomentNavigation } from './moment-navigation.js';
 import { LEVELS, validatePackage } from './package.js';
 
 /** Pure media-clock state machine. Audio/UI side effects belong to the adapter. */
@@ -5,7 +6,7 @@ export class Playback {
   constructor(asset, { allowFixture = false, allowDraft = false } = {}) {
     const errors = validatePackage(asset, { allowFixture, allowDraft });
     if (errors.length) throw new Error(errors.join('\n'));
-    this.asset = asset; this.level = 'standard'; this.mode = 'catalog';
+    this.asset = asset; this.moments = createMomentNavigation(asset.events); this.level = 'standard'; this.mode = 'catalog';
     this.position = 0; this.epoch = 0; this.active = null;
     this.attempted = new Set(); this.delivery = new Map(); this.log = [];
     for (const e of asset.events) this.delivery.set(e.id, 'not-due');
@@ -141,12 +142,11 @@ export class Playback {
    * nothing that becomes available after the current position is eligible.
    */
   recover(eventId) {
-    const available = this.asset.events.filter(e => e.availableAt <= this.position);
+    const available = this.moments.view(this.position).available;
     const selected = eventId ? available.find(e => e.id === eventId) : null;
     if (eventId && !selected) { this.record('recovery-unavailable', { event: eventId }); return null; }
     this.controls('recovery');
-    const latest = available.sort((a,b) => b.availableAt-a.availableAt)[0];
-    const event = selected ?? this.pending()[0] ?? latest;
+    const event = selected ?? this.moments.view(this.position, { pendingIds: this.pending().map(e => e.id) }).revisit;
     if (!event) { this.record('recovery-unavailable'); return null; }
     this.active = { ...event.recovery, kind: 'recovery', events: [event.id], token: ++this.epoch };
     this.mode = 'recovering';

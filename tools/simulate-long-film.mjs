@@ -43,17 +43,32 @@ function workload(p){
 }
 function navigation(p){
   const player=new Playback(p,{allowDraft:true});player.enter();player.seek(p.duration-0.01);
-  const events=p.events.filter(e=>e.availableAt<=player.position).sort((a,b)=>b.availableAt-a.availableAt);
+  const events=player.moments.view(player.position).available;
   const results=[];
   for(const lookback of [30,60,180,300]){
     const target=events.find(e=>e.availableAt<=player.position-lookback);if(!target)continue;
     const hops=events.indexOf(target),visited=[];let listenSeconds=0;
-    // Drive the real scheduler; the adapter supplies the same descending event order as Earlier.
+    // Drive the real scheduler with the shared navigation order.
     for(let i=0;i<=hops;i++){
       const audio=player.recover(events[i].id);assert(audio);assert.equal(player.active.events[0],events[i].id);
       listenSeconds+=audio.duration;visited.push(events[i].id);assert(player.complete(audio.token));
     }
-    results.push({lookbackSeconds:lookback,earlierPresses:hops,descriptionsIncludingLatest:visited.length,audioSecondsIfAllHeard:round(listenSeconds),minimumButtonPressesAfterRevisit:hops+2,buttonPressAssumption:'After completed Revisit, two Right presses reach Earlier, then one Select per earlier event. Excludes label prompts and input latency. Skipping audio saves time but does not prove the viewer can identify the target.'});
+    // Traverse the same bounded pages used by the remote adapter.
+    function pathTo(path=[]) {
+      const page=player.moments.page(player.position,path);
+      for(const [index,row] of page.items.entries()) {
+        if(row.kind==='moment' && row.event.id===target.id)return [index];
+        if(row.kind==='range') { const tail=pathTo(row.path);if(tail)return [index,...tail]; }
+      }
+      return null;
+    }
+    const route=pathTo();assert(route);const position=player.position;
+    const audio=player.recover(target.id);assert(audio);assert.equal(player.active.events[0],target.id);
+    assert(player.complete(audio.token));assert.equal(player.position,position);
+    const picker={pages:route.length,downPresses:route.reduce((n,i)=>n+i,0),selectPresses:route.length,
+      buttonPressesAfterOpening:route.reduce((n,i)=>n+i+1,0),descriptionsPlayed:1,descriptionSeconds:audio.duration,
+      assumption:'Known target time and name; start at the first row on each page. Counts Down and Select after opening Browse moments. Excludes opening the picker, speech duration, search mistakes and input latency. Not a measured viewer outcome.'};
+    results.push({picker,lookbackSeconds:lookback,earlierPresses:hops,descriptionsIncludingLatest:visited.length,audioSecondsIfAllHeard:round(listenSeconds),minimumButtonPressesAfterRevisit:hops+2,buttonPressAssumption:'After completed Revisit, two Right presses reach Earlier, then one Select per earlier event. Excludes label prompts and input latency. Skipping audio saves time but does not prove the viewer can identify the target.'});
   }
   return results;
 }

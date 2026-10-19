@@ -29,7 +29,7 @@ def main():
     provenance = {'engine':'Piper','version':version,'voice':'en_US-ljspeech-high','modelSha256':hashlib.sha256(args.model.read_bytes()).hexdigest(),
         'modelCard':'https://huggingface.co/rhasspy/piper-voices/blob/main/en/en_US/ljspeech/high/MODEL_CARD',
         'dataset':'https://keithito.com/LJ-Speech-Dataset/','datasetLicense':'Public domain',
-        'scope':'Supplemental viewing-options prompts only.' if args.interface else 'Short moment identity recordings only.', 'count':len(clips)}
+        'scope':'Supplemental viewing-options and moment-navigation prompts.' if args.interface else 'Short moment identity recordings only.', 'count':len(clips)}
     (target/'provenance.json').write_text(json.dumps(provenance,indent=2)+'\n')
     print(f'Rendered {len(clips)} recordings in {target.relative_to(ROOT)}.')
 if __name__ == '__main__': main()

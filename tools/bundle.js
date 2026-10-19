@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 import { validatePackage } from '../src/package.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-export const MODULES = ['src/package.js', 'src/playback.js', 'src/format.js', 'src/keymap.js', 'src/voice.js', 'src/playback-session.js', 'src/app.js'];
+export const MODULES = ['src/package.js', 'src/moment-navigation.js', 'src/playback.js', 'src/format.js', 'src/keymap.js', 'src/voice.js', 'src/playback-session.js', 'src/app.js'];
 
 export function buildBundle(root = ROOT) {
   const code = MODULES.map(file => `// ${file}\n` + fs.readFileSync(path.join(root, file), 'utf8').replace(/^import .+;\n/gm, '').replace(/^export /gm, ''));

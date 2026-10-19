@@ -279,9 +279,10 @@ test('resuming at the end is refused with a spoken reason, not a silent no-op', 
   assert.match(s.$('status').textContent, /film has ended/);
 });
 
-test('D-pad follows the viewing, detail and utility rows', () => {
+test('D-pad follows the viewing, detail and utility rows', async () => {
   const s = boot({ prefs: CHOSEN });
   s.$(`film-${fixture.id}`).click();
+  s.$('resume').click(); await flush(); await s.at(2.6); s.key('Enter');
   // Button rectangles measured on the 1920x1080 Vega WebView, which exposed row-skipping.
   s.$('more-options').click();
   const layout = {
@@ -788,7 +789,7 @@ test('More options preserves the paused frame, closes with Back and stays closed
   assert.equal(s.$('viewing-options').hidden,true);assert.equal(s.video.currentTime,1);
   assert.match(s.$('transport-hint').textContent,/Back: catalog$/);
   s.$('more-options').click();s.$('resume').click();await flush();s.key('Enter');
-  assert.equal(s.$('viewing-options').hidden,true);assert.equal(s.active(),'recover');
+  assert.equal(s.$('viewing-options').hidden,true);assert.equal(s.active(),'resume');
 });
 
 test('opening options stops a recovery without delivering its critical fact', async () => {
@@ -841,4 +842,101 @@ test('stale video failures across pause, resume and seek never fail the new play
   requests[2].reject(new Error('current play genuinely failed'));await flush();
   assert.equal(s.app.player.mode,'error');assert.equal(s.active(),'retry');
   assert.equal(s.app.player.log.filter(e=>e.type==='error').length,1);
+});
+
+test('Revisit and Browse are unavailable until a moment is revealed', async () => {
+  const s = boot({ prefs: CHOSEN }); s.$(`film-${fixture.id}`).click();
+  for (const id of ['recover', 'earlier', 'browse-moments']) assert.equal(s.$(id).getAttribute('aria-disabled'), 'true');
+  const before = [...s.app.lastSpoken]; s.$('recover').click(); s.$('browse-moments').click();
+  assert.deepEqual([...s.app.lastSpoken], before); assert.equal(s.$('moment-picker').hidden, true);
+  s.$('resume').click(); await flush(); await s.at(fixture.events[0].availableAt); s.key('Escape');
+  assert.equal(s.$('recover').getAttribute('aria-disabled'), 'false');
+  assert.equal(s.$('browse-moments').getAttribute('aria-disabled'), 'false');
+  assert.equal(s.$('earlier').getAttribute('aria-disabled'), 'true');
+});
+
+function longPickerFilm() {
+  const p = structuredClone(fixture); p.id = 'picker-film'; p.duration = 720;
+  p.scenes = [{ id: 'full', start: 0, end: 720 }]; p.cues = []; p.dialogue = [];
+  p.events = Array.from({ length: 125 }, (_, i) => ({ ...structuredClone(fixture.events[0]), id: `moment-${i}`, scene: 'full', availableAt: i * 5 + 1, critical: i === 3, label: `Moment ${i}`, labelPrompt: `identity_${i}` }));
+  p.cues = [{ ...structuredClone(fixture.cues[0]), id: 'critical-cue', events: ['moment-3'], start: 650, end: 660 }];
+  return p;
+}
+async function pickerAtEnd(options = {}) {
+  const p = longPickerFilm();
+  const s = boot({ prefs: CHOSEN, films: [{ package: p, allowFixture: true }], ...options });
+  s.$('film-picker-film').click(); s.$('resume').click(); await flush(); await s.at(600); s.key('Escape');
+  return s;
+}
+test('picker reaches distant moments without seeking or replaying intervening descriptions', async () => {
+  const s = await pickerAtEnd(); const before = s.video.currentTime;
+  s.$('browse-moments').click(); assert.equal(s.active(), 'picker-row-0');
+  assert.equal(s.$('controls').hidden, true); assert.equal(s.$('moment-picker').hidden, false);
+  // Select the oldest range twice: one target instead of 119 Earlier activations.
+  s.$('moment-rows').lastElementChild.click(); s.$('moment-rows').lastElementChild.click();
+  const target = [...s.$('moment-rows').children].at(-1).dataset.moment;
+  s.$('moment-rows').lastElementChild.click(); await flush();
+  assert.equal(s.app.player.active.events[0], target);
+  assert.equal(s.app.player.log.filter(e => e.type === 'recovery').length, 1);
+  assert.equal(s.video.currentTime, before); assert.equal(s.app.player.position, before);
+  assert.equal(s.$('moment-picker').hidden, true);
+});
+test('picker Back restores the selected range, then the opener; Tab stays inside', async () => {
+  const s = await pickerAtEnd(); s.$('browse-moments').click();
+  s.$('picker-row-3').click(); s.key('Escape'); assert.equal(s.active(), 'picker-row-3');
+  s.$('picker-close').focus(); s.key('Tab'); assert.equal(s.active(), 'picker-row-0');
+  s.key('Tab', { shiftKey: true }); assert.equal(s.active(), 'picker-close');
+  s.key('Escape'); assert.equal(s.active(), 'browse-moments');
+  assert.equal(s.app.player.mode, 'controls'); assert.equal(s.video.currentTime, 600);
+});
+test('picker browsing and explicit selection preserve a different missed critical fact', async () => {
+  const s = await pickerAtEnd(); s.app.player.delivery.set('moment-3', 'pending');
+  s.$('browse-moments').click(); s.key('Escape');
+  assert.deepEqual([...s.app.player.pending()].map(e => e.id), ['moment-3']);
+  s.$('recover').click(); assert.equal(s.app.player.active.events[0], 'moment-3');
+  s.key('Escape'); s.$('browse-moments').click(); s.$('picker-row-0').click(); s.$('picker-row-0').click(); s.$('picker-row-0').click();
+  assert.equal(s.app.player.active.events[0], 'moment-119');
+  await s.finishAudio(); assert.deepEqual([...s.app.player.pending()].map(e => e.id), ['moment-3']);
+  assert.equal(s.active(), 'recover');
+});
+test('picker selection cancels delayed focus speech and rejects stale future rows', async () => {
+  const s = await pickerAtEnd(); s.$('browse-moments').click(); s.$('picker-row-0').click(); s.$('picker-row-0').click();
+  const row = s.$('picker-row-0'); row.focus(); row.click(); await flush();
+  const narration = s.app.narration; await new Promise(r => setTimeout(r, 200));
+  assert.equal(s.app.narration, narration); assert.equal(s.app.voice.speaking, false);
+  s.key('Escape'); s.$('browse-moments').click(); s.$('picker-row-0').click(); s.$('picker-row-0').click();
+  const stale = s.$('picker-row-0'); s.app.player.position = 0; s.video.currentTime = 0; stale.click();
+  assert.equal(s.app.player.active, null); assert.equal(s.$('moment-picker').hidden, true);
+  assert.equal(s.$('recover').getAttribute('aria-disabled'), 'true');
+});
+test('picker uses recorded speech with no speech engine and VoiceView gets no duplicated names', async () => {
+  const clips = Object.fromEntries(Object.entries(promptTexts).map(([id, text]) => [id, { text, audio: `clips/${id}.mp3`, duration: 0.01 }]));
+  const identities = Object.fromEntries(Array.from({ length: 125 }, (_, i) => [`identity_${i}`, { text: `Moment ${i}`, audio: `clips/identity_${i}.mp3`, duration: 0.01 }]));
+  const s = await pickerAtEnd({ speech: false, prompts: clips, momentPrompts: identities });
+  // Complete every requested label; no dynamic utterance should need TTS.
+  s.$('browse-moments').click();
+  for (let i = 0; i < 30 && s.app.voice.speaking; i++) await s.finishAudio();
+  assert.equal(s.app.guidanceFailed, false); assert.equal(s.app.voice.speaking, false);
+  s.$('picker-row-0').click(); s.$('picker-row-0').click();
+  for (let i = 0; i < 30 && s.app.voice.speaking; i++) await s.finishAudio();
+  assert.equal(s.app.guidanceFailed, false);
+  const bridge = [], v = await pickerAtEnd({ bridge }); v.w.__semaScreenReader(true);
+  v.$('browse-moments').click();
+  assert.deepEqual([...v.app.lastSpoken], ['picker_open']);
+  assert.equal(bridge.filter(x => x.sema === 'announce').at(-1).text, 'Choose a time range, then a moment.');
+});
+
+test('remote transport and media failure close the picker without leaving focus inside it', async () => {
+  for (const action of ['MediaPlayPause', 'MediaFastForward', 'MediaRewind', 'error']) {
+    const s = await pickerAtEnd(); s.$('browse-moments').click();
+    if (action === 'error') s.video.dispatchEvent(new s.w.Event('error'));
+    else s.key(action);
+    await flush();
+    assert.equal(s.$('moment-picker').hidden, true, action);
+    assert.equal(s.$('moment-picker').contains(s.w.document.activeElement), false, action);
+    assert.equal(s.app.player.mode, action === 'error' ? 'error' : action === 'MediaPlayPause' ? 'playing' : 'controls');
+  }
+  const s = await pickerAtEnd(); s.app.player.position = 720; s.video.currentTime = 720;
+  s.$('browse-moments').click(); s.key('MediaPlayPause'); await flush();
+  assert.equal(s.$('moment-picker').hidden, true); assert.equal(s.active(), 'return');
 });

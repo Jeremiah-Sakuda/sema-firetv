@@ -24,6 +24,7 @@ flowchart LR
 
 | Module | Responsibility |
 |---|---|
+| `src/moment-navigation.js` | Filter revealed moments, choose Revisit/Earlier targets and subdivide browsing ranges |
 | `src/playback.js` | Choose narration and track delivery using the film's playback position |
 | `src/playback-session.js` | Start and stop media, preload audio, handle stalls and fade volume |
 | `src/app.js` | Handle remote input, focus, status text and saved preferences |
@@ -35,6 +36,10 @@ Each attempt to start video is tracked separately. Pausing, seeking, restarting,
 The scheduler checks whether a line fits both when requested and when audio starts. A cue reached late is requested at the longest level that still fits; if its audio then starts too late to finish inside the window, the line is dropped. An interrupted critical description remains recoverable; optional detail can be skipped without stopping the film. Only completed narration marks a fact as delivered.
 
 Revisit selects an event whose `availableAt` is no later than the current film position. Earlier moment steps backward through those events. Action buttons keep compact visible labels in fixed grid columns. Each moment has a short name, including those without timed narration. Screen-reader labels include the name and timestamp; recorded guidance uses the same names. The context line shows the description being played or just completed, followed by the next Earlier target. It marks a description complete only when its audio finishes. Seeking clears that context. After browsing, focus stays on Earlier moment while another past event is available; at the oldest event it returns to Resume. The film remains paused during narration, and Resume is explicit. Timestamp checks constrain event selection; factual and semantic correctness also depend on editorial work.
+
+Revisit and Browse moments are unavailable until a moment has been revealed. `src/moment-navigation.js` owns this policy for the scheduler, page and workload simulation. Its `view()` returns eligible targets; `page()` returns at most six ranges or named moments. Filtering precedes grouping, so range labels cannot expose a future moment. Camera shots are not treated as narrative chapters.
+
+Browse moments opens a paused picker. Up and Down choose a row; Select opens a range or plays its description. Back returns to the parent range with focus on the row just left, then to Browse moments. Tab stays inside the picker. Recorded number and time-unit clips announce range times; existing recordings name individual moments. Selecting a moment uses the normal Revisit delivery path. Browsing and cancelling do not seek, clear missed facts or mark descriptions heard. Focus, speech and the open range path stay in the page adapter; audio ownership stays in the playback session.
 
 The pause panel puts Resume, Revisit and Earlier moment first, followed by description detail. More options contains text, spoken guidance, help and Start over. It restores focus when closed; Back closes it before leaving the film. Opening options during a description cancels that audio and preserves any interrupted critical fact. A delayed native startup response never replaces the current interaction or moves its focus.
 
@@ -52,7 +57,7 @@ Packages contain film metadata, dialogue intervals, visual events, timed cues an
 
 `preview/media/` is a portable prototype snapshot. `npm run preview:build` verifies its hashes and rebuilds the shell without cloud credentials. Production uses separate approval fingerprints binding scripts, timing, source and audio bytes. Editing those bytes invalidates approval, and only the review step can grant it.
 
-`tools/playback-assets.js` lists the required playback files and checks recorded clips. Bundling and production checks apply the same text, path, duration and byte-fingerprint policy to Polly guidance, Piper options and moment names. The prototype and site builders use the inventory so independent moment-name audio cannot be omitted. The Polly prompt renderer writes fingerprints for future recordings; current audio was fingerprinted without re-rendering.
+`tools/playback-assets.js` lists the required playback files and checks recorded clips. Bundling and production checks apply the same text, path, duration and byte-fingerprint policy to Polly guidance, Piper options, navigation prompts and moment names. The prototype and site builders use the inventory so independent moment-name audio cannot be omitted. The Polly prompt renderer writes fingerprints for future recordings; current audio was fingerprinted without re-rendering.
 
 Vega uses VP8 video and Opus audio. Its data arrives in a generated script because local WebView fetch/XHR was unreliable. Build output is disposable and generated from source.
 

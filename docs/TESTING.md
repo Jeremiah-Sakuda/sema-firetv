@@ -9,7 +9,7 @@ npm run preview:build
 npm run repo:check
 ```
 
-The JavaScript suite checks scheduling, interruptions, stale callbacks, future-event exclusion, earlier-moment navigation, remote focus, spoken guidance, media integrity and release gates.
+The JavaScript suite checks scheduling, interruptions, stale callbacks, future-event exclusion, earlier-moment navigation, bounded picker ranges, remote focus, spoken guidance, media integrity and release gates.
 
 ## Offline authoring checks
 
@@ -40,7 +40,7 @@ node tools/simulate-long-film.mjs
 
 The narration audit requires ffmpeg and ffprobe. It reads the shipped packages, decodes all 45 timed variants and 25 Revisit recordings, and checks duration, recorded dialogue overlap, timing slack, quiet audio, clipping and word rate. `--reels` also creates three film-and-description mixes and a Revisit reel for each film. The mixes use fixed ducking and a peak limiter; they are listening aids, not recordings of app playback. Frame contact sheets and JSON indexes help locate each line. Outputs stay in ignored `artifacts/extended-review/`. Signal checks cannot establish pronunciation, clarity or the accuracy of a description.
 
-The simulation repeats the existing excerpt metadata into 12-, 24- and 60-minute packages. It exercises the playback scheduler at all three levels, checks critical-cue interruption and restore, rejects future moments, and counts steps through Earlier. It does not render a new film or exercise the device interface. Its report records actual Node execution time separately from estimated editorial time. Source watches and listening passes have known durations; decision time, edit time and rework rates are explicit assumptions in the script. New-film annotation, breaks, collaboration and service wait times are excluded. These estimates are for planning, not a claim of measured production throughput.
+The simulation repeats the existing excerpt metadata into 12-, 24- and 60-minute packages. It exercises the playback scheduler at all three levels, checks critical-cue interruption and restore, rejects future moments, and compares steps through Earlier with the shared moment picker. Picker counts start after opening Browse moments and assume a known target and first-row focus; they exclude speech duration and mistakes. It does not render a new film or exercise the device interface. Its report records actual Node execution time separately from estimated editorial time. Source watches and listening passes have known durations; decision time, edit time and rework rates are explicit assumptions in the script. New-film annotation, breaks, collaboration and service wait times are excluded. These estimates are for planning, not a claim of measured production throughput.
 
 ## Audible VoiceView device check
 
@@ -51,6 +51,7 @@ Use a physical device with working VoiceView speech. Record the device model, OS
 | Cold launch; enter each film | Catalog title, focused film, selected detail level and Play film are intelligible in navigation order. No duplicate control names from Sema and VoiceView. |
 | Change Essential, Standard and Rich | The focused option and selected value are distinguishable. Start playback and confirm the chosen description plays. |
 | Pause, Revisit, then Earlier | The pause state, focused action, moment description and completion state arrive in a useful order. Earlier names the next available moment. |
+| Browse moments; open a range; select a moment; press Back | Range times and moment names are spoken. Back restores the selected parent row, then Browse moments. Selecting a description keeps the film at its paused position. |
 | Interrupt a critical timed description with Back and Play/Pause | Film and description stop. The missed-description action is focused and announced. Retry speaks the retained fact and completion once. |
 | Interrupt Revisit with Back; retry; resume | Old narration stops, retry starts the same requested moment, and old completion speech does not arrive over the new action. Film resumes at the paused position. |
 | Navigate rapidly while speech is active | Focus speech follows the current control. Record stale announcements, duplicated names, unexpected queues or speech that masks the requested description. |
@@ -59,6 +60,14 @@ Use a physical device with working VoiceView speech. Record the device model, OS
 | Finish the film; Revisit; return to catalog | End state, Revisit completion and catalog focus are spoken in order. |
 
 For each case, retain an audio timestamp, actual spoken words, expected action, observed result and any reproduction steps. Mark a case passed only after hearing it. Automated native-bridge and page tests cover routing and stale callbacks; they do not establish audible queue order or interruption behavior.
+
+## October 18, 2026 moment picker
+
+Revisit and Browse moments remain unavailable before the first reveal time. The shared navigation module checks every range and leaf against the current film position. The page tests cover distant selection, Back and Tab focus, interrupted critical facts, stale focus speech, transport keys and media failure. All 156 JavaScript, 78 offline pipeline and six native host tests pass.
+
+The focused Chrome check runs the picker at 1920, 1280 and 375 pixels, with browser text-to-speech disabled. Range and moment recordings complete, Back restores focus, and selecting a description leaves the film position unchanged. All 77 new navigation recordings decode and complete. The native aarch64 package builds; its 261 media files and player assets match the source bytes. These checks do not include a new simulator or audible VoiceView run.
+
+For a five-minute lookback in the synthetic 12-minute workload, the picker takes seven Down presses and three Select presses after opening. Earlier takes 53 selections after reaching its control. The picker result assumes the target is known; speech time, mistakes and the action to open the picker are excluded. Reproduce the calculation with `node tools/simulate-long-film.mjs`.
 
 ## October 18, 2026 source-media repair
 

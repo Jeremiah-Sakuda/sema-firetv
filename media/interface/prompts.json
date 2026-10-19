@@ -22,5 +22,467 @@
     "audio": "media/interface/options_closed.mp3",
     "duration": 1.613792,
     "sha256": "b03dd6d145af1f0a544f5f8aed41cb4ada970c5fcfbbd8ffea686536e372ad7a"
+  },
+  "picker_label": {
+    "text": "Browse moments",
+    "audio": "media/interface/picker_label.mp3",
+    "duration": 1.126167,
+    "sha256": "f563ca7edfbd3b0d4ba47f61791e9eeb518c48d107892fa94e45c62ce967ff12"
+  },
+  "picker_open": {
+    "text": "Choose a time range, then a moment.",
+    "audio": "media/interface/picker_open.mp3",
+    "duration": 2.263958,
+    "sha256": "0bc0c99f77f87e0c7d4ea582ef67c8c41f855dc392a36dfdeabefc5facc59202"
+  },
+  "picker_closed": {
+    "text": "Back to viewing controls.",
+    "audio": "media/interface/picker_closed.mp3",
+    "duration": 1.602208,
+    "sha256": "2f52f62123c34161ae68103637c0a2bc61998215e434b7fca555fe3d1e78c8b6"
+  },
+  "picker_previous": {
+    "text": "Previous range",
+    "audio": "media/interface/picker_previous.mp3",
+    "duration": 1.161,
+    "sha256": "df6d51c6dc6a877d3c14489314149e4441d23f464733e34e774284d42ba2611c"
+  },
+  "picker_close": {
+    "text": "Back to viewing controls",
+    "audio": "media/interface/picker_close.mp3",
+    "duration": 1.567375,
+    "sha256": "035c3f6f184f49293dffc6f2d247bd7fb73e9f44f18e9a6176f6c1a949e3a688"
+  },
+  "picker_from": {
+    "text": "From",
+    "audio": "media/interface/picker_from.mp3",
+    "duration": 0.429583,
+    "sha256": "a0ad32104037cbafcef64e2e8c11a7d8eb54dfc38eb52997eee4e22de68eeea9"
+  },
+  "picker_to": {
+    "text": "to",
+    "audio": "media/interface/picker_to.mp3",
+    "duration": 0.383125,
+    "sha256": "c16178e85808126b826473b7da67f877b9e2cb29fd9e4b145b46896737220893"
+  },
+  "picker_at": {
+    "text": "At",
+    "audio": "media/interface/picker_at.mp3",
+    "duration": 0.267042,
+    "sha256": "3f693975b13019266b14ed5207a782dfa9bd96e22868392cbccbc65aee559fe4"
+  },
+  "picker_open_range": {
+    "text": "Open range",
+    "audio": "media/interface/picker_open_range.mp3",
+    "duration": 0.952042,
+    "sha256": "22b0b328ac4754fa10f2c47c55b35851da221fdb9aead94b5a6a3abb14825ac2"
+  },
+  "picker_range_open": {
+    "text": "Range opened.",
+    "audio": "media/interface/picker_range_open.mp3",
+    "duration": 0.998458,
+    "sha256": "935913c55991f7ceb9a5b31771a834e60d03ea118b5e05a33c487dedebb9982c"
+  },
+  "picker_range_back": {
+    "text": "Previous range.",
+    "audio": "media/interface/picker_range_back.mp3",
+    "duration": 1.195833,
+    "sha256": "6faf5f5cb17ff63a5ba4f699f153089820b607b5f561f4434a515c8b34f07c00"
+  },
+  "picker_hour": {
+    "text": "hour",
+    "audio": "media/interface/picker_hour.mp3",
+    "duration": 0.452792,
+    "sha256": "4850d90953798cc689c3fd251aa8457db0d200b4fa9be71de2b79386fa5e3e16"
+  },
+  "picker_hours": {
+    "text": "hours",
+    "audio": "media/interface/picker_hours.mp3",
+    "duration": 0.661792,
+    "sha256": "7bb11d49feb93325c8c588db2ee98c145188e82ba6f4ffb7bcb49cfe24913cfa"
+  },
+  "picker_minute": {
+    "text": "minute",
+    "audio": "media/interface/picker_minute.mp3",
+    "duration": 0.429583,
+    "sha256": "62fb4977a6ebab695f6c4aa9ce3f1c3318d57e9372fe26d5caf5554b7a6b533c"
+  },
+  "picker_minutes": {
+    "text": "minutes",
+    "audio": "media/interface/picker_minutes.mp3",
+    "duration": 0.5805,
+    "sha256": "06b6a4f39c50e5e9ae41be87847b418ec7d2566681c1cbcb47031db5e6631de4"
+  },
+  "picker_second": {
+    "text": "second",
+    "audio": "media/interface/picker_second.mp3",
+    "duration": 0.708208,
+    "sha256": "a4a3225a5a716b650415a9467f4c87f7248ea3e86399a4a9024e8fbf8127e4e9"
+  },
+  "picker_seconds": {
+    "text": "seconds",
+    "audio": "media/interface/picker_seconds.mp3",
+    "duration": 0.7895,
+    "sha256": "11159cfab9a7c4337884502a2d68d7756c82573fc6fa6668456781ef3cfdef45"
+  },
+  "picker_number_0": {
+    "text": "zero",
+    "audio": "media/interface/picker_number_0.mp3",
+    "duration": 0.615333,
+    "sha256": "eeabf29a664063d0bf63863ddcd2f573970c7f26b423f223366ce5e6b91bd213"
+  },
+  "picker_number_1": {
+    "text": "one",
+    "audio": "media/interface/picker_number_1.mp3",
+    "duration": 0.348333,
+    "sha256": "ecd9dbea48add74f835ac8c6073e6708c81e839ce8c7280c2b35779c5eb1163f"
+  },
+  "picker_number_2": {
+    "text": "two",
+    "audio": "media/interface/picker_number_2.mp3",
+    "duration": 0.39475,
+    "sha256": "db96795d39269036951841d18c277b99f515eed20b9be2fcbd73b4609701acb8"
+  },
+  "picker_number_3": {
+    "text": "three",
+    "audio": "media/interface/picker_number_3.mp3",
+    "duration": 0.487625,
+    "sha256": "88316c122887105b7bbcea5775509d40400770e9fd2960523fbefe39bee471cc"
+  },
+  "picker_number_4": {
+    "text": "four",
+    "audio": "media/interface/picker_number_4.mp3",
+    "duration": 0.29025,
+    "sha256": "2360030ec602300666e4302e31d412e8ead6476a1e105685865114db88de4841"
+  },
+  "picker_number_5": {
+    "text": "five",
+    "audio": "media/interface/picker_number_5.mp3",
+    "duration": 0.464417,
+    "sha256": "b8ec780915d2fb1c9cd27c1492d363ccbd31a76117e0f70aa7795af626455d9a"
+  },
+  "picker_number_6": {
+    "text": "six",
+    "audio": "media/interface/picker_number_6.mp3",
+    "duration": 0.626958,
+    "sha256": "cf6174cda48ddf4521601bf1020fad340aa40ce559f453109911a85031a9ead6"
+  },
+  "picker_number_7": {
+    "text": "seven",
+    "audio": "media/interface/picker_number_7.mp3",
+    "duration": 0.638583,
+    "sha256": "4d0f01a2edd54668796394179fd953bd972515313f40fac999a3bad6ddccfd2b"
+  },
+  "picker_number_8": {
+    "text": "eight",
+    "audio": "media/interface/picker_number_8.mp3",
+    "duration": 0.150958,
+    "sha256": "07d3563608d2611794dfe91ad57fc7d41398d56e25fa3048a42eeea076356036"
+  },
+  "picker_number_9": {
+    "text": "nine",
+    "audio": "media/interface/picker_number_9.mp3",
+    "duration": 0.568917,
+    "sha256": "d1d97bee3d0cb72fd38021a0de439729b476e6d48a0e26aac2603164bed40855"
+  },
+  "picker_number_10": {
+    "text": "ten",
+    "audio": "media/interface/picker_number_10.mp3",
+    "duration": 0.417958,
+    "sha256": "c63c5410e48a7fba6b8cac5238416810f7a939ae894f22e85d0c980ab5525487"
+  },
+  "picker_number_11": {
+    "text": "eleven",
+    "audio": "media/interface/picker_number_11.mp3",
+    "duration": 0.60375,
+    "sha256": "ec24cfad9edf8636959bc1bf4a195f77850300539bc2096e969733c8e33d1536"
+  },
+  "picker_number_12": {
+    "text": "twelve",
+    "audio": "media/interface/picker_number_12.mp3",
+    "duration": 0.49925,
+    "sha256": "96ee75d8d9caee2631ae4698f28673011a6f73cf8577bca1971e0a7dcca9d22f"
+  },
+  "picker_number_13": {
+    "text": "thirteen",
+    "audio": "media/interface/picker_number_13.mp3",
+    "duration": 0.685,
+    "sha256": "9aa2002738136397b638b6e454df5d0d3d4ba4931f30015c22c5b28d9a316b14"
+  },
+  "picker_number_14": {
+    "text": "fourteen",
+    "audio": "media/interface/picker_number_14.mp3",
+    "duration": 0.743042,
+    "sha256": "eed095fd9830542e5c600f7c7739bb4a9b8466d48b526d30246b4a35545fee20"
+  },
+  "picker_number_15": {
+    "text": "fifteen",
+    "audio": "media/interface/picker_number_15.mp3",
+    "duration": 0.777875,
+    "sha256": "49bbb06354c5ace10695f5aeaa5cbe14c78b49e3e4adf35233471fb1bab26561"
+  },
+  "picker_number_16": {
+    "text": "sixteen",
+    "audio": "media/interface/picker_number_16.mp3",
+    "duration": 0.731458,
+    "sha256": "e60c9a1ca76fcd7e898ed378095aad22740d1f5c4336965edfce53fd2bda733d"
+  },
+  "picker_number_17": {
+    "text": "seventeen",
+    "audio": "media/interface/picker_number_17.mp3",
+    "duration": 0.87075,
+    "sha256": "12ed9499b01672064abbc98c45880d69bbadfa0d99a8360961d6f1ee5d67ca2c"
+  },
+  "picker_number_18": {
+    "text": "eighteen",
+    "audio": "media/interface/picker_number_18.mp3",
+    "duration": 0.697958,
+    "sha256": "7600513851a7f2931980e3b0fe55822f71495c2ce81ad80b4f1d1b1b376789da"
+  },
+  "picker_number_19": {
+    "text": "nineteen",
+    "audio": "media/interface/picker_number_19.mp3",
+    "duration": 0.673958,
+    "sha256": "e5e76503188356bdb02a8f0f2b3e39fdb0c7afedef03d199c2b17bb47bca7b43"
+  },
+  "picker_number_20": {
+    "text": "twenty",
+    "audio": "media/interface/picker_number_20.mp3",
+    "duration": 0.522458,
+    "sha256": "c7839f761de0f7617fe3d1ca883624128c56ad3258a2108d3396a4fb2652dbcc"
+  },
+  "picker_number_21": {
+    "text": "twenty one",
+    "audio": "media/interface/picker_number_21.mp3",
+    "duration": 0.882375,
+    "sha256": "53a3b7ae944a5ccb405abd6b4b90c2fa2416ccea8f9da65747ae8ec2c5810159"
+  },
+  "picker_number_22": {
+    "text": "twenty two",
+    "audio": "media/interface/picker_number_22.mp3",
+    "duration": 0.894,
+    "sha256": "50c95b968116460b77008ca2aa4fe7a436556165e033236fa8366afc935c54a8"
+  },
+  "picker_number_23": {
+    "text": "twenty three",
+    "audio": "media/interface/picker_number_23.mp3",
+    "duration": 0.998458,
+    "sha256": "ec075c90e644763475db64bc9a4f8b03e94826f9b32df3dbac27ade63037f04f"
+  },
+  "picker_number_24": {
+    "text": "twenty four",
+    "audio": "media/interface/picker_number_24.mp3",
+    "duration": 0.952042,
+    "sha256": "c25b08ef17db06dff7f4757c1814b69f922a4f64460b56e2daf564d375a50a55"
+  },
+  "picker_number_25": {
+    "text": "twenty five",
+    "audio": "media/interface/picker_number_25.mp3",
+    "duration": 1.057958,
+    "sha256": "f4abca0347e5b5515b10c8d7e0f763028f9e2b2b972fcd42514469f660a01d86"
+  },
+  "picker_number_26": {
+    "text": "twenty six",
+    "audio": "media/interface/picker_number_26.mp3",
+    "duration": 0.97525,
+    "sha256": "c2a9027a2773a3ba0bc89cc97e71f6a15921ab73830d12d082ae37ce3a4c6ba7"
+  },
+  "picker_number_27": {
+    "text": "twenty seven",
+    "audio": "media/interface/picker_number_27.mp3",
+    "duration": 0.963625,
+    "sha256": "e36230b19830656711a1a900f905f59a08b1b09adc8ba051df76ca0d9699287f"
+  },
+  "picker_number_28": {
+    "text": "twenty eight",
+    "audio": "media/interface/picker_number_28.mp3",
+    "duration": 0.940417,
+    "sha256": "734bfa520ff512d09cfb72224c0a7258ed68d37a0f048292f4b739c283cc2dcb"
+  },
+  "picker_number_29": {
+    "text": "twenty nine",
+    "audio": "media/interface/picker_number_29.mp3",
+    "duration": 0.928833,
+    "sha256": "01ede8541db2dca1b2c075dd1c1a285446a8c95b2119fc33923fda22cbd4a084"
+  },
+  "picker_number_30": {
+    "text": "thirty",
+    "audio": "media/interface/picker_number_30.mp3",
+    "duration": 0.60375,
+    "sha256": "a0afdf2877b1b039630c140b2254d10947de5cd8dbb47558e75e76123f5e9db2"
+  },
+  "picker_number_31": {
+    "text": "thirty one",
+    "audio": "media/interface/picker_number_31.mp3",
+    "duration": 0.824333,
+    "sha256": "37e79cd7411500977334dcd9b513e3e8c7f1af71f87c95231600c44e2cb5f41a"
+  },
+  "picker_number_32": {
+    "text": "thirty two",
+    "audio": "media/interface/picker_number_32.mp3",
+    "duration": 0.894,
+    "sha256": "c6acc21a5dfff56d638f0ba52848242b8fd54ef5ef72ddb03fe40a55fe01b63c"
+  },
+  "picker_number_33": {
+    "text": "thirty three",
+    "audio": "media/interface/picker_number_33.mp3",
+    "duration": 0.986875,
+    "sha256": "bca9d3aaba289f12aa2b51f32a77833aa4f36d72d21e64823305cf9918b61e67"
+  },
+  "picker_number_34": {
+    "text": "thirty four",
+    "audio": "media/interface/picker_number_34.mp3",
+    "duration": 0.952042,
+    "sha256": "eccdf8eb7e2d46f062c6316620a0432ec6421fb5f949f275e1a956b264a43365"
+  },
+  "picker_number_35": {
+    "text": "thirty five",
+    "audio": "media/interface/picker_number_35.mp3",
+    "duration": 0.963625,
+    "sha256": "53a85af00307664a5c347c828ee4622a0cb7f5ecbe961fd2869ae4e53d9bd189"
+  },
+  "picker_number_36": {
+    "text": "thirty six",
+    "audio": "media/interface/picker_number_36.mp3",
+    "duration": 0.905583,
+    "sha256": "61f3482caafa24d8d4f501c4fe761e9147b7f3f328cdc853007da4ba0bddd359"
+  },
+  "picker_number_37": {
+    "text": "thirty seven",
+    "audio": "media/interface/picker_number_37.mp3",
+    "duration": 0.917208,
+    "sha256": "00db3aefb841f8b3d351eb0b11804e94a3a93cb18c9ac0d789c94b4f205ee587"
+  },
+  "picker_number_38": {
+    "text": "thirty eight",
+    "audio": "media/interface/picker_number_38.mp3",
+    "duration": 0.87075,
+    "sha256": "078aba738cd07eb03dc0656b60c58f54ccc59c25c84811d5f1c48b0cef30cef3"
+  },
+  "picker_number_39": {
+    "text": "thirty nine",
+    "audio": "media/interface/picker_number_39.mp3",
+    "duration": 0.905583,
+    "sha256": "13aa740dae1c8be40ec415606ad0790db37233463bee7e76576529f0e55a8511"
+  },
+  "picker_number_40": {
+    "text": "forty",
+    "audio": "media/interface/picker_number_40.mp3",
+    "duration": 0.383125,
+    "sha256": "5fd7df23546f5c8fdd9511ba263bcdf918a9303fcf6c707ec31fbe8972c96f1c"
+  },
+  "picker_number_41": {
+    "text": "forty one",
+    "audio": "media/interface/picker_number_41.mp3",
+    "duration": 0.812708,
+    "sha256": "743e4475d44e4928c60bfe0471136f3b4dd2a4953b4999559e0f00094700353c"
+  },
+  "picker_number_42": {
+    "text": "forty two",
+    "audio": "media/interface/picker_number_42.mp3",
+    "duration": 0.812708,
+    "sha256": "bc38c31e5b0e435ab7ec65ae41a6d50520a04be12eb8f8f50e14006041e4e434"
+  },
+  "picker_number_43": {
+    "text": "forty three",
+    "audio": "media/interface/picker_number_43.mp3",
+    "duration": 0.894,
+    "sha256": "10c4acb276f978caf8940f01629a0ce2a62a3de96992091a7ef50227992177af"
+  },
+  "picker_number_44": {
+    "text": "forty four",
+    "audio": "media/interface/picker_number_44.mp3",
+    "duration": 0.963625,
+    "sha256": "6a953c206056748b106b6975965f9b63f598c0ebbd0275c967bcaeec84c5a641"
+  },
+  "picker_number_45": {
+    "text": "forty five",
+    "audio": "media/interface/picker_number_45.mp3",
+    "duration": 1.021708,
+    "sha256": "a100c4aa5d5e46ed4312a97ec1ca8a86b3986addfb3ba92e2cb7214cb4c77e1d"
+  },
+  "picker_number_46": {
+    "text": "forty six",
+    "audio": "media/interface/picker_number_46.mp3",
+    "duration": 0.952042,
+    "sha256": "700da874972b5a5c88f1de076b4df37b4d3c64272a72e6177546d311123ce7af"
+  },
+  "picker_number_47": {
+    "text": "forty seven",
+    "audio": "media/interface/picker_number_47.mp3",
+    "duration": 0.97525,
+    "sha256": "94fda6e145f8097dd779384d25a6521ff0021a016b28f57f0b8ba9a4fc2e3e36"
+  },
+  "picker_number_48": {
+    "text": "forty eight",
+    "audio": "media/interface/picker_number_48.mp3",
+    "duration": 0.940417,
+    "sha256": "803ef88ddc6b6d5a25c668e4861c9f21592b4f9483539d6c1f61296fb212b92e"
+  },
+  "picker_number_49": {
+    "text": "forty nine",
+    "audio": "media/interface/picker_number_49.mp3",
+    "duration": 0.882375,
+    "sha256": "233d5237dabd5826ef34653066f07c1e1aec69bfa62071ba5a6b91b28925f975"
+  },
+  "picker_number_50": {
+    "text": "fifty",
+    "audio": "media/interface/picker_number_50.mp3",
+    "duration": 0.557292,
+    "sha256": "fd9b26b6bdeaf273f80e244396c0b031780f14c70a4db5d2c536534120970c9c"
+  },
+  "picker_number_51": {
+    "text": "fifty one",
+    "audio": "media/interface/picker_number_51.mp3",
+    "duration": 0.812708,
+    "sha256": "bd61c2129490f565c853e77c752e814afa22244bee011ec042d959eb7d49565f"
+  },
+  "picker_number_52": {
+    "text": "fifty two",
+    "audio": "media/interface/picker_number_52.mp3",
+    "duration": 0.894,
+    "sha256": "26caaaf6e47c4ae3deeb6f5d9e151853268a8a27137189d75ab203b69611841b"
+  },
+  "picker_number_53": {
+    "text": "fifty three",
+    "audio": "media/interface/picker_number_53.mp3",
+    "duration": 0.928833,
+    "sha256": "0ba84b71a9ffe43247968904fe7be048cbbe5784e36a1c1a1edcf42fbdee1a8c"
+  },
+  "picker_number_54": {
+    "text": "fifty four",
+    "audio": "media/interface/picker_number_54.mp3",
+    "duration": 0.87075,
+    "sha256": "3bb8d8006b5896742347c5ff0e9d2df8ab7aced80e3534a2d76e2850a5310e90"
+  },
+  "picker_number_55": {
+    "text": "fifty five",
+    "audio": "media/interface/picker_number_55.mp3",
+    "duration": 0.928833,
+    "sha256": "cd613d4405349c0ae4c348703dbcc9598941da3e099e3c6fa8b889adef466381"
+  },
+  "picker_number_56": {
+    "text": "fifty six",
+    "audio": "media/interface/picker_number_56.mp3",
+    "duration": 0.998458,
+    "sha256": "c27448aeab8db834211b4334e4c9f772259dd034a86a28f406c58ecc4e48ba98"
+  },
+  "picker_number_57": {
+    "text": "fifty seven",
+    "audio": "media/interface/picker_number_57.mp3",
+    "duration": 0.952042,
+    "sha256": "5407e5cacb9c991e8ac805986c35393ad22ddb40517d9939f8c39d7430be9cc4"
+  },
+  "picker_number_58": {
+    "text": "fifty eight",
+    "audio": "media/interface/picker_number_58.mp3",
+    "duration": 0.917208,
+    "sha256": "e751e6a0fe549bb4aa3f54709294d5d63a54b4ce807b2916729e4115a950ab68"
+  },
+  "picker_number_59": {
+    "text": "fifty nine",
+    "audio": "media/interface/picker_number_59.mp3",
+    "duration": 0.905583,
+    "sha256": "4a7bd6d6e967a4b6f6d9cad77e4391b96013f09d19165ff751f922d37ffdc6bc"
   }
 }
