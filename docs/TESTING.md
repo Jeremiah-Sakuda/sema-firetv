@@ -80,7 +80,7 @@ Commit `15e8eb5`, after a fresh simulator restart. [Log excerpts](vega/logs/evid
 - All 184 media files in the aarch64 package match their source hashes.
 - In *Tears of Steel*, a pause at 34.8 s and Revisit described `mechanical-hand` with description text on screen and the compact panel. Earlier moment described `pair-on-bridge`.
 - Back at 46.5 s cut off the critical "forty years later" cue. The pause focused "Hear missed description".
-- With VoiceView turned on by the Back+Menu hold, the missed description played and "Description complete." went to the host's announce call (`{"sema":"announce"}` in the device log). Recorded guidance named no control, so nothing was spoken twice. VoiceView was turned off again afterwards.
+- With VoiceView turned on by the Back+Menu hold, the missed description played and "Description complete." went to the host's announce call (`{"sema":"announce"}` in the device log). The app omitted the focused control from its guidance message; audible VoiceView duplication was not verified. VoiceView was turned off again afterwards.
 
 ## October 16, 2026 narration and remote fixes
 

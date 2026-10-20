@@ -35,9 +35,18 @@ test('source check rejects private directories and historical plans even before 
 });
 
 test('source check rejects internal report structure under a generic filename', () => {
-  const result = check({'report.json': JSON.stringify({criterionMeans: {}})});
-  assert.equal(result.status, 1);
-  assert.match(result.stderr, /internal evaluation material/);
+  for (const [file, text] of [
+    ['report.json', JSON.stringify({criterionMeans: {}})],
+    ['src/app.js', '// Oct 5 ' + 'panel'],
+    ['tests/ui.test.js', '// panel ' + 'fixes'],
+  ]) {
+    const result = check({[file]: text});
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /internal evaluation material/);
+  }
+  const account = check({'evidence.json': JSON.stringify({['aws' + 'Authentication']: 'temporary session verified'})});
+  assert.equal(account.status, 1);
+  assert.match(account.stderr, /account-session operational notes/);
 });
 
 test('ignoring a previously staged private file does not make it publishable', () => {

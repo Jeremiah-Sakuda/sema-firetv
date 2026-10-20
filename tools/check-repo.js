@@ -25,7 +25,8 @@ for(const f of files){
   const text=fs.readFileSync(full,'utf8');
   if(/(?:AKIA|ASIA)[A-Z0-9]{16}\b/.test(text))errors.push(`${f}: possible AWS access key identifier`);
   if(/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/.test(text))errors.push(`${f}: private key material`);
-  if(/\.(?:md|json)$/.test(f) && (/(?:judge[- ]evaluation|panel[- ]feedback)/i.test(text) || /"(?:scoresByJudge|criterionMeans|equal_weight_mean|equal_weight_average)"\s*:/.test(text)))errors.push(`${f}: contains internal evaluation material`);
+  if(/(?:judge[- ]evaluation|panel[- ]feedback|\bjudging\s+panel\b|\bpanel\s+(?:fixes|scores)\b|\bOct(?:ober)?\s+\d+\s+panel\b)/i.test(text) || /"(?:scoresByJudge|criterionMeans|equal_weight_mean|equal_weight_average)"\s*:/.test(text))errors.push(`${f}: contains internal evaluation material`);
+  if(/"awsAuthentication"\s*:/.test(text))errors.push(`${f}: contains account-session operational notes`);
   if(!f.endsWith('.md'))continue;
   documents++;
   // Public docs may state plainly that narration is still a draft; they must

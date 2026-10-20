@@ -337,6 +337,7 @@ for (const action of ['help', 'menu', 'text', 'guidance-off', 'guidance-on']) {
   });
 }
 
+// ---- Spoken focus after state changes ---------------------------------------
 const spokenFocusMatches = s => {
   const el = s.w.document.activeElement;
   assert.ok(el && el !== s.w.document.body, 'something has focus');
@@ -587,6 +588,7 @@ test('earlier-moment browsing keeps focus on Earlier while another past moment e
   assert.equal(s.active(), 'resume');
 });
 
+// ---- Screen-reader handoff and playback recovery ------------------------------
 test('with guidance off, no announcement names the focused control (VoiceView already reads it)', async () => {
   const s = boot({ prefs: { ...CHOSEN, guidance: false, guidanceChosen: true } });
   const labelled = () => [...s.app.lastSpoken].some(id => /^label_|^film_/.test(id));
