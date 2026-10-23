@@ -1,6 +1,6 @@
 # AWS narration authoring
 
-Use this CLI to prepare narration for a film you have permission to use. It produces timed descriptions at three detail levels and separate Revisit recordings. An editor reviews the content before production packaging; the TV plays the resulting media locally.
+Use this CLI to prepare narration for a film you have permission to use. It produces timed descriptions at three detail levels and separate Revisit recordings. An editor reviews and approves the content before production packaging; the TV plays the resulting media locally. The included prototype excerpts have AI editorial records rather than recorded human audiovisual approval, and run through the separate preview build.
 
 For the included films, use `npm run preview` from the repository root. Authoring setup is only needed to generate or edit content.
 

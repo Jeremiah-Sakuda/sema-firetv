@@ -49,6 +49,12 @@ button.unavailable { opacity: .55; }
 .film-copy .meta { font-size: .85rem; color: var(--muted); }
 .film-copy .credit { font-size: .72rem; color: var(--muted); opacity: .9; }
 
+.selected-film { margin: .7rem 0; font-size: 1.15rem; font-weight: 650; color: var(--accent); }
+.welcome-start { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin: 1.1rem 0; }
+.welcome-start .primary { min-width: 10rem; min-height: 3rem; }
+.welcome-start .fine-print { margin: 0; }
+.lookback-help { color: var(--muted); font-size: .8rem; max-width: 90ch; margin: .6rem 0 0; }
+
 .levels, .actions, .preferences { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: .8rem; }
 .actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .actions button { min-width: 0; min-height: 3.8rem; }

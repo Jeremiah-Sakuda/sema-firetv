@@ -11,6 +11,12 @@ npm run repo:check
 
 The JavaScript suite checks scheduling, interruptions, stale callbacks, future-event exclusion, earlier-moment navigation, bounded picker ranges, remote focus, spoken guidance, media integrity and release gates.
 
+## October 23, 2026 first-run and catalog checks
+
+The current suites have 159 JavaScript, 78 offline pipeline and 6 native host tests passing. New cases cover starting directly from the first-run Play button, saving the Standard default, Back without playback and free-viewing disclosures that depend on explicit catalog metadata.
+
+Focused Chrome checks pass at 1920×1080, 1280×720 and 375×812. They cover the two-Select start, selected-level state, D-pad navigation on TV layouts, keyboard navigation at the narrow width, an unchanged paused frame during Revisit, complete focus visibility and no horizontal overflow. Reduced motion is enabled. The updated aarch64 package builds successfully. These checks do not include a new simulator run or new audible VoiceView evidence.
+
 ## Offline authoring checks
 
 Install Python and ffmpeg using the [pipeline setup](../pipeline/README.md), then run:
@@ -63,7 +69,7 @@ For each case, retain an audio timestamp, actual spoken words, expected action, 
 
 ## October 18, 2026 moment picker
 
-Revisit and Browse moments remain unavailable before the first reveal time. The shared navigation module checks every range and leaf against the current film position. The page tests cover distant selection, Back and Tab focus, interrupted critical facts, stale focus speech, transport keys and media failure. All 156 JavaScript, 78 offline pipeline and six native host tests pass.
+Revisit and Browse moments remain unavailable before the first reveal time. The shared navigation module checks every range and leaf against the current film position. The page tests cover distant selection, Back and Tab focus, interrupted critical facts, stale focus speech, transport keys and media failure. That October 18 run had 156 JavaScript tests, 78 offline pipeline tests and six native host tests passing.
 
 The focused Chrome check runs the picker at 1920, 1280 and 375 pixels, with browser text-to-speech disabled. Range and moment recordings complete, Back restores focus, and selecting a description leaves the film position unchanged. All 77 new navigation recordings decode and complete. The native aarch64 package builds; its 261 media files and player assets match the source bytes. These checks do not include a new simulator or audible VoiceView run.
 
@@ -72,6 +78,8 @@ For a five-minute lookback in the synthetic 12-minute workload, the picker takes
 ## October 18, 2026 source-media repair
 
 The shipped Sintel extract had visible frame corruption near 36–39 seconds and contained 1,707 video frames. A fresh copy of the same 150–222 second range from Blender's source contains 1,728 frames at 24 fps. The preview MP4, VP8/Opus rendition and fixed Standard comparison were rebuilt. Narration text and timing are unchanged. The package records the replacement hash alongside the original AWS authoring-input hash; integrity records cover the new media.
+
+The public Git history begins with an October 20 source snapshot. Earlier dates and build identifiers below refer to retained run evidence, not commits in that public history.
 
 ## October 16, 2026 final build on the Vega Virtual Device
 

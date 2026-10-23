@@ -23,16 +23,22 @@
     </section>
     <section id="catalog" aria-labelledby="catalog-title">
       <p class="eyebrow">FOR BLIND AND LOW-VISION VIEWERS</p>
-      <h1 id="catalog-title">Choose your detail. Revisit a moment.</h1>
-      <p class="intro">Press Select to pause and revisit a visual moment, described from what has already been on screen. Then continue from the same frame.</p>
+      <h1 id="catalog-title">Choose a film. Watch it your way.</h1>
+      <p class="intro">Choose a film to begin. During playback, press <kbd>Select</kbd> to pause, change description detail or revisit a visual moment.</p>
       <div id="film-list" class="film-list"></div>
       <p id="catalog-note" class="fine-print"></p>
     </section>
 
     <section id="welcome" hidden aria-labelledby="welcome-title">
       <p class="eyebrow">BEFORE YOU START</p>
-      <h1 id="welcome-title">How much do you want to hear?</h1>
-      <p class="intro">Choose Essential for key actions, Standard for story and context, or Rich for more visual detail where dialogue allows. Press <kbd>Select</kbd> during the film to change your level or revisit a moment.</p>
+      <h1 id="welcome-title">Ready to watch?</h1>
+      <p id="welcome-film" class="selected-film"></p>
+      <p class="intro">Start watching now, or choose a different description level below. You can change it during the film.</p>
+      <div class="welcome-start">
+        <button id="welcome-play" class="primary" data-say="label_play" aria-describedby="welcome-selection">Play film</button>
+        <p id="welcome-selection" class="fine-print"></p>
+      </div>
+      <p class="control-label">Or choose how much description you hear</p>
       <div class="levels" role="radiogroup" aria-label="Description detail">
         <button role="radio" aria-checked="false" data-choose-level="essential" aria-label="Essential, key story moments" data-say="label_level_essential">Essential<span>Key story moments</span></button>
         <button role="radio" aria-checked="false" data-choose-level="standard" aria-label="Standard, story and context, suggested" data-say="label_level_standard_suggested">Standard<span>Story and context · Suggested</span></button>
@@ -57,7 +63,7 @@
         <div class="actions" aria-label="Viewing controls">
           <button id="resume" class="primary">Play film</button>
           <button id="recover">Revisit latest moment</button>
-          <button id="earlier" data-say="label_earlier">Earlier moment</button>
+          <button id="earlier" data-say="label_earlier" aria-describedby="lookback-help">Earlier moment</button>
           <button id="retry" hidden data-say="label_retry">Try again</button>
         </div>
         <p id="detail-label" class="control-label" aria-hidden="true">Description detail</p>
@@ -69,9 +75,10 @@
         </div>
         <div class="utility-actions">
           <button id="more-options" aria-expanded="false" aria-controls="viewing-options" data-say="label_more_options">More options</button>
-          <button id="browse-moments" data-say="picker_label" aria-controls="moment-picker" aria-haspopup="dialog">Browse moments</button>
+          <button id="browse-moments" data-say="picker_label" aria-controls="moment-picker" aria-haspopup="dialog" aria-describedby="lookback-help">Browse moments</button>
           <button id="return" data-say="label_return">Return to catalog</button>
         </div>
+        <p id="lookback-help" class="lookback-help">Earlier steps back one moment. Browse lets you choose a moment further back. Neither rewinds the film.</p>
         <section id="viewing-options" hidden aria-label="Viewing options">
           <div class="preferences">
             <button data-toggle="text"></button>

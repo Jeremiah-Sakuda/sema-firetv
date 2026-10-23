@@ -1,7 +1,24 @@
 {
   "films": [
-    { "id": "sintel-dragon", "package": "media/sintel-dragon/package.json", "posterTime": 51 },
-    { "id": "tears-of-steel", "package": "media/tears-of-steel/package.json", "posterTime": 30 },
-    { "id": "fixture", "package": "media/fixture/package.json", "posterTime": 5, "dev": true }
+    {
+      "id": "sintel-dragon",
+      "package": "media/sintel-dragon/package.json",
+      "posterTime": 51,
+      "freeToWatch": true,
+      "license": "CC BY 3.0"
+    },
+    {
+      "id": "tears-of-steel",
+      "package": "media/tears-of-steel/package.json",
+      "posterTime": 30,
+      "freeToWatch": true,
+      "license": "CC BY 3.0"
+    },
+    {
+      "id": "fixture",
+      "package": "media/fixture/package.json",
+      "posterTime": 5,
+      "dev": true
+    }
   ]
 }

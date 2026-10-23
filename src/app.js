@@ -166,7 +166,7 @@ function focusOn(id) {
 function defaultFocusId() {
   if (guidanceFailed) return 'guidance-retry';
   if (view === 'catalog') return lastFilmId ? `film-${lastFilmId}` : 'film-list';
-  if (view === 'welcome') return `choose-${prefs.chosen ? prefs.level : 'standard'}`;
+  if (view === 'welcome') return 'welcome-play';
   if (!player) return 'return';
   if (momentPicker) return $('moment-rows').querySelector('button')?.id ?? 'picker-close';
   const pending = player.pending().length > 0;
@@ -319,6 +319,7 @@ function render() {
     $('level-group').hidden = LOCKED || describing;
     $('detail-label').hidden = LOCKED || describing;
     document.querySelector('#controls .utility-actions').hidden = describing;
+    $('lookback-help').hidden = describing || FIXED || !momentView().earlier;
     document.querySelectorAll('[data-toggle="text"]').forEach(b => { b.hidden = FIXED; });
     document.querySelectorAll('[data-level]').forEach(b => {
       const current = b.dataset.level === player.level;
@@ -330,7 +331,11 @@ function render() {
     restart.dataset.say = restartArmed ? 'label_start_over_confirm' : 'label_start_over';
     restart.classList.toggle('armed', !!restartArmed);
   }
-  document.querySelectorAll('[data-choose-level]').forEach(b => b.setAttribute('aria-checked', String(prefs.chosen && b.dataset.chooseLevel === prefs.level)));
+  document.querySelectorAll('[data-choose-level]').forEach(b => b.setAttribute('aria-checked', String(b.dataset.chooseLevel === prefs.level)));
+  if (view === 'welcome') {
+    $('welcome-film').textContent = film.title ?? film.id;
+    $('welcome-selection').textContent = { essential: 'Essential · Key story moments', standard: 'Standard · Story and context · Suggested', rich: 'Rich · More visual detail', off: 'Off · No description' }[prefs.level];
+  }
   ensureFocus();
 }
 function renderCatalog() {
@@ -338,13 +343,13 @@ function renderCatalog() {
   for (const f of films) {
     const p = f.package, b = document.createElement('button');
     b.className = 'film'; b.id = `film-${p.id}`; b.dataset.film = p.id; b.dataset.say = `film_${promptId(p.id)}`;
-    b.setAttribute('aria-label', `${p.title ?? p.id}. ${spokenDuration(p.duration)}. ${f.errors.length ? 'Unavailable.' : 'Audio description available.'} ${p.synopsis ?? ''}`.trim());
+    b.setAttribute('aria-label', `${p.title ?? p.id}. ${spokenDuration(p.duration)}. ${f.errors.length ? 'Unavailable.' : 'Audio description available.'} ${f.freeToWatch ? `Free to watch. Openly licensed${f.license ? ` under ${f.license}` : ''}.` : ''} ${p.synopsis ?? ''}`.trim());
     if (f.errors.length) b.classList.add('blocked');  // still focusable, so the reason can be heard
     const art = document.createElement('span'); art.className = 'art'; art.setAttribute('aria-hidden', 'true');
     if (f.poster) { const img = document.createElement('img'); img.src = f.poster; img.alt = ''; art.append(img); }
     const copy = document.createElement('span'); copy.className = 'film-copy';
     const badge = document.createElement('span'); badge.className = 'badge';
-    badge.textContent = f.errors.length ? 'UNAVAILABLE · PACKAGE CHECK FAILED' : f.allowFixture ? 'ENGINEERING FIXTURE' : 'OPEN FILM · 3 DESCRIPTION LEVELS';
+    badge.textContent = f.errors.length ? 'UNAVAILABLE · PACKAGE CHECK FAILED' : f.allowFixture ? 'ENGINEERING FIXTURE' : f.freeToWatch ? `FREE TO WATCH${f.license ? ` · ${f.license}` : ''}` : '3 DESCRIPTION LEVELS';
     const title = document.createElement('strong'); title.textContent = p.title ?? p.id;
     const meta = document.createElement('span'); meta.className = 'meta'; meta.textContent = `${formatTime(p.duration)} · ${p.synopsis ?? ''}`;
     const credit = document.createElement('span'); credit.className = 'credit'; credit.textContent = p.credits ?? '';
@@ -354,7 +359,7 @@ function renderCatalog() {
   }
   const reviewed = films.filter(f => f.package.reviewStatus === 'approved').length;
   $('catalog-note').textContent = films.length
-    ? `${films.length} film${films.length === 1 ? '' : 's'}. ${PREVIEW ? 'Open-film excerpts with three description levels and Revisit. Playback works offline.' : reviewed ? 'Descriptions drafted with Amazon Bedrock, voiced with Amazon Polly, and approved by a human reviewer.' : 'Engineering fixture only; not reviewed for publication.'}`
+    ? `${films.length} film${films.length === 1 ? '' : 's'}. ${PREVIEW ? `${films.every(f => f.freeToWatch) ? 'Free, openly licensed film excerpts.' : 'Film excerpts.'} Three description levels and Revisit. Playback works offline.` : reviewed ? 'Descriptions drafted with Amazon Bedrock, voiced with Amazon Polly, and approved by a human reviewer.' : 'Engineering fixture only; not reviewed for publication.'}`
     : 'No films are packaged yet. Run the authoring pipeline, then npm run bundle.';
 }
 
@@ -525,7 +530,7 @@ function openFilm(id) {
   if (restored && player.position >= film.duration - 0.5) player.restart();
   player.level = LOCKED ? 'standard' : prefs.level; player.enter();
   if (player.position > 0) { try { video.currentTime = player.position; } catch { /* set again on loadedmetadata */ } }
-  if (!prefs.chosen && !LOCKED) { view = 'welcome'; render(); announce('onboarding', 'choose-standard'); return; }
+  if (!prefs.chosen && !LOCKED) { view = 'welcome'; render(); announce(['ready', `level_${prefs.level}`], 'welcome-play'); return; }
   view = 'player'; render();
   if (player.pending().length) announce('interrupted', 'recover');
   else if (player.position > 0) announce('resume_offer', 'resume');
@@ -658,6 +663,10 @@ $('guidance-continue').addEventListener('click', continueWithVoiceView);
 $('more-options').addEventListener('click', guarded(() => setOptions(!optionsOpen)));
 $('guidance-return').addEventListener('click', returnFromGuidanceFailure);
 $('resume').addEventListener('click', guarded(resume));
+$('welcome-play').addEventListener('click', guarded(() => {
+  // Keep the first-run default; viewers can start without completing settings.
+  chooseFirstLevel(prefs.level); resume();
+}));
 $('recover').addEventListener('click', guarded(() => recover()));
 $('earlier').addEventListener('click', guarded(recoverEarlier));
 $('browse-moments').addEventListener('click', guarded(openMomentPicker));

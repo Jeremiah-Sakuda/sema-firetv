@@ -102,11 +102,12 @@ test('launch focuses the first film and never fetches at runtime', () => {
   assert.equal(s.fetched(), false);
 });
 
-test('first run: onboarding focuses the suggested level, then Play', () => {
+test('first run: Play is focused, Standard is selected and another level remains available', () => {
   const s = boot();
   s.$(`film-${fixture.id}`).click();
   assert.equal(s.app.view, 'welcome');
-  assert.equal(s.active(), 'choose-standard');
+  assert.equal(s.active(), 'welcome-play');
+  assert.equal(s.$('choose-standard').getAttribute('aria-checked'), 'true');
   s.$('choose-rich').click();
   assert.equal(s.app.view, 'player');
   assert.equal(s.active(), 'resume');
@@ -941,4 +942,41 @@ test('remote transport and media failure close the picker without leaving focus 
   const s = await pickerAtEnd(); s.app.player.position = 720; s.video.currentTime = 720;
   s.$('browse-moments').click(); s.key('MediaPlayPause'); await flush();
   assert.equal(s.$('moment-picker').hidden, true); assert.equal(s.active(), 'return');
+});
+
+
+test('first-run Play starts the selected default directly, saves it and preserves pause/revisit', async () => {
+  const s = boot();
+  s.$(`film-${fixture.id}`).click();
+  assert.equal(s.active(), 'welcome-play');
+  assert.equal(s.app.lastSpoken.at(-1), 'label_play');
+  s.$('welcome-play').click(); await flush(); await flush();
+  assert.equal(s.app.view, 'player');
+  assert.equal(s.app.player.mode, 'playing');
+  assert.equal(s.app.player.level, 'standard');
+  assert.equal(JSON.parse(s.w.localStorage.getItem('sema-prefs-v1')).chosen, true);
+  await s.at(2.6); s.key('Enter');
+  assert.equal(s.app.player.mode, 'controls');
+  assert.equal(s.active(), 'recover');
+  assert.equal(s.app.player.pending().length, 1);
+});
+
+test('Back from first-run Play returns to the chosen film without starting it', () => {
+  const s = boot(); s.$(`film-${fixture.id}`).click(); s.key('Escape');
+  assert.equal(s.app.view, 'catalog');
+  assert.equal(s.active(), `film-${fixture.id}`);
+  assert.equal(s.video._playing, false);
+});
+
+test('free viewing is disclosed on eligible cards and in accessible names, never inferred for other films', () => {
+  const pkg = JSON.parse(fs.readFileSync('preview/media/sintel-dragon/package.json', 'utf8'));
+  const free = {package:pkg,dev:false,allowDraft:true,freeToWatch:true,license:'CC BY 3.0'};
+  const s = boot({films:[free],preview:true});
+  const card=s.$(`film-${pkg.id}`);
+  assert.match(card.querySelector('.badge').textContent,/FREE TO WATCH · CC BY 3.0/);
+  assert.match(card.getAttribute('aria-label'),/Free to watch/);
+  assert.match(s.$('catalog-note').textContent,/Free, openly licensed/);
+  const other = boot({films:[{...free,freeToWatch:false}],preview:true});
+  assert.doesNotMatch(other.$(`film-${pkg.id}`).textContent,/FREE TO WATCH/);
+  assert.doesNotMatch(other.$(`film-${pkg.id}`).getAttribute('aria-label'),/Free to watch/);
 });

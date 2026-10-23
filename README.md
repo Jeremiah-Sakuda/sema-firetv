@@ -2,9 +2,11 @@
 
 ### Audio description at your pace.
 
-Sema lets blind and low-vision viewers choose how much audio description they hear on Fire TV. They can pause to hear a visual moment described, then continue from the same frame.
+Sema lets blind and low-vision viewers choose how much audio description they hear on Fire TV. They can pause to hear a visual moment described, then continue from the same frame. For small film publishers, Sema prepares editable descriptions and measured recordings through an AWS authoring pipeline.
 
 Built for **Fire TV / Vega OS**, with an AWS authoring pipeline. Code: [MIT](LICENSE). Film excerpts: [CC BY 3.0](media/ATTRIBUTION.md).
+
+[Watch the demo](https://youtu.be/9t2bXyRcaG8) · [Run the two-film prototype](#try-it) · [Publisher integration](docs/INTEGRATION.md)
 
 ## One scene
 
@@ -23,9 +25,9 @@ In this excerpt, 6 of the 13 described moments have no timed slot; Revisit is ho
 
 ## Who it is for
 
-**Viewers.** In 2020, an estimated 43 million people worldwide were blind and 295 million more had moderate or severe vision impairment ([Lancet Global Health, 2021](https://pubmed.ncbi.nlm.nih.gov/33275950/)). People who rely on audio description don't all want the same amount of it. In [Describe Now](https://arxiv.org/abs/2411.11835), 20 blind and low-vision participants preferred different description frequency and detail across videos. Sema puts those choices on the remote.
+**Viewers.** In 2020, an estimated 43.3 million people worldwide were blind and 295 million more had moderate or severe vision impairment ([Lancet Global Health, 2021](https://pubmed.ncbi.nlm.nih.gov/33275950/)). People who rely on audio description don't all want the same amount of it. In [Describe Now](https://arxiv.org/abs/2411.11835), 20 blind and low-vision participants preferred different description frequency and detail across videos. Sema puts those choices on the remote.
 
-An independent film publisher with its own Fire TV app is a practical first customer. It could use the authoring pipeline to prepare its catalog and add the scheduler to its player. The [integration guide](docs/INTEGRATION.md) explains the package format and the JavaScript API, with an example tested in Node. Preparing descriptions before release lets the publisher review the words and audio its viewers will hear.
+**Publishers.** Writing, recording and timing descriptions add work to a small film publisher’s release schedule. Sema prepares a draft package for an editor to refine and approve. An independent publisher with rights to its catalog, an editor and its own Fire TV app is a practical first customer. It could use the authoring pipeline to prepare its catalog and add the scheduler to its player. The [integration guide](docs/INTEGRATION.md) explains the package format and the JavaScript API, with an example tested in Node. Preparing descriptions before release lets the publisher review the words and audio its viewers will hear.
 
 A second proposed route is a free Fire TV Appstore app with openly licensed films. The current repository contains the two-film prototype.
 
@@ -42,7 +44,7 @@ A second proposed route is a free Fire TV Appstore app with openly licensed film
 | Use spoken guidance or VoiceView | Recorded prompts announce controls and state changes. When VoiceView is on, Sema hands speech to VoiceView: its own guidance turns off, and state changes go to VoiceView through the native announce API. A viewer's explicit choice takes precedence. |
 | Resume and keep preferences | Detail level and film position persist. More options holds text, spoken guidance, help and a confirmed Start over. Back closes these options first. |
 
-The catalog contains two **72-second** Blender open-film excerpts: *Sintel — The Rooftop* and *Tears of Steel — The Bridge*. Together they have:
+The catalog contains two **72-second** Blender open-film excerpts: *Sintel — The Rooftop* and *Tears of Steel — The Bridge*. Both are free to watch and openly licensed under **CC BY 3.0**, with Blender attribution retained in the catalog and credits. Together they have:
 
 - 25 described moments;
 - 45 timed narration variants;
@@ -52,6 +54,8 @@ The catalog contains two **72-second** Blender open-film excerpts: *Sintel — T
 All playback media is in the repository. Narration and 63 control prompts use Amazon Polly; moment names and 81 viewing-options and moment-navigation prompts use local Piper speech. Watching uses local files and makes no model or cloud call.
 
 ## Fire TV controls
+
+On first run, Play film has focus and Standard is selected. Select starts the film immediately; Down reaches the other description levels.
 
 Every action works with the D-pad, Select, Back and Play/Pause. Sema pauses the film before speaking interface guidance. This also avoids asking VoiceView to speak over video: the tested simulator warns that it "can only speak during video playback if Dolby audio is disabled" ([friction log, entry 21](docs/FRICTION-LOG.md)).
 
@@ -63,7 +67,7 @@ Every action works with the D-pad, Select, Back and Play/Pause. Sema pauses the 
 4. **Review.** An editor approves, edits or drops each line. Approval is bound to the exact source, timing and audio, so any later change reopens review.
 5. **Package.** The player uses prepared media locally, so a viewer's request never waits for generation.
 
-The [pipeline guide](pipeline/README.md) covers these commands and the production approval checks. The included excerpts were edited with Codex and Claude Code against source frames. Their [`editorial records`](content/editorial/) list the changes and shipped text; they are separate from the human approval required for a production package.
+The [pipeline guide](pipeline/README.md) covers these commands and the production approval checks. **The included prototype excerpts have AI editorial records, not recorded human audiovisual approval.** Codex and Claude Code edited the drafts against source frames; the [`editorial records`](content/editorial/) list those changes and the included text. An editor must review and approve the exact source, wording, timing and audio before a production package can pass the release gate.
 
 Measured in the [October 4 live run](docs/evidence/aws/LIVE-PILOT-2026-10-04.json):
 
@@ -73,7 +77,7 @@ Measured in the [October 4 live run](docs/evidence/aws/LIVE-PILOT-2026-10-04.jso
 | Latest automated run | 97 s | 86 s |
 | Timed variants fitting on first render | 32 of 33 | 22 of 24 |
 
-The pilot used roughly 30 cents of AWS services per minute of film. At that rate, a 90-minute feature would use about $24–29. That is an extrapolation from two excerpts, excluding editorial work, app integration and media distribution. Playback itself makes no AWS calls.
+For ten ten-minute films, [Cinepros’s published $7–16 per-minute service rates](https://www.cineprosmedia.com/audiodescription) work out to $700–1,600 before project-specific pricing. Applying Sema’s two-excerpt pilot rates to the same 100 minutes suggests **$27–32 in AWS usage**. The provider’s service and Sema’s cloud preparation cover different work: the AWS estimate excludes editorial labor, app integration and distribution. The 86–97-second runs above measure automated preparation only. Playback itself makes no AWS calls.
 
 ## Related work
 
@@ -104,10 +108,10 @@ Open **http://127.0.0.1:4173**. Use arrow keys as the D-pad, Enter as Select, Es
 
 ## Verified behavior
 
-- **Test suites (October 18):** 156 JavaScript, 78 offline pipeline and 6 native host tests pass. Both films pass their description contracts, the editorial record matches every shipped line, and the repository checks pass.
-- **Browser:** real-media Chrome runs cover both films at all three levels. They also cover the keyboard flow through Revisit, Earlier moment, the spoken moment picker, resume and every Back action.
-- **Vega package:** the aarch64 build's 261 media files match their source hashes.
-- **Vega Virtual Device (October 16 final build):** in the bridge scene, Revisit, Earlier moment and resume worked from the remote, and Back during a critical description focused the missed description. With VoiceView on, state changes reached the host's announce call. Earlier builds also covered both excerpts end to end and the VoiceView toggle.
+- **Test suites (October 23):** 159 JavaScript, 78 offline pipeline and 6 native host tests pass. Both films pass their description contracts, the editorial record matches every shipped line, and the repository checks pass.
+- **Browser:** real-media Chrome runs cover both films at all three levels, Revisit, Earlier moment, the spoken moment picker, resume and Back. October 23 checks also cover the first-run Play shortcut and free-film labels at 1920, 1280 and 375 pixels.
+- **Vega package (October 23):** the aarch64 package builds successfully; its player assets and 261 media files match the preview source. This build check is separate from the simulator recordings.
+- **Vega Virtual Device:** the October 21 demo records Revisit, Earlier moment, interruption recovery, resume and spoken moment browsing. The October 16 build also verified the bridge-scene Revisit, Earlier moment and resume flow, and Back during a critical description focused the missed description. With VoiceView on, state changes reached the host's announce call. Earlier builds also covered both excerpts end to end and the VoiceView toggle.
 
 The included excerpts run with `npm run preview`. `npm run release:check` is the separate gate for editor-approved production packages.
 

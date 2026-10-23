@@ -60,6 +60,7 @@ def standard_mix(pkg, out):
 
 def build():
     out=ROOT/'preview'; cfg=load_config(); catalog=[]
+    catalog_info={entry['id']:entry for entry in json.loads((ROOT/'media/catalog.json').read_text())['films']}
     for asset in ASSETS:
         ws=Workspace(asset); manifest=ws.read('manifest.json'); analysis=ws.read('analysis.json'); render=ws.read('render.json')
         if ws.stale_inputs('render.json'): raise ValueError(f'{asset}: stale upstream authoring files')
@@ -89,7 +90,9 @@ def build():
         standard_mix(pkg,target/'standard.mp4');convert(target/'standard.mp4',target/'standard.webm')
         poster_time=48 if asset=='sintel-dragon' else 29
         command(['ffmpeg','-hide_banner','-loglevel','error','-y','-ss',str(poster_time),'-i',str(source),'-frames:v','1','-vf','scale=960:-2','-q:v','3',str(target/'poster.jpg')])
-        catalog.append({'id':asset,'package':f'media/{asset}/package.json'})
+        info=catalog_info.get(asset,{})
+        catalog.append({'id':asset,'package':f'media/{asset}/package.json',
+                        'freeToWatch':info.get('freeToWatch',False),'license':info.get('license')})
     for name in ('index.html','style.css'):
         shutil.copy2(ROOT/name,out/name)
     (out/'pipeline').mkdir(exist_ok=True)

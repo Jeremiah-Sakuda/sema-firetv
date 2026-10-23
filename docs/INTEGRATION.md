@@ -1,6 +1,6 @@
 # Adding Sema to a Fire TV app
 
-A publisher with its own Fire TV app and catalog can reuse two parts of Sema:
+A small publisher with rights to its catalog, an editor and its own Fire TV app can reuse two parts of Sema:
 
 - **the authoring pipeline**, which turns an authorized film into a package of timed descriptions;
 - **the scheduler**, which decides what to say and when.

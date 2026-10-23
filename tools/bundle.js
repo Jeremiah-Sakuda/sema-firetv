@@ -38,7 +38,7 @@ export function buildData(root = ROOT, warn = () => {}, { preview = false } = {}
     const standardMix = `media/${entry.id}/standard.mp4`, standardMixWebm = `media/${entry.id}/standard.webm`;
     films.push({ package: pkg, poster: exists(poster) ? poster : null, webm: webm !== pkg.video && exists(webm) ? webm : null,
       standardMix: exists(standardMix) ? standardMix : null, standardMixWebm: exists(standardMixWebm) ? standardMixWebm : null,
-      dev: !!entry.dev, allowFixture, allowDraft });
+      dev: !!entry.dev, allowFixture, allowDraft, freeToWatch: entry.freeToWatch === true, license: entry.license ?? null });
   }
   // Until a reviewed film is packaged, show the engineering fixture rather than an empty catalog.
   if (!films.some(f => !f.dev)) for (const f of films) f.dev = false;
