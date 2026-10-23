@@ -79,7 +79,7 @@ For a five-minute lookback in the synthetic 12-minute workload, the picker takes
 
 The shipped Sintel extract had visible frame corruption near 36–39 seconds and contained 1,707 video frames. A fresh copy of the same 150–222 second range from Blender's source contains 1,728 frames at 24 fps. The preview MP4, VP8/Opus rendition and fixed Standard comparison were rebuilt. Narration text and timing are unchanged. The package records the replacement hash alongside the original AWS authoring-input hash; integrity records cover the new media.
 
-The public Git history begins with an October 20 source snapshot. Earlier dates and build identifiers below refer to retained run evidence, not commits in that public history.
+The development history retains its original authors and dates. Historical build identifiers below refer to the source used for recorded runs; commit hashes changed when repository history was cleaned.
 
 ## October 16, 2026 final build on the Vega Virtual Device
 
